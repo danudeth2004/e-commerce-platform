@@ -1,5 +1,5 @@
-module Seller
+module Admin
   class BaseController < ::ApplicationController
-    layout "seller"
+    layout "admin"
   end
 end

@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    devise_for :users, class_name: "Admin::User", controllers: {
+      registrations: "admin/users/registrations",
+      sessions: "admin/users/sessions",
+      passwords: "admin/users/passwords"
+    }
+
+    root "home#index"
+  end
+
   namespace :seller do
     devise_for :users, class_name: "Seller::User", controllers: {
       registrations: "seller/users/registrations",
@@ -8,11 +18,12 @@ Rails.application.routes.draw do
 
     root "home#index"
   end
-  devise_for :users, scoped_views: true, controllers: {
-      registrations: "users/registrations",
-      sessions: "users/sessions",
-      passwords: "users/passwords"
-    }
+
+  devise_for :users, controllers: {
+    registrations: "users/registrations",
+    sessions: "users/sessions",
+    passwords: "users/passwords"
+  }
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
