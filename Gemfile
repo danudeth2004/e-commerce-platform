@@ -59,6 +59,7 @@ group :development, :test do
 
   gem "rspec-rails"
   gem "factory_bot_rails"
+  gem "devise", github: "heartcombo/devise", branch: "main"
 end
 
 group :development do
