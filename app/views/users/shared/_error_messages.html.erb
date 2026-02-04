@@ -1,15 +1,42 @@
 <% if resource.errors.any? %>
-  <div id="error_explanation" data-turbo-temporary>
-    <h2>
-      <%= I18n.t("errors.messages.not_saved",
-                 count: resource.errors.count,
-                 resource: resource.class.model_name.human.downcase)
-       %>
-    </h2>
-    <ul>
-      <% resource.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
+  <div
+    id="devise-error-toast"
+    class="fixed top-6 right-6 z-50 w-full max-w-sm rounded-xl bg-red-600 text-white shadow-lg transition-opacity duration-300"
+  >
+    <div class="flex items-start justify-between p-4">
+      <div class="mr-3">
+        <p class="font-semibold text-sm mb-1">
+          <%= I18n.t(
+            "errors.messages.not_saved",
+            count: resource.errors.count,
+            resource: resource.class.model_name.human.downcase
+          ) %>
+        </p>
+
+        <ul class="text-sm space-y-1">
+          <% resource.errors.full_messages.each do |message| %>
+            <li>• <%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+
+      <button
+        type="button"
+        class="text-white/80 hover:text-white cursor-pointer"
+        onclick="closeDeviseToast()"
+      >
+        ✕
+      </button>
+    </div>
   </div>
+
+  <script>
+    function closeDeviseToast() {
+      const toast = document.getElementById("devise-error-toast");
+      if (!toast) return;
+
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 300);
+    }
+  </script>
 <% end %>
