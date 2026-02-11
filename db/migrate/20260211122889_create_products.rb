@@ -10,6 +10,6 @@ class CreateProducts < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :products, [ :seller_store_id, :sku ], unique: true
+    add_index :products, :sku, unique: true
   end
 end

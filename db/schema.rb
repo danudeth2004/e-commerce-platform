@@ -63,8 +63,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_122889) do
     t.string "sku", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
-    t.index ["seller_store_id", "sku"], name: "index_products_on_seller_store_id_and_sku", unique: true
-    t.index ["seller_store_id"], name: "index_products_on_seller_store_id"
+    t.index ["seller_store_id"], name: "index_products_on_seller_store_id", unique: true
+    t.index ["sku"], name: "index_products_on_sku", unique: true
   end
 
   create_table "seller_stores", force: :cascade do |t|
@@ -74,7 +74,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_122889) do
     t.string "name", null: false
     t.bigint "seller_user_id", null: false
     t.datetime "updated_at", null: false
-    t.index ["seller_user_id"], name: "index_seller_stores_on_seller_user_id"
+    t.index ["name"], name: "index_seller_stores_on_name", unique: true
+    t.index ["seller_user_id"], name: "index_seller_stores_on_seller_user_id", unique: true
   end
 
   create_table "seller_users", force: :cascade do |t|

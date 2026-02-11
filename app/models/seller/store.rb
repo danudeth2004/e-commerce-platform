@@ -1,5 +1,10 @@
 class Seller::Store < ApplicationRecord
   belongs_to :owner, class_name: "Seller::User", foreign_key: :seller_user_id
 
+  has_one_attached :cover
   has_many :products, foreign_key: :seller_store_id, dependent: :destroy
+
+  validates :name, uniqueness: true
+  validates :name, :location, :seller_user_id, presence: true
+  validates :seller_user_id, uniqueness: true
 end
