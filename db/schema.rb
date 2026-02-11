@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_04_154455) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_11_122889) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,6 +54,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_04_154455) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
+  create_table "products", force: :cascade do |t|
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "THB", null: false
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.bigint "seller_store_id", null: false
+    t.string "sku", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["seller_store_id", "sku"], name: "index_products_on_seller_store_id_and_sku", unique: true
+    t.index ["seller_store_id"], name: "index_products_on_seller_store_id"
+  end
+
+  create_table "seller_stores", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "location", null: false
+    t.string "name", null: false
+    t.bigint "seller_user_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["seller_user_id"], name: "index_seller_stores_on_seller_user_id"
+  end
+
   create_table "seller_users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -88,4 +111,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_04_154455) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "products", "seller_stores"
+  add_foreign_key "seller_stores", "seller_users"
 end
