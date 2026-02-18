@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_11_134142) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_17_135358) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -71,6 +71,51 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_134142) do
     t.index ["user_id"], name: "index_carts_on_user_id"
   end
 
+  create_table "order_items", force: :cascade do |t|
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "THB", null: false
+    t.datetime "created_at", null: false
+    t.bigint "order_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "quantity", default: 1, null: false
+    t.string "sku", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_items_on_order_id"
+    t.index ["product_id"], name: "index_order_items_on_product_id"
+  end
+
+  create_table "order_store_payouts", force: :cascade do |t|
+    t.integer "amount_cents", default: 0, null: false
+    t.string "amount_currency", default: "THB", null: false
+    t.datetime "created_at", null: false
+    t.bigint "order_id", null: false
+    t.bigint "seller_store_id", null: false
+    t.string "status", default: "pending", null: false
+    t.string "transfer_id"
+    t.datetime "transferred_at"
+    t.datetime "updated_at", null: false
+    t.index ["order_id"], name: "index_order_store_payouts_on_order_id"
+    t.index ["seller_store_id"], name: "index_order_store_payouts_on_seller_store_id"
+    t.index ["transfer_id"], name: "index_order_store_payouts_on_transfer_id"
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "omise_charge_id"
+    t.string "omise_source_id"
+    t.datetime "paid_at"
+    t.integer "platform_fee_cents", default: 0, null: false
+    t.string "platform_fee_currency", default: "THB", null: false
+    t.string "status", default: "pending", null: false
+    t.integer "total_amount_cents", default: 0, null: false
+    t.string "total_amount_currency", default: "THB", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["omise_charge_id"], name: "index_orders_on_omise_charge_id", unique: true
+    t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.integer "amount_cents", default: 0, null: false
     t.string "amount_currency", default: "THB", null: false
@@ -89,9 +134,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_134142) do
     t.text "description"
     t.string "location", null: false
     t.string "name", null: false
+    t.string "omise_recipient_id"
     t.bigint "seller_user_id", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_seller_stores_on_name", unique: true
+    t.index ["omise_recipient_id"], name: "index_seller_stores_on_omise_recipient_id"
     t.index ["seller_user_id"], name: "index_seller_stores_on_seller_user_id", unique: true
   end
 
@@ -132,6 +179,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_11_134142) do
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "users"
+  add_foreign_key "order_items", "orders"
+  add_foreign_key "order_items", "products"
+  add_foreign_key "order_store_payouts", "orders"
+  add_foreign_key "order_store_payouts", "seller_stores"
+  add_foreign_key "orders", "users"
   add_foreign_key "products", "seller_stores"
   add_foreign_key "seller_stores", "seller_users"
 end

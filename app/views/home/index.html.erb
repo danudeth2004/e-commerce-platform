@@ -1,3 +1,10 @@
-<h1>
-    Member user
-</h1>
+<div class="flex flex-col gap-10">
+    <h1>
+        Member user
+    </h1>
+    <%
+=begin%>
+ <%= link_to "PAYMENT", payment_checkout_path(order_id: params[:order_id]), class: "py-2 px-4 border border-3 border-black bg-green-300 text-3xl font-bold" %> 
+<%
+=end%>
+</div>
