@@ -1,0 +1,42 @@
+<%
+=begin%>
+ <div class="flex flex-col gap-6">
+  <h1 class="text-2xl font-bold">
+    Payout #<%= @payout.id %>
+  </h1>
+
+  <div>
+    Status:
+    <span class="font-bold">
+      <%= @payout.status %>
+    </span>
+  </div>
+
+  <div>
+    Amount:
+    <%= number_to_currency(@payout.amount_cents / 100.0) %>
+  </div>
+
+  <% if @payout.pending? %>
+    <%= button_to "💸 Transfer To Store",
+        admin_order_store_payout_pay_path(order_store_payout_id: @payout.id),
+        method: :post,
+        class: "px-6 py-3 bg-green-400 font-bold text-xl border border-black" %>
+  <% end %>
+
+  <% if @payout.processing? %>
+    <div class="text-orange-600 font-bold">
+      Waiting transfer confirmation...
+    </div>
+
+    <%= link_to "🔄 Refresh Status", admin_order_store_payout_path(@payout), class: "px-4 py-2 bg-yellow-300 border border-black" %>
+  <% end %>
+
+    <% if @payout.transferred? %>
+        <div class="text-green-600 font-bold text-xl">
+            ✅ Transfer completed
+        </div>
+    <% end %>
+</div> 
+<%
+=end%>

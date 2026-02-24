@@ -6,6 +6,7 @@ class OrderStorePayout < ApplicationRecord
 
   enum :status, {
     pending: "pending",
+    processing: "processing",
     transferred: "transferred",
     failed: "failed"
   }

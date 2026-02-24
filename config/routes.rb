@@ -6,6 +6,10 @@ Rails.application.routes.draw do
       passwords: "admin/users/passwords"
     }
 
+    resources :order_store_payouts, only: [ :index, :show ] do
+      post :pay
+    end
+
     root "home#index"
   end
 

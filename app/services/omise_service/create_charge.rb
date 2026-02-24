@@ -17,15 +17,13 @@ module OmiseService
 
       if charge.paid
         @order.update!(
-          status: "paid",
+          status: :paid,
           omise_charge_id: charge.id,
           paid_at: Time.current
         )
-
-        TransferToStoreJob.perform_later(@order.id)
       else
         @order.update!(
-          status: "failed",
+          status: :failed,
           omise_charge_id: charge.id
         )
       end
@@ -34,7 +32,7 @@ module OmiseService
     rescue Omise::Error => e
       Rails.logger.error("OMISE ERROR: #{e.message}")
 
-      @order.update!(status: "failed")
+      @order.update!(status: :failed)
       nil
     end
   end

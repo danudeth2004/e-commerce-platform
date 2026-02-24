@@ -1,30 +1,28 @@
 class TransferToStoreJob < ApplicationJob
   queue_as :default
 
-  def perform(order_id)
-    order = Order.find(order_id)
-    return unless order.paid?
+  def perform(payout_id)
+    payout = OrderStorePayout.find(payout_id)
 
-    order.order_store_payouts.pending.find_each do |payout|
-      process_payout(payout)
+    return unless payout.order.paid?
+
+    payout.with_lock do
+      return unless payout.pending?
+      payout.processing!
     end
-  end
 
-  private
-
-  def process_payout(payout)
     transfer = OmiseService::TransferToStore.new(payout: payout).call
-    return unless transfer
+
+    raise "Transfer failed" unless transfer
 
     payout.update!(
-      status: :transferred,
+      status: :processing,
       transfer_id: transfer.id,
-      transferred_at: Time.current
+      transferred_at: Time.current,
     )
 
   rescue => e
     Rails.logger.error("[PAYOUT FAILED] #{e.message}")
-
-    payout.update!(status: :failed)
+    payout.update!(status: :failed) if payout&.persisted?
   end
 end

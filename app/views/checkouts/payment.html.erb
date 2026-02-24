@@ -21,6 +21,40 @@
     Pay with Omise
   </button>
 
+  <div class="flex flex-col gap-6 mt-10">
+    <h1 class="text-2xl font-bold">
+      Order Payouts
+    </h1>
+
+    <% @payouts.each do |payout| %>
+      <div class="border border-black p-4 flex justify-between items-center">
+        
+        <div>
+          <div>
+            Store: <%= payout.store.name %>
+          </div>
+
+          <div>
+            Amount:
+            <%= number_to_currency(payout.amount_cents / 100.0) %>
+          </div>
+
+          <div>
+            Status:
+            <span class="font-bold">
+              <%= payout.status %>
+            </span>
+          </div>
+        </div>
+
+        <%= link_to "View Payout",
+            admin_order_store_payout_path(payout),
+            class: "px-4 py-2 bg-blue-400 border border-black font-bold" %>
+
+      </div>
+    <% end %>
+  </div>
+
   <form
     action="<%= pay_checkout_path %>"
     method="POST"
