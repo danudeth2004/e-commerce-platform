@@ -165,6 +165,9 @@ GEM
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
+    inline_svg (1.10.0)
+      activesupport (>= 3.0)
+      nokogiri (>= 1.6)
     io-console (0.8.2)
     irb (1.16.0)
       pp (>= 0.6.0)
@@ -489,6 +492,7 @@ DEPENDENCIES
   factory_bot_rails
   image_processing (~> 1.2)
   importmap-rails
+  inline_svg
   jbuilder
   kamal
   money-rails

@@ -1,0 +1,48 @@
+<%# ProductCardController — Reusable product card
+    Params:
+      product: { id, name, desc, price, original_price, image_url, discount_percent }
+      size: "small" (default) | "large"
+%>
+<% size ||= "small" %>
+<div class="shrink-0 w-40 bg-white rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-200"
+  style="box-shadow: 0 1px 4px 0 rgba(0,0,0,0.06), 0 4px 10px 0 rgba(0,0,0,0.06)"
+  data-controller="product-card"
+  data-product-id="<%= product[:id] %>">
+  <%# Product Image %>
+  <div class="relative w-full <%= size == 'large' ? 'aspect-square' : 'h-32' %> bg-gray-50 flex items-center justify-center overflow-hidden">
+    <% if product[:image_url].present? %>
+      <%= image_tag product[:image_url],
+            class: "w-full h-full object-contain p-2",
+            alt: product[:name],
+            loading: "lazy" %>
+    <% else %>
+      <div class="w-full h-full"
+        style="background-image:linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%);
+               background-size:14px 14px;
+               background-position:0 0,0 7px,7px -7px,-7px 0;
+               background-color:#f9fafb;">
+      </div>
+    <% end %>
+    <%# Add to cart button %>
+    <button
+  class="absolute bottom-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+  style="background:#D1D5DB"
+  data-action="click->product-card#addToCart"
+      data-product-card-target="addBtn">
+      <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-4 h-4 text-white fill-current" %>
+    </button>
+  </div>
+  <%# Info %>
+  <div class="px-3 pt-2 pb-3">
+    <div class="flex items-baseline gap-2 mb-0.5">
+      <span class="font-prompt text-sm font-bold" style="color:#FF6B9D">
+        ฿ <%= number_with_delimiter(product[:price]) %>
+      </span>
+      <% if product[:original_price] %>
+        <span class="text-xs text-gray-300 line-through">฿ <%= number_with_delimiter(product[:original_price]) %></span>
+      <% end %>
+    </div>
+    <div class="text-sm font-bold text-gray-800"><%= product[:name] %></div>
+    <div class="text-xs text-gray-400 leading-relaxed mt-0.5 line-clamp-2"><%= product[:desc] %></div>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<section class="px-4 pt-4" data-controller="banner" data-banner-index-value="0">
+  <div id="bannerCard"
+    class="rounded-3xl p-5 min-h-[160px] flex items-center justify-between cursor-pointer transition-all duration-500"
+    style="background: <%= banners.first[:bg] %>">
+    <div class="flex-1">
+      <span class="inline-block text-white text-[9px] font-bold tracking-widest px-2 py-1 rounded-full mb-2"
+        style="background:#FF6B9D">NEW ARRIVAL</span>
+      <div id="bannerBrand" class="font-prompt text-2xl font-black leading-tight" style="color:#E84E87">
+        <%= banners.first[:brand] %>
+      </div>
+      <div id="bannerSub" class="text-[11px] font-semibold tracking-wide mt-1 uppercase" style="color:#E84E87">
+        <%= banners.first[:sub] %>
+      </div>
+      <button class="mt-3 bg-white text-xs font-bold px-3 py-1.5 rounded-full hover:shadow-md transition-shadow"
+        style="color:#FF6B9D">
+        ดูเพิ่มเติม →
+      </button>
+    </div>
+    <div id="bannerEmoji"
+      class="w-28 h-28 rounded-full flex items-center justify-center text-5xl shrink-0 bg-white/30">
+      <%= banners.first[:emoji] %>
+    </div>
+  </div>
+  <%# Dots %>
+  <div class="flex justify-center gap-1.5 mt-3"
+    data-banner-target="dots">
+    <% banners.each_with_index do |_, i| %>
+      <button class="dot h-1.5 rounded-full transition-all duration-300 cursor-pointer <%= i == 0 ? 'w-4' : 'w-1.5 bg-pink-200' %>"
+        style="<%= i == 0 ? 'background:#FF6B9D' : '' %>"
+        data-action="click->banner#go"
+        data-index="<%= i %>">
+      </button>
+    <% end %>
+  </div>
+  <script>
+    window.BANNERS = <%= raw banners.to_json %>;
+  </script>
+</section>
