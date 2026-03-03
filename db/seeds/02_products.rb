@@ -2,26 +2,66 @@ seller = Seller::User.find_by!(email: "demo-seller@example.com")
 store  = Seller::Store.find_by!(seller_user_id: seller.id)
 
 products_data = [
-  { title: "Vaseline",   sku: "VAS-001", amount_baht: 119, description: "วาสลีน เฮลธี้ ไบรท์ กลูต้า-ไฮยา เซรั่ม เบิร์ส โลชั่น ดิวอี้..." },
-  { title: "Glad2Glow",  sku: "GLD-001", amount_baht: 119, description: "สเปรย์เติมความชุ่มชื้นเนียนละมุน ช่วยเสริมพลังสกิน..." },
-  { title: "CeraVe",     sku: "CRV-001", amount_baht: 389, description: "Moisturizing Cream สำหรับผิวแห้ง เนียนนุ่ม..." },
-  { title: "LANEIGE",    sku: "LNG-001", amount_baht: 290, description: "Lip Sleeping Mask Berry สูตรใหม่ ริมฝีปากชุ่มชื้น..." },
-  { title: "clear nose", sku: "CLN-001", amount_baht: 1090, description: "เซรั่มเคลียร์โนส Clear Nose ดาร์คสปอต โบดี้ เซรั่มตัวดัง..." },
-  { title: "AGLAM",      sku: "AGL-001", amount_baht: 450,  description: "Skin Daily Toner Pad 221g (60 Pads) โทนเนอร์แพดสูตรเข้มข้น..." },
-  { title: "Shiseido",   sku: "SHS-001", amount_baht: 4380, description: "Ultimune Power Infusing Serum 75ml โทนนิกเซรั่ม สูตรใหม่..." },
-  { title: "SK-II",      sku: "SK2-001", amount_baht: 1330, description: "Skinpower Advanced Cream 15g ครีมบำรุงผิวสูตรปรับปรุงใหม่..." }
+  {
+    title: "Demo Glow Serum",
+    sku: "DEMO-001",
+    amount_baht: 119,
+    description: "เซรั่มบำรุงผิวเนื้อบางเบา ช่วยให้ผิวดูกระจ่างใสและชุ่มชื้น เหมาะสำหรับทุกสภาพผิว"
+  },
+  {
+    title: "Hydra Balance Moisturizer",
+    sku: "DEMO-002",
+    amount_baht: 289,
+    description: "มอยส์เจอไรเซอร์เนื้อครีมเจล เติมน้ำให้ผิวไม่เหนอะหนะ ใช้ได้ทั้งเช้าและก่อนนอน"
+  },
+  {
+    title: "Soft Foam Cleanser",
+    sku: "DEMO-003",
+    amount_baht: 189,
+    description: "โฟมล้างหน้าสูตรอ่อนโยน ช่วยทำความสะอาดคราบมันและสิ่งสกปรก โดยไม่ทำให้ผิวแห้งตึง"
+  },
+  {
+    title: "Sun Care Daily SPF50",
+    sku: "DEMO-004",
+    amount_baht: 290,
+    description: "ครีมกันแดดสำหรับใช้ทุกวัน ป้องกันรังสี UVA/UVB เนื้อบางเบาไม่วอก"
+  },
+  {
+    title: "Clarifying Spot Serum",
+    sku: "DEMO-005",
+    amount_baht: 450,
+    description: "เซรั่มแต้มจุดด่างดำ ช่วยให้รอยสิวดูจางลงอย่างเป็นธรรมชาติเมื่อใช้ต่อเนื่อง"
+  },
+  {
+    title: "Calming Repair Cream",
+    sku: "DEMO-006",
+    amount_baht: 720,
+    description: "ครีมบำรุงผิวสำหรับผิวแพ้ง่าย ช่วยปลอบประโลมผิวและเสริมเกราะปกป้องผิว"
+  },
+  {
+    title: "Overnight Recovery Mask",
+    sku: "DEMO-007",
+    amount_baht: 890,
+    description: "มาสก์บำรุงผิวข้ามคืน ช่วยให้ผิวรู้สึกนุ่ม ชุ่มชื้น และดูอิ่มฟูในตอนเช้า"
+  },
+  {
+    title: "Radiance Boost Essence",
+    sku: "DEMO-008",
+    amount_baht: 650,
+    description: "เอสเซนส์เตรียมผิว ช่วยให้ขั้นตอนการบำรุงถัดไปซึมซาบได้ดีขึ้น เหมาะสำหรับผิวหมองคล้ำ"
+  }
 ]
 
 # Map SKU -> skin_concern_key (ใช้ key จาก SkinConcern::DATA)
 skin_concern_by_sku = {
-  "VAS-001" => "dry_skin",
-  "GLD-001" => "sensitive_skin",
-  "CRV-001" => "dry_skin",
-  "LNG-001" => "dull_skin",
-  "CLN-001" => "acne_skin",
-  "AGL-001" => "oily_skin",
-  "SHS-001" => "dull_skin",
-  "SK2-001" => "dry_skin"
+  "DEMO-001" => "dry_skin",
+  "DEMO-002" => "combination_skin",
+  "DEMO-003" => "oily_skin",
+  "DEMO-004" => "sensitive_skin",
+  "DEMO-005" => "acne_skin",
+  "DEMO-006" => "dull_skin",
+  "DEMO-007" => "dry_skin",
+  "DEMO-008" => "dull_skin"
 }
 
 products_data.each do |data|
@@ -31,16 +71,6 @@ products_data.each do |data|
     p.description = data[:description]
     p.amount_cents = data[:amount_baht] * 100
     p.amount_currency = "THB"
-  end
-
-  # Attach demo image if present
-  image_path = Rails.root.join("app/assets/images/seed_products/#{data[:sku]}.png")
-  if File.exist?(image_path) && !product.images.attached?
-    product.images.attach(
-      io: File.open(image_path),
-      filename: "#{data[:sku]}.png",
-      content_type: "image/png"
-    )
   end
 
   # Tag product with a skin concern for filtering
