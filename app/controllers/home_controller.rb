@@ -10,6 +10,10 @@ class HomeController < ApplicationController
 
   private
   # mock data เพื่อใช้แสดงผลในหน้า Home (จริงๆ ควรเชื่อมกับ database models)
+  #
+  # NOTE:
+  # - banners/skin_concerns ยังเป็น mock เหมือนเดิม
+  # - flash/bestseller/essential จะดึงจาก FlagProduct ก่อน (ถ้ามี) แล้วค่อย fallback ไปใช้ mock
 
   def banners
     [
@@ -33,6 +37,9 @@ class HomeController < ApplicationController
   end
 
   def flash_products
+    flagged = flagged_products(:flash, limit: 10)
+    return flagged.map { |fp| product_card_payload(fp.product, fp) } if flagged.any?
+
     [
       { id: 1, name: "Vaseline",  desc: "วาสลีน เจลลี่ โบดี้ กลูต้า-ไฮยา เซรั่ม เพลท ไลน์...",     price: 119, original_price: 269, image_url: nil, discount_percent: 56 },
       { id: 2, name: "Glad2Glow", desc: "สเปรย์เติมความชุ่มชื้นเนียนละมุน ช่วยเสริมพลังสกิน...",     price: 119, original_price: 250, image_url: nil, discount_percent: 52 },
@@ -46,6 +53,9 @@ class HomeController < ApplicationController
   end
 
   def bestsellers
+    flagged = flagged_products(:bestseller, limit: 10)
+    return flagged.map { |fp| bestseller_payload(fp.product, fp) } if flagged.any?
+
     [
       { brand: "clear nose", desc: "เซรั่มเคลียร์โนส Clear Nose ดาร์คสปอต โบดี้ เซรั่มตัวดัง...",   price: 1090, original_price: nil, image_url: nil },
       { brand: "AGLAM",      desc: "Skin Daily Toner Pad 221g (60 Pads) โทนเนอร์แพดสูตรเข้มข้น...", price: 450,  original_price: nil, image_url: nil },
@@ -56,11 +66,62 @@ class HomeController < ApplicationController
   end
 
   def essential_products
+    flagged = flagged_products(:essential, limit: 12)
+    return flagged.map { |fp| product_card_payload(fp.product, fp) } if flagged.any?
+
     [
       { id: 5, name: "Vaseline", desc: "วาสลีน เฮลธี้ ไบรท์ กลูต้า-ไฮยา เซรั่ม เบิร์ส โลชั่น ดิวอี้...", price: 119, original_price: 259, image_url: nil },
       { id: 6, name: "Vaseline", desc: "วาสลีน เฮลธี้ ไบรท์ กลูต้า-ไฮยา เซรั่ม เบิร์ส โลชั่น ดิวอี้...", price: 119, original_price: 269, image_url: nil },
       { id: 7, name: "Vaseline", desc: "วาสลีน เฮลธี้ ไบรท์ กลูต้า-ไฮยา เซรั่ม เบิร์ส โลชั่น ดิวอี้...", price: 119, original_price: 259, image_url: nil },
       { id: 8, name: "Vaseline", desc: "วาสลีน เฮลธี้ ไบรท์ กลูต้า-ไฮยา เซรั่ม เบิร์ส โลชั่น ดิวอี้...", price: 119, original_price: 269, image_url: nil }
     ]
+  end
+
+  def flagged_products(flag_type, limit:)
+    FlagProduct.for_home_section(flag_type, limit: limit)
+  end
+
+  def product_card_payload(product, flag_product = nil)
+    original_price = money_to_baht(flag_product&.original_amount_cents)
+    price = money_to_baht(product.amount_cents)
+
+    {
+      id: product.id,
+      name: product.title,
+      desc: product.description,
+      price:,
+      original_price:,
+      discount_percent: discount_percent(price:, original_price:),
+      image_url: product_image_url(product)
+    }
+  end
+
+  def bestseller_payload(product, flag_product = nil)
+    {
+      brand: product.title,
+      desc: product.description,
+      price: money_to_baht(product.amount_cents),
+      original_price: money_to_baht(flag_product&.original_amount_cents),
+      image_url: product_image_url(product)
+    }
+  end
+
+  def discount_percent(price:, original_price:)
+    return nil if price.blank? || original_price.blank?
+    return nil unless original_price.to_i.positive? && original_price.to_i > price.to_i
+
+    (((original_price.to_f - price.to_f) / original_price.to_f) * 100).round
+  end
+
+  def money_to_baht(amount_cents)
+    return nil if amount_cents.nil?
+
+    (amount_cents.to_i / 100.0).round
+  end
+
+  def product_image_url(product)
+    return nil unless product.images.attached?
+
+    helpers.rails_blob_path(product.images.first, only_path: true)
   end
 end

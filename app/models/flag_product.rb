@@ -15,6 +15,14 @@ class FlagProduct < ApplicationRecord
 
   scope :ordered, -> { order(:position, created_at: :desc) }
 
+  scope :for_home_section, ->(section_flag_type, limit: 10, time: Time.current) do
+    active(time)
+      .public_send(section_flag_type)
+      .ordered
+      .includes(product: { images_attachments: :blob })
+      .limit(limit)
+  end
+
   validates :flag_type, presence: true
   validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :product_id, uniqueness: { scope: :flag_type }
