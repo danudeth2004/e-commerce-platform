@@ -46,6 +46,10 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
+  resource :cart, only: [ :show ] do
+    post :add_item
+    delete :remove_item
+  end
   get "products", to: "products#index", as: :products
   get "products/:id", to: "home#show", as: :product
 end

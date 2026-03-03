@@ -21,10 +21,15 @@
       </div>
     </div>
     <!-- ปุ่มเพิ่มสินค้า -->
-    <button
-      class="w-full bg-Primary-color text-white px-4 py-3 rounded-xl text-sm flex items-center justify-center"
-      data-product-id="<%= product.id %>">
-      เพิ่มสินค้าใส่ตะกร้า
-    </button>
+    <%= form_with url: add_item_cart_path, method: :post, local: true, class: "w-full" do |f| %>
+      <%= hidden_field_tag :product_id, product.id %>
+      <%= hidden_field_tag :quantity, 0, data: { quantity_target: "input" } %>
+      <button
+        data-quantity-target="submit"
+        class="w-full bg-Primary-color text-white px-4 py-3 rounded-xl text-sm flex items-center justify-center opacity-50 cursor-not-allowed"
+        disabled>
+        เพิ่มสินค้าใส่ตะกร้า
+      </button>
+    <% end %>
   </div>
 </div>

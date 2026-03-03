@@ -1,0 +1,56 @@
+<div class="w-full min-h-screen bg-white">
+  <div class="w-full max-w-screen-md mx-auto px-4 py-6 space-y-4">
+    <h1 class="text-xl font-semibold text-text-primary mb-4">ตะกร้าสินค้า</h1>
+
+    <% if @cart_items.any? %>
+      <div class="space-y-3">
+        <% @cart_items.each do |item| %>
+          <% product = item.product %>
+          <div class="flex items-center gap-3 p-3 rounded-2xl bg-gray-50">
+            <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center">
+              <% if product.images.attached? %>
+                <%= image_tag product.images.first, class: "w-full h-full object-cover" %>
+              <% else %>
+                <div class="w-full h-full bg-gray-200"></div>
+              <% end %>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-semibold text-text-primary truncate">
+                <%= product.title %>
+              </div>
+              <div class="text-xs text-gray-400 mt-0.5">
+                จำนวน: <%= item.quantity %>
+              </div>
+              <div class="text-sm font-semibold text-pink-500 mt-1">
+                ฿ <%= number_with_delimiter((product.amount_cents * item.quantity) / 100) %>
+              </div>
+            </div>
+            <div>
+              <%= button_to "ลบ", remove_item_cart_path(id: item.id),
+                            method: :delete,
+                            form: { data: { turbo_confirm: "ลบสินค้านี้ออกจากตะกร้า?" } },
+                            class: "text-xs text-red-500" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="mt-6 flex justify-between items-center">
+        <% total_cents = @cart_items.sum { |i| i.product.amount_cents * i.quantity } %>
+        <div class="text-right">
+          <div class="text-sm text-gray-500">รวมทั้งหมด</div>
+          <div class="text-xl font-semibold text-text-primary">
+            ฿ <%= number_with_delimiter(total_cents / 100) %>
+          </div>
+        </div>
+
+        <%= button_to "ไปชำระเงิน",
+                      create_order_checkout_path,
+                      method: :post,
+                      class: "bg-Primary-color text-white px-5 py-2 rounded-xl text-sm font-semibold" %>
+      </div>
+    <% else %>
+      <p class="text-sm text-gray-400">ยังไม่มีสินค้าในตะกร้า</p>
+    <% end %>
+  </div>
+</div>

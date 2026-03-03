@@ -25,7 +25,25 @@
   </head>
 
   <body>
-    <main>
+    <main class="min-h-screen bg-white">
+      <header class="w-full max-w-screen-xl mx-auto px-4 pt-4 flex items-center justify-between">
+        <div class="text-lg font-semibold text-text-primary">
+          <%= link_to "E Commerce Platform", root_path %>
+        </div>
+
+        <% if user_signed_in? %>
+          <%= link_to cart_path, class: "relative inline-flex items-center justify-center" do %>
+            <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-6 h-6 text-gray-700" %>
+            <% count = current_cart_item_count %>
+            <% if count.positive? %>
+              <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold rounded-full px-1.5 py-0.5">
+                <%= count %>
+              </span>
+            <% end %>
+          <% end %>
+        <% end %>
+      </header>
+
       <%= yield %>
     </main>
   </body>
