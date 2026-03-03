@@ -31,16 +31,7 @@ class HomeController < ApplicationController
   end
 
   def skin_concerns
-    [
-      { id: 1, label: "ผิวเป็นสิว",  image_url: nil },
-      { id: 2, label: "ผิวมัน",       image_url: nil },
-      { id: 3, label: "ผิวแห้ง",      image_url: nil },
-      { id: 4, label: "ผิวผสม",       image_url: nil },
-      { id: 5, label: "ผิวแพ้ง่าย",  image_url: nil },
-      { id: 6, label: "ผิวหมองคล้ำ", image_url: nil },
-      { id: 7, label: "รอยดำ",        image_url: nil },
-      { id: 8, label: "รอยแดง",       image_url: nil }
-    ]
+    SkinConcern.all
   end
 
   def flash_products
