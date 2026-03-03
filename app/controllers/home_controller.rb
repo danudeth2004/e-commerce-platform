@@ -8,6 +8,15 @@ class HomeController < ApplicationController
     @essential_products = essential_products
   end
 
+  def show
+    @product = Product.find(params[:id])
+
+    @product_image       = @product
+    @brand_section       = @product
+    @product_description = @product
+    @product_bottom_bar  = @product
+  end
+
   private
   # data สำหรับหน้า Home:
   # - banners/skin_concerns เป็น static config ใน controller
