@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_17_135358) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_03_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,6 +69,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_17_135358) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_carts_on_user_id"
+  end
+
+  create_table "flag_products", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "ends_at"
+    t.integer "flag_type", null: false
+    t.integer "position", default: 0, null: false
+    t.bigint "product_id", null: false
+    t.datetime "starts_at"
+    t.datetime "updated_at", null: false
+    t.index ["flag_type", "position"], name: "index_flag_products_on_flag_type_and_position"
+    t.index ["product_id", "flag_type"], name: "index_flag_products_on_product_id_and_flag_type", unique: true
+    t.index ["product_id"], name: "index_flag_products_on_product_id"
   end
 
   create_table "order_items", force: :cascade do |t|
@@ -179,6 +193,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_17_135358) do
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "users"
+  add_foreign_key "flag_products", "products"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"
   add_foreign_key "order_store_payouts", "orders"

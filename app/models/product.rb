@@ -4,6 +4,7 @@ class Product < ApplicationRecord
   monetize :amount_cents
 
   has_many_attached :images
+  has_many :flag_products, dependent: :destroy
   has_many :cart_items, dependent: :destroy
 
   validates :title, presence: true
