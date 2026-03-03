@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-white max-w-md mx-auto pb-20">
-    <%= render "home/partials_product_detail/product_image", product_image: @product_image %>
-    <%= render "home/partials_product_detail/brand_section", brand_section: @brand_section %>
-    <%= render "home/partials_product_detail/product_description", product_description: @product_description %>
+  <%= render "home/partials_product_detail/product_image", product: @product %>
+  <%= render "home/partials_product_detail/brand_section", product: @product %>
+  <%= render "home/partials_product_detail/product_description", product: @product %>
 </div>
-<%= render "home/partials_product_detail/product_bottom_bar", product_bottom_bar: @product_bottom_bar %>
+<%= render "home/partials_product_detail/product_bottom_bar", product: @product %>

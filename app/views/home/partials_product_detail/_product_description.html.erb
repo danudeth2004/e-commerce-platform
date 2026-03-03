@@ -1,24 +1,13 @@
 <div class="px-4 py-4">
-    <h2 class="text-xl font-semibold mb-3 text-text-primary">รายละเอียดสินค้า</h2>
-    <p class="text-base font-semibold leading-relaxed text-text-primary">
-        ผลลัพธ์ <span class="text-text-primary text-base leading-relaxed font-light">เติมความชุ่มชื้น</span>
-    </p><br>
-    <p class="text-base font-semibold leading-relaxed text-text-primary">
-        ปริมาณ <span class="text-text-primary text-base leading-relaxed font-light">50 ml</span>
-    </p><br>
-    <p class="text-base font-semibold leading-relaxed text-text-primary">
-        ประเภทผิว <span class="text-text-primary text-base leading-relaxed font-light">ผิวธรรมดา/ผิวผสม</span>
-    </p><br>
+  <h2 class="text-xl font-semibold mb-3 text-text-primary">รายละเอียดสินค้า</h2>
+  <% if product.description.present? %>
     <p class="text-base leading-relaxed text-gray-700">
-      โลชั่นเซรั่มบำรุงผิวสูตรเข้มข้น ผสานกลูต้า ไฮยา และวิตามินอี
-      ช่วยให้ผิวดูกระจ่างใส ชุ่มชื้น ไม่เหนียวเหนอะหนะ
-      เหมาะสำหรับใช้เป็นประจำทุกวัน
-    </p><br>
-    <p class="text-base font-semibold leading-relaxed text-text-primary">
-        เลขใบจดแจ้ง <span class="text-text-primary text-base leading-relaxed font-light">10-2-6600007024</span>
-    </p><br>
-    <h2 class="text-xl font-semibold mb-3 text-text-primary">วิธีใช้งาน</h2>
-    <p class="text-base leading-relaxed text-gray-700">
-      ลูบไล้โลชั่น ทั่วเรือนร่างประจำทุกวัน เพื่อผลลัพธ์ที่ดี ควรใช้วันละสองครั้ง
+      <%= product.description %>
     </p>
-</div><br>
+  <% else %>
+    <p class="text-base leading-relaxed text-gray-400">
+      ยังไม่มีรายละเอียดสินค้าสำหรับรายการนี้
+    </p>
+  <% end %>
+</div>
+<br>

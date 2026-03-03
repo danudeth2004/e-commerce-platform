@@ -1,27 +1,43 @@
+<% price = (product.amount_cents.to_i / 100.0).round %>
+<% flash_flag = product.flag_products.flash.first %>
+<% original_price = flash_flag&.original_amount_cents ? (flash_flag.original_amount_cents / 100.0).round : nil %>
+<% discount_percent =
+     if original_price.present? && original_price > price
+       (((original_price - price).to_f / original_price) * 100).round
+     end %>
 <div class="relative bg-gradient-to-br from-pink-50 to-purple-50 px-8 py-6">
-    <%= image_tag "https://via.placeholder.com/300x300.png?text=Product", class: "w-full h-auto object-contain" %>
-
-    <div class="absolute top-4 right-4 bg-gray-300 text-gray-600 px-3 py-1 rounded-full text-xs">
-      ทั้งหมด
-    </div>
+  <% if product.images.attached? %>
+    <%= image_tag product.images.first, class: "w-full h-auto object-contain" %>
+  <% else %>
+    <%= image_tag "https://via.placeholder.com/300x300.png?text=#{ERB::Util.url_encode(product.title)}",
+                  class: "w-full h-auto object-contain" %>
+  <% end %>
+  <div class="absolute top-4 right-4 bg-gray-300 text-gray-600 px-3 py-1 rounded-full text-xs">
+    สินค้า
+  </div>
 </div>
-
 <div class="px-4 py-3">
-    <h1 class="text-base font-semibold leading-relaxed text-text-primary">
-      Vaseline Healthy Bright Gluta-Hya Serum Burst Lotion Dewy Radiance 170ml
-    </h1>
-
-    <div class="flex items-center gap-3 mt-2">
-      <span class="text-red-500 text-xl font-semibold">
-        ฿ 119
-      </span>
-
+  <h1 class="text-base font-semibold leading-relaxed text-text-primary">
+    <%= product.title %>
+  </h1>
+  <% if product.description.present? %>
+    <p class="text-xs text-gray-500 mt-1 line-clamp-2">
+      <%= product.description %>
+    </p>
+  <% end %>
+  <div class="flex items-center gap-3 mt-2">
+    <span class="text-red-500 text-xl font-semibold">
+      ฿ <%= number_with_delimiter(price) %>
+    </span>
+    <% if original_price.present? %>
       <span class="text-gray-400 text-base line-through">
-        ฿ 250
+        ฿ <%= number_with_delimiter(original_price) %>
       </span>
-
+    <% end %>
+    <% if discount_percent.present? %>
       <span class="text-red-500 text-base">
-        -24%
+        -<%= discount_percent %>%
       </span>
-    </div>
+    <% end %>
+  </div>
 </div>
