@@ -9,11 +9,9 @@ class HomeController < ApplicationController
   end
 
   private
-  # mock data เพื่อใช้แสดงผลในหน้า Home (จริงๆ ควรเชื่อมกับ database models)
-  #
-  # NOTE:
-  # - banners/skin_concerns ยังเป็น mock เหมือนเดิม
-  # - flash/bestseller/essential จะดึงจาก FlagProduct ก่อน (ถ้ามี) แล้วค่อย fallback ไปใช้ mock
+  # data สำหรับหน้า Home:
+  # - banners/skin_concerns เป็น static config ใน controller
+  # - flash/bestseller/essential ดึงจาก FlagProduct + Product ใน database อย่างเดียว
 
   def banners
     [
@@ -37,15 +35,8 @@ class HomeController < ApplicationController
   end
 
   def flash_products
-    flagged = flagged_products(:flash, limit: 10)
-    return flagged.map { |fp| product_card_payload(fp.product, fp) } if flagged.any?
-
-    [
-      { id: 1, name: "Vaseline",  desc: "วาสลีน เจลลี่ โบดี้ กลูต้า-ไฮยา เซรั่ม เพลท ไลน์...",     price: 119, original_price: 269, image_url: nil, discount_percent: 56 },
-      { id: 2, name: "Glad2Glow", desc: "สเปรย์เติมความชุ่มชื้นเนียนละมุน ช่วยเสริมพลังสกิน...",     price: 119, original_price: 250, image_url: nil, discount_percent: 52 },
-      { id: 3, name: "CeraVe",    desc: "Moisturizing Cream สำหรับผิวแห้ง เนียนนุ่ม...",              price: 389, original_price: 590, image_url: nil, discount_percent: 34 },
-      { id: 4, name: "LANEIGE",   desc: "Lip Sleeping Mask Berry สูตรใหม่ ริมฝีปากชุ่มชื้น...",       price: 290, original_price: 480, image_url: nil, discount_percent: 40 }
-    ]
+    flagged_products(:flash, limit: 10)
+      .map { |fp| product_card_payload(fp.product, fp) }
   end
 
   def bestseller_tabs
@@ -53,28 +44,13 @@ class HomeController < ApplicationController
   end
 
   def bestsellers
-    flagged = flagged_products(:bestseller, limit: 10)
-    return flagged.map { |fp| bestseller_payload(fp.product, fp) } if flagged.any?
-
-    [
-      { brand: "clear nose", desc: "เซรั่มเคลียร์โนส Clear Nose ดาร์คสปอต โบดี้ เซรั่มตัวดัง...",   price: 1090, original_price: nil, image_url: nil },
-      { brand: "AGLAM",      desc: "Skin Daily Toner Pad 221g (60 Pads) โทนเนอร์แพดสูตรเข้มข้น...", price: 450,  original_price: nil, image_url: nil },
-      { brand: "CeraVe",     desc: "CeraVe Hydrating Cream to Foam Cleanser 236ml คลีนเซอร์...",     price: 579,  original_price: 610, image_url: nil },
-      { brand: "Shiseido",   desc: "Ultimune Power Infusing Serum 75ml โทนนิกเซรั่ม สูตรใหม่...",   price: 4380, original_price: nil, image_url: nil },
-      { brand: "SK-II",      desc: "Skinpower Advanced Cream 15g ครีมบำรุงผิวสูตรปรับปรุงใหม่...",  price: 1330, original_price: nil, image_url: nil }
-    ]
+    flagged_products(:bestseller, limit: 10)
+      .map { |fp| bestseller_payload(fp.product, fp) }
   end
 
   def essential_products
-    flagged = flagged_products(:essential, limit: 12)
-    return flagged.map { |fp| product_card_payload(fp.product, fp) } if flagged.any?
-
-    [
-      { id: 5, name: "Vaseline", desc: "วาสลีน เฮลธี้ ไบรท์ กลูต้า-ไฮยา เซรั่ม เบิร์ส โลชั่น ดิวอี้...", price: 119, original_price: 259, image_url: nil },
-      { id: 6, name: "Vaseline", desc: "วาสลีน เฮลธี้ ไบรท์ กลูต้า-ไฮยา เซรั่ม เบิร์ส โลชั่น ดิวอี้...", price: 119, original_price: 269, image_url: nil },
-      { id: 7, name: "Vaseline", desc: "วาสลีน เฮลธี้ ไบรท์ กลูต้า-ไฮยา เซรั่ม เบิร์ส โลชั่น ดิวอี้...", price: 119, original_price: 259, image_url: nil },
-      { id: 8, name: "Vaseline", desc: "วาสลีน เฮลธี้ ไบรท์ กลูต้า-ไฮยา เซรั่ม เบิร์ส โลชั่น ดิวอี้...", price: 119, original_price: 269, image_url: nil }
-    ]
+    flagged_products(:essential, limit: 12)
+      .map { |fp| product_card_payload(fp.product, fp) }
   end
 
   def flagged_products(flag_type, limit:)

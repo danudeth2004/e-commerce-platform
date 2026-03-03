@@ -1,3 +1,16 @@
+# Main seed entry point.
+# This file just loads all seed parts under db/seeds/*.rb in order.
+#
+# Example:
+#   - db/seeds/01_seller_and_store.rb
+#   - db/seeds/02_products.rb
+#   - db/seeds/03_flag_products.rb
+#
+
+Dir[Rails.root.join("db/seeds/*.rb")].sort.each do |seed_file|
+  load seed_file
+end
+
 # This file should ensure the existence of records required to run the application in every environment (production,
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
@@ -40,6 +53,16 @@ products = products_data.map do |data|
     p.description = data[:description]
     p.amount_cents = data[:amount_baht] * 100
     p.amount_currency = "THB"
+  end.tap do |product|
+    # Attach seed image if available, e.g. app/assets/images/seed_products/VAS-001.png
+    image_path = Rails.root.join("app/assets/images/seed_products/#{data[:sku]}.png")
+    if File.exist?(image_path) && !product.images.attached?
+      product.images.attach(
+        io: File.open(image_path),
+        filename: "#{data[:sku]}.png",
+        content_type: "image/png"
+      )
+    end
   end
 end
 
