@@ -2,7 +2,8 @@
   <h2 class="text-xl font-semibold text-text-primary mb-4">เลือกตามปัญหาผิว</h2>
   <div class="grid grid-cols-4 md:grid-cols-8 gap-3">
     <% skin_concerns.each do |concern| %>
-      <div class="flex flex-col items-center gap-2 cursor-pointer">
+      <%= link_to products_path(skin_concern: concern[:key]),
+                  class: "flex flex-col items-center gap-2 cursor-pointer" do %>
         <div class="w-full aspect-square rounded-2xl overflow-hidden border-2 border-transparent transition-all duration-200 shadow-pinkGlow hover:scale-105 hover:border-pink-300 hover:shadow-md">
           <% image_name = "skin_concerns/#{concern[:key]}.svg" %>
           <%= inline_svg_tag image_name, class: "w-full h-full object-cover", alt: concern[:label], loading: "lazy" %>
@@ -10,7 +11,7 @@
         <span class="text-sm text-text-primary text-center leading-tight">
           <%= concern[:label] %>
         </span>
-      </div>
+      <% end %>
     <% end %>
   </div>
 </section>

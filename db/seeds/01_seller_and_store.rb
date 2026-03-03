@@ -11,4 +11,3 @@ store.name ||= "Demo Store #{seller.id}"
 store.location ||= "Bangkok"
 store.description ||= "Seed data store"
 store.save!
-

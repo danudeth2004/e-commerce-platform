@@ -12,6 +12,18 @@ products_data = [
   { title: "SK-II",      sku: "SK2-001", amount_baht: 1330, description: "Skinpower Advanced Cream 15g ครีมบำรุงผิวสูตรปรับปรุงใหม่..." }
 ]
 
+# Map SKU -> skin_concern_key (ใช้ key จาก SkinConcern::DATA)
+skin_concern_by_sku = {
+  "VAS-001" => "dry_skin",
+  "GLD-001" => "sensitive_skin",
+  "CRV-001" => "dry_skin",
+  "LNG-001" => "dull_skin",
+  "CLN-001" => "acne_skin",
+  "AGL-001" => "oily_skin",
+  "SHS-001" => "dull_skin",
+  "SK2-001" => "dry_skin"
+}
+
 products_data.each do |data|
   product = Product.find_or_create_by!(sku: data[:sku]) do |p|
     p.store = store
@@ -21,6 +33,7 @@ products_data.each do |data|
     p.amount_currency = "THB"
   end
 
+  # Attach demo image if present
   image_path = Rails.root.join("app/assets/images/seed_products/#{data[:sku]}.png")
   if File.exist?(image_path) && !product.images.attached?
     product.images.attach(
@@ -29,5 +42,9 @@ products_data.each do |data|
       content_type: "image/png"
     )
   end
-end
 
+  # Tag product with a skin concern for filtering
+  if (skin_key = skin_concern_by_sku[data[:sku]])
+    product.update!(skin_concern_key: skin_key)
+  end
+end

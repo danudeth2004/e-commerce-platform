@@ -36,4 +36,3 @@ essential_skus.each_with_index do |sku, idx|
     fp.active = true
   end
 end
-
