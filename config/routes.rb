@@ -2,8 +2,7 @@ Rails.application.routes.draw do
   namespace :admin do
     devise_for :users, class_name: "Admin::User", controllers: {
       registrations: "admin/users/registrations",
-      sessions: "admin/users/sessions",
-      passwords: "admin/users/passwords"
+      sessions: "admin/users/sessions"
     }
 
     resources :order_store_payouts, only: [ :index, :show ] do
@@ -16,8 +15,7 @@ Rails.application.routes.draw do
   namespace :seller do
     devise_for :users, class_name: "Seller::User", controllers: {
       registrations: "seller/users/registrations",
-      sessions: "seller/users/sessions",
-      passwords: "seller/users/passwords"
+      sessions: "seller/users/sessions"
     }
 
     resources :products, only: [ :new, :create ]
@@ -27,9 +25,12 @@ Rails.application.routes.draw do
 
   devise_for :users, controllers: {
     registrations: "users/registrations",
-    sessions: "users/sessions",
-    passwords: "users/passwords"
+    sessions: "users/sessions"
   }
+
+  namespace :users do
+    get "role", to: "role#index"
+  end
 
   resource :checkout, only: [] do
     post :create_order
@@ -56,4 +57,6 @@ Rails.application.routes.draw do
   end
   get "products", to: "products#index", as: :products
   get "products/:id", to: "home#show", as: :product
+
+  match "*path", to: redirect("/"), via: :all
 end
