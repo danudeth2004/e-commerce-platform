@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 
 <head>
     <title><%= content_for(:title) || "Buyer: E Commerce Platform" %></title>
@@ -16,6 +16,9 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
@@ -26,7 +29,7 @@
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
 
-<body>
+<body class="font-sans">
     <main class="min-h-screen bg-white">
         <header class="w-full max-w-screen-xl mx-auto px-4 pt-4 flex items-center justify-between">
             <div class="text-lg font-semibold text-text-primary">

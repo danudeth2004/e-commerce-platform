@@ -33,6 +33,9 @@ module.exports = {
         regular: "400",
         semibold: "600",
       },
+      fontFamily: {
+        sans: ["Noto Sans Thai", "sans-serif"],
+      },
     },
   },
 };

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 
 <head>
     <title><%= content_for(:title) || "Admin: E Commerce Platform" %></title>
@@ -8,13 +8,16 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
 
-<body class="bg-gray-50 text-gray-900 antialiased">
+<body class="bg-gray-50 text-gray-900 antialiased font-sans">
     <div class="flex min-h-screen">
         <%= render "layouts/admin/sidebar" %>
         <div class="flex flex-col flex-1 min-w-0">
