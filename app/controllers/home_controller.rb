@@ -49,8 +49,10 @@ class HomeController < ApplicationController
   end
 
   def essential_products
-    flagged_products(:essential, limit: 12)
-      .map { |fp| product_card_payload(fp.product, fp) }
+    Product
+      .includes(images_attachments: :blob)
+      .limit(4)
+      .map { |product| product_card_payload(product) }
   end
 
   def flagged_products(flag_type, limit:)

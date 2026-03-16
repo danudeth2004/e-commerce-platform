@@ -1,0 +1,14 @@
+<section class="px-4 pb-8 pt-4">
+  <div class="flex items-center justify-between mb-3">
+    <h2 class="text-xl font-semibold text-text-primary">
+      สินค้าทั้งหมดที่น่าสนใจ
+    </h2>
+    <%= link_to "ดูทั้งหมด", products_path, class: "text-sm text-Primary-color font-medium" %>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+    <% products.each do |product| %>
+      <%= render "shared/product_card", product: product %>
+    <% end %>
+  </div>
+</section>
