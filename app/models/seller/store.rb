@@ -2,6 +2,7 @@ class Seller::Store < ApplicationRecord
   belongs_to :owner, class_name: "Seller::User", foreign_key: :seller_user_id
 
   has_one_attached :cover
+  has_one_attached :logo
   has_many :products, foreign_key: :seller_store_id, dependent: :destroy
   has_many :order_store_payouts
 
