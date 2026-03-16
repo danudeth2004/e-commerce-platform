@@ -1,0 +1,147 @@
+<%= form_with model: [ :seller, product ],
+              html: { data: { product_form_target: "form" } } do |form| %>
+  <div data-product-form-target="stepOne">
+    <div class="mb-5">
+      <div class="border border-dashed border-gray-300 rounded-2xl bg-gray-50 px-4 py-6 text-center text-[11px] text-gray-500">
+        <label for="product_images_input" class="block text-xs font-medium text-gray-700 mb-2">
+          รูปสินค้า <span class="text-pink-500">*</span>
+        </label>
+        <%= form.file_field :images, multiple: true, class: "hidden", id: "product_images_input" %>
+        <label for="product_images_input" class="cursor-pointer text-pink-500 font-medium">
+          คลิกเพื่ออัปโหลดรูปสินค้า
+        </label>
+        <p class="mt-1">
+          รองรับไฟล์ JPG, JPEG, PNG ขนาดไม่เกิน 1MB (สูงสุด 5 รูป)
+        </p>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :title, "ชื่อสินค้า *", class: "block text-xs font-medium text-gray-700 mb-1" %>
+      <%= form.text_field :title, placeholder: "ระบุชื่อสินค้า", class: "w-full rounded-xl border-gray-200 text-sm" %>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :amount, "ราคาเต็ม *", class: "block text-xs font-medium text-gray-700 mb-1" %>
+      <div class="flex items-center gap-2">
+        <%= form.number_field :amount,
+                              step: 1,
+                              min: 0,
+                              placeholder: "ระบุราคาเต็ม",
+                              class: "flex-1 rounded-xl border-gray-200 text-sm",
+                              autocomplete: "off" %>
+        <span class="text-xs text-gray-500">บาท</span>
+      </div>
+    </div>
+
+    <div class="mb-8">
+      <%= form.label :promotion_price, "ราคาโปรโมชั่น", class: "block text-xs font-medium text-gray-700 mb-1" %>
+      <%= form.number_field :promotion_price,
+                            step: 1,
+                            min: 0,
+                            placeholder: "ระบุราคาหลังลด",
+                            class: "w-full rounded-xl border-gray-200 text-sm",
+                            autocomplete: "off" %>
+    </div>
+
+    <button
+      type="button"
+      class="w-full py-3 rounded-full bg-pink-500 text-white text-sm font-semibold shadow-sm"
+      data-action="click->product-form#showStepTwo"
+    >
+      ถัดไป
+    </button>
+  </div>
+
+  <div class="hidden" data-product-form-target="stepTwo">
+    <div class="mb-4">
+      <%= form.label :effect, "ผลลัพธ์", class: "block text-xs font-medium text-gray-700 mb-1" %>
+      <%= form.text_field :effect, placeholder: "ระบุผลลัพธ์ของสินค้า", class: "w-full rounded-xl border-gray-200 text-sm" %>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-xs font-medium text-gray-700 mb-1" for="product_category">
+        ประเภทของสินค้า *
+      </label>
+      <select
+        id="product_category"
+        name="product[category]"
+        class="w-full rounded-xl border-gray-200 text-sm"
+      >
+        <option value="">เลือกประเภทสินค้า</option>
+        <option value="cleanser">คลีนเซอร์</option>
+        <option value="serum">เซรั่ม</option>
+        <option value="moisturizer">มอยส์เจอร์ไรเซอร์</option>
+      </select>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :skin_concern_key, "ประเภทผิวที่เหมาะกับสินค้าของคุณ *", class: "block text-xs font-medium text-gray-700 mb-1" %>
+      <%= form.select :skin_concern_key,
+                      options_for_select([ [ "เลือกประเภทผิว", "" ],
+                                           [ "ผิวมัน", "oily" ],
+                                           [ "ผิวแห้ง", "dry" ],
+                                           [ "ผิวผสม", "combination" ],
+                                           [ "ผิวบอบบางแพ้ง่าย", "sensitive" ] ],
+                                         product.skin_concern_key),
+                      {},
+                      class: "w-full rounded-xl border-gray-200 text-sm" %>
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-xs font-medium text-gray-700 mb-1" for="product_volume">
+        ปริมาณ
+      </label>
+      <div class="flex items-center gap-2">
+        <input
+          id="product_volume"
+          type="number"
+          step="1"
+          min="0"
+          name="product[volume]"
+          placeholder="ระบุปริมาณสินค้า"
+          class="flex-1 rounded-xl border-gray-200 text-sm"
+          autocomplete="off"
+        >
+        <select
+          name="product[volume_unit]"
+          class="w-16 rounded-xl border-gray-200 text-xs"
+        >
+          <option value="ml">ml</option>
+          <option value="g">g</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <%= form.label :description, "คำอธิบายสินค้า", class: "block text-xs font-medium text-gray-700 mb-1" %>
+      <%= form.text_area :description,
+                         placeholder: "เขียนรายละเอียดของสินค้า",
+                         rows: 4,
+                         class: "w-full rounded-xl border-gray-200 text-sm" %>
+    </div>
+
+    <div class="mb-8">
+      <label class="block text-xs font-medium text-gray-700 mb-1" for="product_usage">
+        วิธีใช้สินค้า
+      </label>
+      <textarea
+        id="product_usage"
+        name="product[usage]"
+        rows="3"
+        placeholder="ระบุวิธีใช้"
+        class="w-full rounded-xl border-gray-200 text-sm"
+      ></textarea>
+    </div>
+
+    <button
+      type="button"
+      class="w-full py-3 rounded-full bg-pink-500 text-white text-sm font-semibold shadow-sm"
+      data-action="click->product-form#openConfirm"
+    >
+      ยืนยัน
+    </button>
+  </div>
+
+  <%= render "confirm_modal" %>
+<% end %>

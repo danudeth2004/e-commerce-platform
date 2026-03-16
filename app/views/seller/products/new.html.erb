@@ -1,0 +1,25 @@
+<div
+  class="w-full max-w-md mx-auto"
+  data-controller="product-form"
+  data-product-form-back-url-value="<%= seller_root_path %>"
+>
+  <div class="flex items-center gap-3 mb-4">
+    <button
+      type="button"
+      class="inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100"
+      data-action="click->product-form#back"
+    >
+      <span class="text-xl leading-none text-gray-700">‹</span>
+    </button>
+    <div class="flex-1">
+      <h1 class="text-lg font-semibold text-gray-900 mb-1">
+        เพิ่มรายการสินค้าของคุณ
+      </h1>
+      <p class="text-xs text-gray-500">
+        กรอกรายละเอียดของสินค้าของคุณให้ครบถ้วน
+      </p>
+    </div>
+  </div>
+
+  <%= render "form", product: @product %>
+</div>

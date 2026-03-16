@@ -20,6 +20,8 @@ Rails.application.routes.draw do
       passwords: "seller/users/passwords"
     }
 
+    resources :products, only: [ :new, :create ]
+
     root "home#index"
   end
 

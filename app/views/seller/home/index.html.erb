@@ -40,7 +40,8 @@
             <%= button_tag type: "button", class: "w-full text-left block px-4 py-2 text-gray-800 hover:bg-gray-50" do %>
               แก้ไขโปรไฟล์ร้านค้า
             <% end %>
-            <%= button_tag type: "button", class: "w-full text-left block px-4 py-2 text-gray-800 hover:bg-gray-50" do %>
+            <%= link_to new_seller_product_path,
+                        class: "block px-4 py-2 text-gray-800 hover:bg-gray-50 text-left w-full" do %>
               เพิ่มสินค้า
             <% end %>
           </div>
