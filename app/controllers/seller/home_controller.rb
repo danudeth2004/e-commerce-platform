@@ -3,6 +3,11 @@ module Seller
     before_action :authenticate_seller_user!
 
     def index
+      @store = current_seller_user.store ||
+               current_seller_user.build_store(
+                 name: "Glad2Glow Official Store",
+                 location: "Bangkok, Thailand"
+               )
     end
 
     # def create
