@@ -49,6 +49,8 @@ Rails.application.routes.draw do
   resource :cart, only: [ :show ] do
     post :add_item
     delete :remove_item
+    patch :increase_item
+    patch :decrease_item
   end
   get "products", to: "products#index", as: :products
   get "products/:id", to: "home#show", as: :product

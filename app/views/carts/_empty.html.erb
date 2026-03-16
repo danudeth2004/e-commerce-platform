@@ -1,0 +1,19 @@
+<div class="flex flex-col items-center justify-center mt-16 text-center">
+  <div class="w-40 h-40 mb-6">
+    <%= image_tag "empty_cart.png",
+                  class: "w-full h-full object-contain",
+                  alt: "ยังไม่มีสินค้าในรถเข็น" %>
+  </div>
+
+  <h2 class="text-lg font-semibold text-text-primary mb-1">
+    ยังไม่มีสินค้าในรถเข็น
+  </h2>
+  <p class="text-sm text-gray-400 mb-6">
+    เลือกสินค้าที่คุณสนใจแล้วเพิ่มลงในรถเข็นได้เลย
+  </p>
+
+  <%= link_to "เลือกซื้อสินค้า",
+              root_path,
+              class: "inline-flex items-center justify-center px-10 py-3 rounded-full text-sm font-semibold text-white",
+              style: "background: linear-gradient(90deg,#FF5BAE,#FF2D92);" %>
+</div>

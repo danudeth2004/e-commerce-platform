@@ -1,0 +1,17 @@
+<% total_cents = total_cents || 0 %>
+
+<div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100">
+  <div class="w-full max-w-screen-md mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <div>
+      <div class="text-xs text-gray-400">ชำระเงินทั้งหมด</div>
+      <div class="text-lg font-semibold text-text-primary">
+        ฿ <%= number_with_delimiter(total_cents / 100) %>
+      </div>
+    </div>
+
+    <%= button_to "ชำระเงิน",
+                  create_order_checkout_path,
+                  method: :post,
+                  class: "flex-1 bg-Primary-color text-white px-5 py-3 rounded-full text-sm font-semibold text-center" %>
+  </div>
+</div>

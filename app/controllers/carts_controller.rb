@@ -28,6 +28,22 @@ class CartsController < ApplicationController
     redirect_to cart_path, notice: "ลบสินค้าออกจากตะกร้าแล้ว"
   end
 
+  def increase_item
+    item = @cart.cart_items.find(params[:id])
+    item.increment!(:quantity)
+    redirect_to cart_path
+  end
+
+  def decrease_item
+    item = @cart.cart_items.find(params[:id])
+    if item.quantity > 1
+      item.decrement!(:quantity)
+    else
+      item.destroy
+    end
+    redirect_to cart_path
+  end
+
   private
 
   def set_cart

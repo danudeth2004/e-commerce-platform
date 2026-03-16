@@ -1,0 +1,42 @@
+<% product = item.product %>
+
+<div class="flex items-center gap-3 p-4 rounded-2xl bg-white shadow-pinkGlow">
+  <div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center">
+    <% if product.images.attached? %>
+      <%= image_tag product.images.first, class: "w-full h-full object-cover" %>
+    <% else %>
+      <div class="w-full h-full bg-gray-200"></div>
+    <% end %>
+  </div>
+
+  <div class="flex-1 min-w-0">
+    <div class="text-sm font-semibold text-text-primary truncate">
+      <%= product.title %>
+    </div>
+
+    <div class="flex items-center gap-3 mt-2">
+      <div class="flex items-center gap-2">
+        <%= button_to "−",
+                      decrease_item_cart_path(id: item.id),
+                      method: :patch,
+                      class: "w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-lg text-gray-700" %>
+        <span class="text-base font-medium text-text-primary"><%= item.quantity %></span>
+        <%= button_to "+",
+                      increase_item_cart_path(id: item.id),
+                      method: :patch,
+                      class: "w-8 h-8 rounded-full bg-Primary-color flex items-center justify-center text-lg text-white" %>
+      </div>
+
+      <div class="text-sm font-semibold text-pink-500 ml-auto">
+        ฿ <%= number_with_delimiter((product.amount_cents * item.quantity) / 100) %>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <%= button_to "ลบ", remove_item_cart_path(id: item.id),
+                  method: :delete,
+                  form: { data: { turbo_confirm: "ลบสินค้านี้ออกจากตะกร้า?" } },
+                  class: "text-xs text-red-500" %>
+  </div>
+</div>
