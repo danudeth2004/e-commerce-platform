@@ -1,0 +1,27 @@
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-8">
+    <div class="text-sm text-gray-500 font-medium">
+        ยินดีต้อนรับ, <%= current_admin_user.email %>
+    </div>
+
+    <div class="flex items-center gap-4">
+        <div class="relative inline-block text-left">
+            <input type="checkbox" id="user-menu-toggle" class="hidden peer">
+            <label for="user-menu-toggle" class="h-9 w-9 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-sm cursor-pointer hover:bg-blue-200 transition select-none">
+                AD
+            </label>
+            <label for="user-menu-toggle" class="fixed inset-0 h-full w-full cursor-default hidden peer-checked:block z-40"></label>
+            <div class="absolute right-0 z-50 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl hidden peer-checked:block transition-all">
+                <div class="py-1">
+                    <%= button_to destroy_admin_user_session_path, 
+                         method: :delete, 
+                         class: "px-1 w-full text-left group" do %>
+                    <div class="flex items-center rounded-md gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
+                        <span class="iconify" data-icon="lucide:log-out" data-width="16"></span>
+                        <span class="font-medium">ออกจากระบบ</span>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

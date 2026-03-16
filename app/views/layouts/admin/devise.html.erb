@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title><%= content_for(:title) || "Seller: E Commerce Platform" %></title>
+    <title><%= content_for(:title) || "Admin: E Commerce Platform" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="E Commerce Platform">
@@ -19,12 +19,13 @@
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
 
 <body class="bg-gray-100 text-gray-800">
-    <main class="min-h-screen flex items-center justify-center px-5">
-        <%= yield %>
+    <main class="min-h-screen flex items-center justify-center">
+        <div class="w-[80dvh] px-10">
+            <%= yield %>
+        </div>
     </main>
 </body>
 
