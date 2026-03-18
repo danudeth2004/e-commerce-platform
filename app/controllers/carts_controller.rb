@@ -15,7 +15,7 @@ class CartsController < ApplicationController
     end
 
     item.quantity ||= 0
-    item.quantity += quantity_to_add
+    item.quantity += quantity_to_add if item.quantity > 1
     item.save!
 
     redirect_back fallback_location: cart_path, notice: "เพิ่มสินค้าในตะกร้าแล้ว"
@@ -50,4 +50,3 @@ class CartsController < ApplicationController
     @cart = current_user.cart || current_user.create_cart!
   end
 end
-
