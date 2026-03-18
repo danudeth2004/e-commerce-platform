@@ -1,5 +1,7 @@
 class CheckoutsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_order, only: [ :payment, :pay ]
+  before_action :order_paid?, only: [ :payment, :pay ]
 
   def create_order
     cart = current_user.cart
@@ -11,21 +13,29 @@ class CheckoutsController < ApplicationController
   end
 
   def payment
-    @order = current_user.orders.find(params[:order_id])
     @payouts = @order.order_store_payouts
     @public_key = ENV["OMISE_PUBLIC_KEY"]
   end
 
   def pay
-    order = current_user.orders.find(params[:order_id])
+    OmiseService::CreateCharge.new(order: @order, token: params[:omise_token]).call
 
-    OmiseService::CreateCharge.new(order: order, token: params[:omise_token]).call
-
-    if order.paid?
-      redirect_to payment_checkout_path(order_id: order.id), notice: "Payment success ✅"
+    if @order.paid?
+      @order.order_store_payouts.each do |payout|
+        TransferToStoreJob.perform_now(payout.id)
+      end
+      redirect_to root_path, notice: "Payment success ✅"
     else
-      redirect_to payment_checkout_path(order_id: order.id), alert: "Payment failed ❌"
+      redirect_to root_path, alert: "Payment failed ❌"
     end
   end
-end
 
+  private
+    def set_order
+      @order = current_user.orders.find(params[:order_id])
+    end
+
+    def order_paid?
+      redirect_to root_path if @order.paid?
+    end
+end

@@ -1,72 +1,34 @@
-<%
-=begin%>
- <div
-  data-controller="omise-payment"
-  data-omise-payment-public-key-value="<%= @public_key %>"
-  data-public-key="<%= @public_key %>"
-  data-amount="<%= @order.total_amount_cents %>"
->
+<div class="w-full flex items-end min-h-screen bg-white">
+  <div class="w-full max-w-screen-md mx-auto px-4 pt-4 pb-28 space-y-6">
+      <div
+        data-controller="omise-payment"
+        data-omise-payment-public-key-value="<%= @public_key %>"
+        data-public-key="<%= @public_key %>"
+        data-amount="<%= (@order.total_amount * 100).to_i %>"
+        class="border border-gray-200 rounded-lg p-6 mt-6 space-y-4 bg-gray-50 shadow-sm"
+      >
+        <p class="text-lg font-semibold">
+          Total: <%= humanized_money_with_symbol(@order.total_amount) %>
+        </p>
 
-  <p>Order ID: <%= @order.id %></p>
+        <button
+          data-action="click->omise-payment#pay"
+          data-omise-payment-target="button"
+          class="w-full py-3 bg-Primary-color text-white rounded-lg text-lg font-bold hover:bg-primary-dark transition-colors"
+        >
+          ชำระเงินด้วย Omise
+        </button>
 
-  <p>
-    Total:
-    <%= humanized_money_with_symbol(@order.total_amount) %>
-  </p>
-
-  <button
-    data-action="click->omise-payment#pay"
-    data-omise-payment-target="button"
-    class="py-2 px-4 border border-3 border-black bg-green-300 text-2xl font-bold">
-    Pay with Omise
-  </button>
-
-  <div class="flex flex-col gap-6 mt-10">
-    <h1 class="text-2xl font-bold">
-      Order Payouts
-    </h1>
-
-    <% @payouts.each do |payout| %>
-      <div class="border border-black p-4 flex justify-between items-center">
-        
-        <div>
-          <div>
-            Store: <%= payout.store.name %>
-          </div>
-
-          <div>
-            Amount:
-            <%= number_to_currency(payout.amount_cents / 100.0) %>
-          </div>
-
-          <div>
-            Status:
-            <span class="font-bold">
-              <%= payout.status %>
-            </span>
-          </div>
-        </div>
-
-        <%= link_to "View Payout",
-            admin_order_store_payout_path(payout),
-            class: "px-4 py-2 bg-blue-400 border border-black font-bold" %>
-
+        <form
+          action="<%= pay_checkout_path %>"
+          method="POST"
+          data-omise-payment-target="form"
+        >
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+          <input type="hidden" name="order_id" value="<%= @order.id %>">
+          <input type="hidden" name="omise_token"
+                 data-omise-payment-target="token">
+        </form>
       </div>
-    <% end %>
   </div>
-
-  <form
-    action="<%= pay_checkout_path %>"
-    method="POST"
-    data-omise-payment-target="form">
-
-    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-
-    <input type="hidden" name="order_id" value="<%= @order.id %>">
-    <input type="hidden" name="omise_token"
-           data-omise-payment-target="token">
-  </form>
-
-</div> 
-<%
-=end%>
+</div>
