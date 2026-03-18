@@ -9,6 +9,17 @@ Rails.application.routes.draw do
       post :pay
     end
 
+    resources :stores do
+      member do
+        patch :toggle_status
+      end
+      resources :payouts do
+        member do
+          post :omise_transfer
+        end
+      end
+    end
+
     root "home#index"
   end
 

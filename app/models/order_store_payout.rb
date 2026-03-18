@@ -10,4 +10,6 @@ class OrderStorePayout < ApplicationRecord
     transferred: "transferred",
     failed: "failed"
   }
+
+  default_scope { order(updated_at: :desc) }
 end
