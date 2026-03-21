@@ -9,5 +9,11 @@ class ProductsController < ApplicationController
     @products = Product.all
     @products = @products.where(skin_concern_key: @skin_concern_key) if @skin_concern_key.present?
     @products = @products.where(category_key: @category_key) if @category_key.present?
+
+    q = params[:q].to_s.strip
+    if q.present?
+      like = "%#{Product.sanitize_sql_like(q)}%"
+      @products = @products.where("products.title ILIKE ?", like)
+    end
   end
 end

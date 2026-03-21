@@ -31,22 +31,46 @@
 
 <body class="font-sans">
     <main class="min-h-screen bg-white">
-        <header class="w-full max-w-screen-xl mx-auto px-4 pt-4 flex items-center justify-between">
-            <div class="text-lg font-semibold text-text-primary">
-                <%= link_to "E Commerce Platform", root_path %>
-            </div>
+        <% header_icon_btn = "inline-flex items-center justify-center size-11 shrink-0 rounded-[15px] border border-pink-100/70 bg-gradient-to-br from-[#ffc4dc] via-[#ffe8f2] to-white text-white shadow-sm transition hover:opacity-95 active:scale-[0.98]" %>
+        <header class="w-full max-w-screen-xl mx-auto px-4 pt-4 pb-2">
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <%= form_with url: products_path, method: :get, local: true, class: "flex-1 min-w-0", role: "search" do %>
+                    <%= hidden_field_tag :skin_concern, params[:skin_concern] if params[:skin_concern].present? %>
+                    <%= hidden_field_tag :category, params[:category] if params[:category].present? %>
+                    <div class="relative flex items-center">
+                        <label for="header-search-q" class="sr-only">ค้นหาสินค้า</label>
+                        <span class="pointer-events-none absolute left-3.5 flex text-gray-400" aria-hidden="true">
+                            <%= inline_svg_tag "icons/search-icon.svg", class: "w-[18px] h-[18px]" %>
+                        </span>
+                        <%= text_field_tag :q, params[:q],
+                                           id: "header-search-q",
+                                           placeholder: "Vaseline",
+                                           autocomplete: "off",
+                                           class: "w-full rounded-full border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-200/60" %>
+                    </div>
+                <% end %>
 
-            <% if user_signed_in? %>
-            <%= link_to cart_path, class: "relative inline-flex items-center justify-center" do %>
-            <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-6 h-6 text-gray-700" %>
-            <% count = current_cart_item_count %>
-            <% if count.positive? %>
-            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-semibold rounded-full px-1.5 py-0.5">
-                <%= count %>
-            </span>
-            <% end %>
-            <% end %>
-            <% end %>
+                <div class="flex items-center gap-2 shrink-0">
+                    <%= link_to(user_signed_in? ? cart_path : new_user_session_path,
+                                class: "#{header_icon_btn} relative") do %>
+                        <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-[22px] h-[22px] text-white" %>
+                        <% if user_signed_in? %>
+                            <% count = current_cart_item_count %>
+                            <% if count.positive? %>
+                                <span class="absolute -top-1 -right-1 min-w-[1.125rem] rounded-full bg-red-500 px-1 py-0.5 text-center text-[10px] font-semibold leading-none text-white">
+                                    <%= count %>
+                                </span>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+
+                    <%= link_to(user_signed_in? ? edit_user_registration_path : new_user_session_path,
+                                class: header_icon_btn,
+                                aria: { label: user_signed_in? ? "บัญชีของฉัน" : "เข้าสู่ระบบ" }) do %>
+                        <%= inline_svg_tag "icons/user-icon.svg", class: "w-[22px] h-[22px] text-white" %>
+                    <% end %>
+                </div>
+            </div>
         </header>
 
         <%= yield %>
