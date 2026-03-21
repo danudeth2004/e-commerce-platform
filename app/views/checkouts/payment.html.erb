@@ -1,34 +1,176 @@
-<div class="w-full flex items-end min-h-screen bg-white">
-  <div class="w-full max-w-screen-md mx-auto px-4 pt-4 pb-28 space-y-6">
-      <div
-        data-controller="omise-payment"
-        data-omise-payment-public-key-value="<%= @public_key %>"
-        data-public-key="<%= @public_key %>"
-        data-amount="<%= (@order.total_amount * 100).to_i %>"
-        class="border border-gray-200 rounded-lg p-6 mt-6 space-y-4 bg-gray-50 shadow-sm"
-      >
-        <p class="text-lg font-semibold">
-          Total: <%= humanized_money_with_symbol(@order.total_amount) %>
+<% user = current_user %>
+<% delivery_from = Date.current + 3.days %>
+<% delivery_to = Date.current + 7.days %>
+
+<div
+  class="mx-auto flex min-h-screen w-full max-w-md flex-col bg-white pb-44"
+  data-controller="omise-payment"
+  data-public-key="<%= @public_key %>"
+  data-amount="<%= @order.total_amount_cents %>"
+>
+  <%# ที่อยู่จัดส่ง %>
+  <section class="px-4 pt-4">
+    <%= link_to edit_user_registration_path,
+                class: "flex items-start gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-sm transition hover:bg-gray-50/80" do %>
+      <span class="mt-0.5 shrink-0 text-gray-500" aria-hidden="true">
+        <%= inline_svg_tag "icons/map-pin.svg", class: "h-5 w-5" %>
+      </span>
+      <div class="min-w-0 flex-1 text-left">
+        <p class="text-sm font-semibold text-gray-900">
+          <%= [ user.first_name, user.last_name ].compact_blank.join(" ") %>
+          <span class="font-normal text-gray-600"><%= masked_thai_mobile(user.phone_number) %></span>
         </p>
-
-        <button
-          data-action="click->omise-payment#pay"
-          data-omise-payment-target="button"
-          class="w-full py-3 bg-Primary-color text-white rounded-lg text-lg font-bold hover:bg-primary-dark transition-colors"
-        >
-          ชำระเงินด้วย Omise
-        </button>
-
-        <form
-          action="<%= pay_checkout_path %>"
-          method="POST"
-          data-omise-payment-target="form"
-        >
-          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-          <input type="hidden" name="order_id" value="<%= @order.id %>">
-          <input type="hidden" name="omise_token"
-                 data-omise-payment-target="token">
-        </form>
+        <% if user.location.present? %>
+          <p class="mt-1 text-xs leading-relaxed text-gray-600 whitespace-pre-line"><%= user.location %></p>
+        <% else %>
+          <p class="mt-1 text-xs text-amber-700">ยังไม่ได้ระบุที่อยู่ — แตะเพื่อเพิ่มที่จัดส่ง</p>
+        <% end %>
       </div>
+      <span class="shrink-0 self-center text-gray-400" aria-hidden="true">
+        <%= inline_svg_tag "icons/chevron-right.svg", class: "h-5 w-5" %>
+      </span>
+    <% end %>
+  </section>
+
+  <%# เส้นแบ่งสไตล์ airmail %>
+  <div class="mt-3 h-2.5 w-full overflow-hidden" aria-hidden="true">
+    <div
+      class="h-full w-full opacity-95"
+      style="background: repeating-linear-gradient(-45deg, #FF1493, #FF1493 5px, #FFE4E1 5px, #FFE4E1 10px);"
+    ></div>
+  </div>
+
+  <%# สินค้าตามร้าน %>
+  <div class="mt-4 space-y-6 px-4">
+    <% @items_by_store.each do |store, items| %>
+      <section>
+        <div class="mb-2 flex items-center justify-between gap-2">
+          <h2 class="text-sm font-bold text-gray-900"><%= store.name %></h2>
+        </div>
+
+        <div class="space-y-3">
+          <% items.each do |oi| %>
+            <% product = oi.product %>
+            <% fp = @promo_flag_by_product_id[product.id] %>
+            <% line_cents = oi.amount_cents * oi.quantity %>
+            <% orig_unit = fp && fp.original_amount_cents.to_i > oi.amount_cents ? fp.original_amount_cents : nil %>
+            <% pct =
+                 if orig_unit
+                   (((orig_unit - oi.amount_cents).to_f / orig_unit) * 100).round
+                 end %>
+
+            <div class="flex gap-3 rounded-2xl border border-gray-100 bg-white p-3 shadow-[0_1px_6px_rgba(0,0,0,0.05)]">
+              <div class="h-[4.25rem] w-[4.25rem] shrink-0 overflow-hidden rounded-lg bg-gray-50">
+                <% if product.images.attached? %>
+                  <%= image_tag product.images.first, class: "h-full w-full object-cover", alt: "" %>
+                <% else %>
+                  <div class="h-full w-full bg-gray-100"></div>
+                <% end %>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="line-clamp-2 text-left text-xs font-medium leading-snug text-gray-900"><%= oi.title %></p>
+                <div class="mt-1.5 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                  <span class="text-sm font-bold text-Primary-color">฿ <%= number_with_delimiter(line_cents / 100) %></span>
+                  <% if orig_unit %>
+                    <span class="text-xs text-gray-400 line-through">฿ <%= number_with_delimiter((orig_unit * oi.quantity) / 100) %></span>
+                    <% if pct.present? && pct.positive? %>
+                      <span class="text-xs font-semibold text-Primary-color">-<%= pct %>%</span>
+                    <% end %>
+                  <% end %>
+                </div>
+                <div class="mt-2 flex items-center justify-between gap-2">
+                  <span class="text-xs text-gray-500">x<%= oi.quantity %></span>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+      </section>
+    <% end %>
+
+    <div class="flex items-center gap-1.5 rounded-lg bg-Tertiary-color px-3 py-2 text-xs text-text-primary">
+      <span class="text-base leading-none" aria-hidden="true">🚚</span>
+      <span>จัดส่งฟรี</span>
+    </div>
+
+    <div class="mt-2 rounded-lg bg-Tertiary-color px-3 py-2.5 text-center text-xs text-text-primary">
+      รับภายใน <%= delivery_from.strftime("%d/%m/%Y") %> – <%= delivery_to.strftime("%d/%m/%Y") %>
+    </div>
+  </div>
+
+  <%# วิธีชำระเงิน %>
+  <section class="mx-4 mt-8 rounded-2xl border border-gray-200 bg-neutral-color p-4">
+    <h3 class="text-sm font-bold text-text-primary">วิธีการชำระเงิน</h3>
+    <p class="mt-0.5 text-xs text-text-neutral-300">ชำระผ่าน Omise — บัตรเครดิต / เดบิต</p>
+    <div class="mt-3 flex items-center gap-3 rounded-xl border-2 border-Primary-color bg-white px-3 py-3 shadow-pinkGlow">
+      <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-Tertiary-color text-xs font-bold text-Primary-color">OM</span>
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-semibold text-text-primary">Omise</p>
+        <p class="text-xs text-text-neutral-300">บัตรเครดิต / เดบิต (ชำระเงินปลอดภัย)</p>
+      </div>
+      <span class="shrink-0 text-xs font-medium text-Primary-color">เลือกแล้ว</span>
+    </div>
+  </section>
+
+  <%# สรุปคำสั่งซื้อ %>
+  <section class="mx-4 mt-6 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+    <h3 class="text-sm font-bold text-text-primary">สรุปคำสั่งซื้อ</h3>
+    <dl class="mt-3 space-y-2 text-sm">
+      <div class="flex justify-between gap-3 text-gray-700">
+        <dt>ยอดรวมค่าสินค้า</dt>
+        <dd class="font-medium text-gray-900">฿ <%= number_with_delimiter(@subtotal_cents / 100) %></dd>
+      </div>
+      <% if @product_discount_cents.positive? %>
+        <div class="ml-2 flex justify-between gap-3 border-l-2 border-gray-100 pl-3 text-xs text-gray-500">
+          <dt>ราคาเต็ม</dt>
+          <dd>฿ <%= number_with_delimiter(@list_price_subtotal_cents / 100) %></dd>
+        </div>
+        <div class="ml-2 flex justify-between gap-3 border-l-2 border-gray-100 pl-3 text-xs font-medium text-Primary-color">
+          <dt>ส่วนลดสินค้า</dt>
+          <dd>− ฿ <%= number_with_delimiter(@product_discount_cents / 100) %></dd>
+        </div>
+      <% end %>
+      <div class="flex justify-between gap-3 text-gray-700">
+        <dt>ยอดรวมค่าจัดส่ง</dt>
+        <dd class="font-medium text-gray-900">฿ 0</dd>
+      </div>
+    </dl>
+  </section>
+
+  <%# Sticky สั่งซื้อ + Omise %>
+  <div class="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-100 bg-white px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+    <div class="mx-auto w-full max-w-md">
+      <div class="mb-3 flex items-end justify-between gap-3">
+        <div>
+          <p class="text-xs text-gray-600">Total (<%= @item_qty_total %> ชิ้น)</p>
+          <p class="text-xl font-bold tabular-nums text-Primary-color">฿ <%= number_with_delimiter(@subtotal_cents / 100) %></p>
+          <% if @saved_percent.present? && @saved_percent.positive? %>
+            <p class="text-xs font-medium text-Primary-color">ประหยัด <%= @saved_percent %>%</p>
+          <% end %>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        data-action="click->omise-payment#pay"
+        data-omise-payment-target="button"
+        class="flex w-full flex-col items-center justify-center rounded-full border-0 bg-Primary-color py-3.5 text-icon-onPrimaryAction shadow-md transition hover:opacity-95 active:scale-[0.99]"
+      >
+        <span class="text-sm font-bold">สั่งซื้อ</span>
+        <span class="text-[11px] font-medium opacity-95">จัดส่งฟรี</span>
+      </button>
+
+      <form
+        action="<%= pay_checkout_path %>"
+        method="post"
+        class="hidden"
+        data-omise-payment-target="form"
+      >
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <input type="hidden" name="order_id" value="<%= @order.id %>">
+        <input type="hidden" name="omise_token" data-omise-payment-target="token">
+      </form>
+    </div>
   </div>
 </div>

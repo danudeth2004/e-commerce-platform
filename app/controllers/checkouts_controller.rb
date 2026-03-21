@@ -2,6 +2,7 @@ class CheckoutsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_order, only: [ :payment, :pay ]
   before_action :order_paid?, only: [ :payment, :pay ]
+  before_action :hide_app_header, only: :payment
 
   def create_order
     cart = current_user.cart
@@ -13,8 +14,32 @@ class CheckoutsController < ApplicationController
   end
 
   def payment
-    @payouts = @order.order_store_payouts
     @public_key = ENV["OMISE_PUBLIC_KEY"]
+
+    @order_items = @order.order_items.includes(product: [:store, { images_attachments: :blob }])
+    @items_by_store = @order_items.group_by { |oi| oi.product.store }
+    @item_qty_total = @order_items.sum(&:quantity)
+    @subtotal_cents = @order.total_amount_cents
+
+    product_ids = @order_items.map(&:product_id).uniq
+    @promo_flag_by_product_id = promo_flags_for_checkout(product_ids)
+
+    @list_price_subtotal_cents = @order_items.sum do |oi|
+      fp = @promo_flag_by_product_id[oi.product_id]
+      unit_list =
+        if fp && fp.original_amount_cents.to_i > oi.amount_cents
+          fp.original_amount_cents
+        else
+          oi.amount_cents
+        end
+      unit_list * oi.quantity
+    end
+
+    @product_discount_cents = [ @list_price_subtotal_cents - @subtotal_cents, 0 ].max
+    @saved_percent =
+      if @list_price_subtotal_cents.positive? && @product_discount_cents.positive?
+        ((@product_discount_cents.to_f / @list_price_subtotal_cents) * 100).round
+      end
   end
 
   def pay
@@ -31,11 +56,32 @@ class CheckoutsController < ApplicationController
   end
 
   private
+
+    def hide_app_header
+      @hide_app_header = true
+    end
+
     def set_order
       @order = current_user.orders.find(params[:order_id])
     end
 
     def order_paid?
       redirect_to root_path if @order.paid?
+    end
+
+    def promo_flags_for_checkout(product_ids)
+      return {} if product_ids.empty?
+
+      FlagProduct.active
+        .where(product_id: product_ids)
+        .where.not(original_amount_cents: nil)
+        .includes(:product)
+        .each_with_object({}) do |fp, memo|
+          product = fp.product
+          next unless product
+          next unless fp.original_amount_cents.to_i > product.amount_cents
+
+          memo[fp.product_id] ||= fp
+        end
     end
 end
