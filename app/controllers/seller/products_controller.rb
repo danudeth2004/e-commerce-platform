@@ -36,7 +36,7 @@ module Seller
         :amount,
         :description,
         :skin_concern_key,
-        :category,
+        :category_key,
         :effect,
         :volume,
         :volume_unit,

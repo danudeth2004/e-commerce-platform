@@ -52,6 +52,18 @@ products_data = [
   }
 ]
 
+# Map SKU -> category_key (ใช้ key จาก ProductCategory::DATA)
+category_by_sku = {
+  "DEMO-001" => "serum",
+  "DEMO-002" => "moisturizer",
+  "DEMO-003" => "skin_care",
+  "DEMO-004" => "sunscreen",
+  "DEMO-005" => "serum",
+  "DEMO-006" => "moisturizer",
+  "DEMO-007" => "skin_care",
+  "DEMO-008" => "skin_care"
+}
+
 # Map SKU -> skin_concern_key (ใช้ key จาก SkinConcern::DATA)
 skin_concern_by_sku = {
   "DEMO-001" => "dry_skin",
@@ -71,10 +83,16 @@ products_data.each do |data|
     p.description = data[:description]
     p.amount_cents = data[:amount_baht] * 100
     p.amount_currency = "THB"
+    p.category_key = category_by_sku[data[:sku]] || "skin_care"
+    p.skin_concern_key = skin_concern_by_sku[data[:sku]] if skin_concern_by_sku[data[:sku]]
   end
 
-  # Tag product with a skin concern for filtering
+  attrs = {}
   if (skin_key = skin_concern_by_sku[data[:sku]])
-    product.update!(skin_concern_key: skin_key)
+    attrs[:skin_concern_key] = skin_key
   end
+  if (cat_key = category_by_sku[data[:sku]])
+    attrs[:category_key] = cat_key
+  end
+  product.update!(attrs) if attrs.any?
 end

@@ -9,7 +9,6 @@ class Product < ApplicationRecord
   has_many :cart_items, dependent: :destroy
 
   attr_accessor :effect,
-                :category,
                 :skin_type,
                 :volume,
                 :volume_unit,
@@ -20,6 +19,7 @@ class Product < ApplicationRecord
   validates :sku, presence: true, uniqueness: true
   validates :amount_cents, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :amount_currency, presence: true
+  validates :category_key, presence: true, inclusion: { in: ProductCategory.keys }
 
   private
 

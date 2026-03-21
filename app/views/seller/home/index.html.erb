@@ -50,13 +50,30 @@
     </div>
   </section>
 
-  <% if @products.any? %>
-    <section class="mt-6 space-y-3">
-      <% @products.each do |product| %>
-        <div class="bg-white rounded-xl border border-gray-100 px-4 py-3">
-          <p class="text-sm font-medium text-gray-900"><%= product.title %></p>
-          <p class="mt-1 text-xs text-gray-500"><%= humanized_money_with_symbol(product.amount) %></p>
+  <% if @store.persisted? && @store.products.exists? %>
+    <section class="mt-5 space-y-3">
+      <%= render "shared/product_category_filter",
+                 current_category_key: @category_key,
+                 path_proc: ->(key) { key.present? ? seller_root_path(category: key) : seller_root_path } %>
+      <% if @products.any? %>
+        <div class="grid grid-cols-2 gap-3">
+          <% @products.each do |product| %>
+            <%= render "shared/product_card",
+                       product: {
+                         id: product.id,
+                         name: product.title,
+                         desc: product.description.to_s,
+                         price: product.amount_cents / 100,
+                         original_price: nil,
+                         image_url: (product.images.attached? ? url_for(product.images.first) : nil),
+                         discount_percent: nil
+                       },
+                       show_cart: false,
+                       full_width: true %>
+          <% end %>
         </div>
+      <% else %>
+        <p class="text-center text-xs text-gray-500 py-8">ไม่มีสินค้าในหมวดนี้</p>
       <% end %>
     </section>
   <% else %>

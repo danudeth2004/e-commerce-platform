@@ -2,12 +2,17 @@
     Params:
       product: { id, name, desc, price, original_price, image_url, discount_percent }
       size: "small" (default) | "large"
+      show_cart: true (default) | false — omit cart FAB + Stimulus when false (e.g. seller store index)
+      full_width: false (default) | true — stretch card in grid cells
 %>
 <% size ||= "small" %>
-<%= link_to product_path(product[:id]),
-            class: "shrink-0 w-40 bg-white rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-200",
-            style: "box-shadow: 0 1px 4px 0 rgba(0,0,0,0.06), 0 4px 10px 0 rgba(0,0,0,0.06)",
-            data: { controller: "product-card", product_id: product[:id] } do %>
+<% show_cart = local_assigns.fetch(:show_cart, true) %>
+<% full_width = local_assigns.fetch(:full_width, false) %>
+<% card_class = [ full_width ? "w-full" : "shrink-0 w-40",
+                  "bg-white rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-200" ].join(" ") %>
+<% link_opts = { class: card_class, style: "box-shadow: 0 1px 4px 0 rgba(0,0,0,0.06), 0 4px 10px 0 rgba(0,0,0,0.06)" } %>
+<% link_opts[:data] = { controller: "product-card", product_id: product[:id] } if show_cart %>
+<%= link_to product_path(product[:id]), **link_opts do %>
   <%# Product Image %>
   <div class="relative w-full <%= size == 'large' ? 'aspect-square' : 'h-32' %> bg-gray-50 flex items-center justify-center overflow-hidden">
     <% if product[:image_url].present? %>
@@ -23,14 +28,16 @@
                background-color:#f9fafb;">
       </div>
     <% end %>
-    <%# Add to cart button %>
-    <button
-  class="absolute bottom-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
-  style="background:#D1D5DB"
-  data-action="click->product-card#addToCart"
-      data-product-card-target="addBtn">
-      <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-4 h-4 text-white fill-current" %>
-    </button>
+    <% if show_cart %>
+      <button
+        type="button"
+        class="absolute bottom-2 right-2 w-8 h-8 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform"
+        style="background:#D1D5DB"
+        data-action="click->product-card#addToCart"
+        data-product-card-target="addBtn">
+        <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-4 h-4 text-white fill-current" %>
+      </button>
+    <% end %>
   </div>
   <%# Info %>
   <div class="px-3 pt-2 pb-3">

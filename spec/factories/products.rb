@@ -4,7 +4,8 @@ FactoryBot.define do
     description { "MyText" }
     sku { "MyString" }
     amount_cents { 1 }
-    amount_currency { "MyString" }
+    amount_currency { "THB" }
+    category_key { "skin_care" }
     seller_store { nil }
   end
 end

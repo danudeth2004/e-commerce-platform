@@ -7,17 +7,17 @@
     <%= form.text_field :effect, placeholder: "ระบุผลลัพธ์ของสินค้า", class: step2_field %>
   </div>
   <div class="mb-8">
-    <label class="block text-base font-regular text-text-primary mb-2" for="product_category">
+    <%= form.label :category_key, class: "block text-base font-regular text-text-primary mb-2" do %>
       ประเภทของสินค้า <span class="text-text-accents-red">*</span>
-    </label>
+    <% end %>
     <div class="relative">
-      <select id="product_category" name="product[category]" class="<%= step2_select %>">
-        <option value="">เลือกประเภทสินค้า</option>
-        <option value="cleanser">เซรั่ม</option>
-        <option value="serum">ครีมบำรุงผิว</option>
-        <option value="moisturizer">กันแดด</option>
-        <option value="moisturizer">ผลิตภัณฑ์สำหรับผิว</option>
-      </select>
+      <%= form.select :category_key,
+                      options_for_select(
+                        [ [ "เลือกประเภทสินค้า", "" ] ] + ProductCategory.all.map { |c| [ c[:label], c[:key] ] },
+                        product.category_key
+                      ),
+                      {},
+                      { id: "product_category", class: step2_select } %>
       <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">
         <%= inline_svg_tag "icons/arrow-down-icon.svg", class: "size-3" %>
       </span>
