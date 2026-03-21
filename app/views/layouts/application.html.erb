@@ -1,18 +1,14 @@
 <!DOCTYPE html>
 <html lang="th">
-
-<head>
+  <head>
     <title><%= content_for(:title) || "Buyer: E Commerce Platform" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="E Commerce Platform">
     <meta name="mobile-web-app-capable" content="yes">
-
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <%= yield :head %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
@@ -20,61 +16,56 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
-
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-
     <script src="https://cdn.omise.co/omise.js"></script>
     <script src="https://cdn.omise.co/omise-card.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-</head>
-
-<body class="font-sans">
+  </head>
+  <body class="font-sans">
     <main class="min-h-screen bg-white">
+      <% unless @hide_app_header %>
         <% header_icon_btn = "inline-flex items-center justify-center size-11 shrink-0 rounded-[15px] border border-pink-100/70 bg-gradient-to-br from-[#ffc4dc] via-[#ffe8f2] to-white text-white shadow-sm transition hover:opacity-95 active:scale-[0.98]" %>
         <header class="w-full max-w-screen-xl mx-auto px-4 pt-4 pb-2">
-            <div class="flex items-center gap-2.5 sm:gap-3">
-                <%= form_with url: products_path, method: :get, local: true, class: "flex-1 min-w-0", role: "search" do %>
-                    <%= hidden_field_tag :skin_concern, params[:skin_concern] if params[:skin_concern].present? %>
-                    <%= hidden_field_tag :category, params[:category] if params[:category].present? %>
-                    <div class="relative flex items-center">
-                        <label for="header-search-q" class="sr-only">ค้นหาสินค้า</label>
-                        <span class="pointer-events-none absolute left-3.5 flex text-gray-400" aria-hidden="true">
-                            <%= inline_svg_tag "icons/search-icon.svg", class: "w-[18px] h-[18px]" %>
-                        </span>
-                        <%= text_field_tag :q, params[:q],
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <%= form_with url: products_path, method: :get, local: true, class: "flex-1 min-w-0", role: "search" do %>
+              <%= hidden_field_tag :skin_concern, params[:skin_concern] if params[:skin_concern].present? %>
+              <%= hidden_field_tag :category, params[:category] if params[:category].present? %>
+              <div class="relative flex items-center">
+                <label for="header-search-q" class="sr-only">ค้นหาสินค้า</label>
+                <span class="pointer-events-none absolute left-3.5 flex text-gray-400" aria-hidden="true">
+                  <%= inline_svg_tag "icons/search-icon.svg", class: "w-[18px] h-[18px]" %>
+                </span>
+                <%= text_field_tag :q, params[:q],
                                            id: "header-search-q",
                                            placeholder: "Vaseline",
                                            autocomplete: "off",
                                            class: "w-full rounded-full border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-200/60" %>
-                    </div>
-                <% end %>
-
-                <div class="flex items-center gap-2 shrink-0">
-                    <%= link_to(user_signed_in? ? cart_path : new_user_session_path,
+              </div>
+            <% end %>
+            <div class="flex items-center gap-2 shrink-0">
+              <%= link_to(user_signed_in? ? cart_path : new_user_session_path,
                                 class: "#{header_icon_btn} relative") do %>
-                        <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-[22px] h-[22px] text-white" %>
-                        <% if user_signed_in? %>
-                            <% count = current_cart_item_count %>
-                            <% if count.positive? %>
-                                <span class="absolute -top-1 -right-1 min-w-[1.125rem] rounded-full bg-red-500 px-1 py-0.5 text-center text-[10px] font-semibold leading-none text-white">
-                                    <%= count %>
-                                </span>
-                            <% end %>
-                        <% end %>
-                    <% end %>
-
-                    <%= link_to(user_signed_in? ? edit_user_registration_path : new_user_session_path,
+                <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-[22px] h-[22px] text-white" %>
+                <% if user_signed_in? %>
+                  <% count = current_cart_item_count %>
+                  <% if count.positive? %>
+                    <span class="absolute -top-1 -right-1 min-w-[1.125rem] rounded-full bg-red-500 px-1 py-0.5 text-center text-[10px] font-semibold leading-none text-white">
+                      <%= count %>
+                    </span>
+                  <% end %>
+                <% end %>
+              <% end %>
+              <%= link_to(user_signed_in? ? edit_user_registration_path : new_user_session_path,
                                 class: header_icon_btn,
                                 aria: { label: user_signed_in? ? "บัญชีของฉัน" : "เข้าสู่ระบบ" }) do %>
-                        <%= inline_svg_tag "icons/user-icon.svg", class: "w-[22px] h-[22px] text-white" %>
-                    <% end %>
-                </div>
+                <%= inline_svg_tag "icons/user-icon.svg", class: "w-[22px] h-[22px] text-white" %>
+              <% end %>
             </div>
+          </div>
         </header>
-
-        <%= yield %>
+      <% end %>
+      <%= yield %>
     </main>
-</body>
-
+  </body>
 </html>

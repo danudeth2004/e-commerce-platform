@@ -1,9 +1,12 @@
 class CartsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_cart
+  before_action :hide_app_header, only: :show
 
   def show
     @cart_items = @cart.cart_items.includes(:product)
+    @cart_qty_total = @cart_items.sum(&:quantity)
+    @promo_flag_by_product_id = promo_flags_for_cart_products(@cart_items)
   end
 
   def add_item
@@ -46,7 +49,28 @@ class CartsController < ApplicationController
 
   private
 
+  def hide_app_header
+    @hide_app_header = true
+  end
+
   def set_cart
     @cart = current_user.cart || current_user.create_cart!
+  end
+
+  def promo_flags_for_cart_products(cart_items)
+    product_ids = cart_items.map(&:product_id).uniq
+    return {} if product_ids.empty?
+
+    FlagProduct.active
+      .where(product_id: product_ids)
+      .where.not(original_amount_cents: nil)
+      .includes(:product)
+      .each_with_object({}) do |fp, memo|
+        product = fp.product
+        next unless product
+        next unless fp.original_amount_cents.to_i > product.amount_cents
+
+        memo[fp.product_id] ||= fp
+      end
   end
 end

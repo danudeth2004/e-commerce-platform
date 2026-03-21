@@ -1,20 +1,28 @@
-<div class="w-full min-h-screen bg-white">
-  <div class="w-full max-w-screen-md mx-auto px-4 pt-4 pb-28 space-y-4">
-    <h1 class="text-xl font-semibold text-text-primary mb-4">
-      รถเข็นของคุณ (<%= @cart_items.sum(:quantity) %>)
+<% cart_back_href = request.referer.present? ? :back : root_path %>
+<div class="flex min-h-screen w-full max-w-md mx-auto flex-col bg-white">
+  <header class="relative flex shrink-0 items-center justify-center px-4 py-3">
+    <%= link_to cart_back_href,
+                class: "absolute left-2 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full p-2 text-gray-800 hover:bg-gray-50",
+                aria: { label: "กลับ" } do %>
+      <%= inline_svg_tag "icons/chevron-left.svg", class: "h-6 w-6" %>
+    <% end %>
+    <h1 class="text-base font-bold text-gray-900">
+      รถเข็นของคุณ<% if @cart_qty_total.positive? %> (<%= @cart_qty_total %>)<% end %>
     </h1>
-
+  </header>
+  <div class="flex flex-1 flex-col px-4 <%= @cart_items.any? ? "pb-36" : "pb-10" %>">
     <% if @cart_items.any? %>
-      <div class="space-y-3">
+      <div class="flex flex-col gap-3">
         <% @cart_items.each do |item| %>
-          <%= render "carts/item", item: item %>
+          <%= render "carts/item", item: item, promo_flag_by_product_id: @promo_flag_by_product_id %>
         <% end %>
       </div>
-
-      <% total_cents = @cart_items.sum { |i| i.product.amount_cents * i.quantity } %>
-      <%= render "carts/summary_bar", total_cents: total_cents %>
     <% else %>
       <%= render "carts/empty" %>
     <% end %>
   </div>
+  <% if @cart_items.any? %>
+    <% total_cents = @cart_items.sum { |i| i.product.amount_cents * i.quantity } %>
+    <%= render "carts/summary_bar", total_cents: total_cents %>
+  <% end %>
 </div>
