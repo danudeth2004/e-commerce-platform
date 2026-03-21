@@ -1,32 +1,15 @@
-<div
-  class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-6"
-  data-product-form-target="confirmModal"
->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-6" data-product-form-target="confirmModal">
   <div class="w-full max-w-xs rounded-3xl bg-white px-6 py-6 text-center">
     <div class="mb-4">
       <%= image_tag "add_product.png", class: "size-24 mx-auto" %>
     </div>
-
-    <p class="text-sm font-semibold text-gray-900 mb-1">
-      ยืนยันการเพิ่มสินค้า
-    </p>
-    <p class="text-xs text-gray-500 mb-5">
-      คุณต้องการเพิ่มสินค้านี้เข้าสู่หน้าร้านของคุณหรือไม่ รายการนี้ไม่สามารถแก้ไขข้อมูลย้อนหลังได้
-    </p>
-
+    <p class="text-sm font-semibold text-text-primary mb-1">ยืนยันการเพิ่มสินค้า</p>
+    <p class="text-xs text-text-secondary mb-5">คุณต้องการเพิ่มสินค้านี้เข้าสู่ร้านค้าของคุณใช่หรือไม่ สามารถแก้ไขข้อมูลภายหลังได้</p>
     <div class="space-y-2">
-      <button
-        type="button"
-        class="w-full py-3 rounded-full bg-pink-500 text-white text-sm font-semibold shadow-sm"
-        data-action="click->product-form#submit"
-      >
+      <button type="button" class="w-full py-3 rounded-full bg-Primary-color text-white text-sm font-semibold shadow-sm" data-action="click->product-form#submit">
         ยืนยัน
       </button>
-      <button
-        type="button"
-        class="w-full py-3 rounded-full bg-gray-100 text-gray-700 text-sm font-medium"
-        data-action="click->product-form#closeConfirm"
-      >
+      <button type="button" class="w-full py-3 rounded-full bg-gray-100 text-gray-700 text-sm font-medium" data-action="click->product-form#closeConfirm">
         ยกเลิก
       </button>
     </div>

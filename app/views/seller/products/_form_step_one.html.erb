@@ -1,0 +1,60 @@
+<div data-product-form-target="stepOne">
+  <div
+    class="mb-6"
+    data-controller="product-images"
+    data-action="click->product-images#delegateClick"
+    data-product-images-max-value="5"
+    data-product-images-max-bytes-value="<%= 1.megabyte %>"
+    >
+    <label for="product_images_input" class="block text-base font-regular text-text-primary mb-2">
+      รูปสินค้า <span class="text-text-accents-red">*</span>
+    </label>
+    <div
+      class="rounded-2xl border border-dashed border-border-neutral bg-bg-neutral-color px-4 py-8 text-center transition-shadow cursor-pointer"
+      data-product-images-target="dropZone"
+      data-action="
+        click->product-images#openPicker
+      dragEnter->product-images#dragEnter
+      dragOver->product-images#dragOver
+      dragLeave->product-images#dragLeave
+      drop->product-images#drop
+      ">
+      <%= form.file_field :images, multiple: true, accept: "image/jpeg,image/png,.jpg,.jpeg,.png",class: "hidden", id: "product_images_input", data: { product_images_target: "fileInput", action: "change->product-images#picked", } %>
+      <div class="flex justify-center mb-3 text-gray-400" aria-hidden="true">
+        <%= inline_svg_tag "icons/image-upload-icon.svg", class: "size-8" %>
+      </div>
+      <p class="text-xs text-text-blue font-semibold">คลิกเพื่ออัปโหลดรูปสินค้า</p>
+      <p class="text-xs text-text-neutral-300 leading-relaxed">
+        รองรับไฟล์ JPG, JPEG, PNG ขนาดไม่เกิน 1MB (สูงสุด 5 รูป)
+      </p>
+    </div>
+    <p class="hidden mt-2 text-xs text-text-accents-red" data-product-images-target="error" role="alert"></p>
+  </div>
+  <div class="mb-8">
+    <%= form.label :title, class: "block text-base font-regular text-text-primary mb-2" do %>
+      ชื่อสินค้า <span class="text-text-accents-red">*</span>
+    <% end %>
+    <%= form.text_field :title, placeholder: "ระบุชื่อสินค้า", class: "w-full rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
+  </div>
+  <div class="mb-8">
+    <%= form.label :amount, class: "block text-base font-regular text-text-primary mb-2" do %>
+      ราคาเต็ม <span class="text-text-accents-red">*</span>
+    <% end %>
+    <div class="flex items-stretch gap-2">
+      <%= form.number_field :amount, step: 1, min: 0, placeholder: "ระบุราคาเต็ม", class: "min-w-0 flex-1 rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none", autocomplete: "off" %>
+      <span class="inline-flex items-center justify-center rounded-lg border border-border-neutral bg-bg-neutral-color px-3 text-sm text-text-neutral-300 shrink-0 min-w-[3.25rem]">
+        บาท
+      </span>
+    </div>
+  </div>
+  <div class="mb-8">
+    <%= form.label :promotion_price, "ราคาโปรโมชั่น", class: "block text-base font-regular text-text-primary mb-2" %>
+    <p class="text-xs text-text-neutral-300 mb-2">
+      กรอกราคาขายหลังจากหักส่วนลดจากราคาเต็ม
+    </p>
+    <%= form.number_field :promotion_price, step: 1, min: 0, placeholder: "ระบุราคาหลังลด", class: "w-full rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none", autocomplete: "off" %>
+  </div>
+  <button type="button" class="w-full py-3.5 rounded-full bg-[#FF1493] text-white text-sm font-semibold shadow-sm hover:opacity-95 active:scale-[0.99] transition" data-action="click->product-form#showStepTwo">
+    ถัดไป
+  </button>
+</div>

@@ -1,0 +1,98 @@
+<div class="hidden" data-product-form-target="stepTwo">
+  <% step2_input = "rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
+  <% step2_field = "w-full #{step2_input}" %>
+  <% step2_select = "w-full #{step2_input} appearance-none pr-10" %>
+  <div class="mb-8">
+    <%= form.label :effect, "ผลลัพธ์", class: "block text-base font-regular text-text-primary mb-2" %>
+    <%= form.text_field :effect, placeholder: "ระบุผลลัพธ์ของสินค้า", class: step2_field %>
+  </div>
+  <div class="mb-8">
+    <label class="block text-base font-regular text-text-primary mb-2" for="product_category">
+      ประเภทของสินค้า <span class="text-text-accents-red">*</span>
+    </label>
+    <div class="relative">
+      <select id="product_category" name="product[category]" class="<%= step2_select %>">
+        <option value="">เลือกประเภทสินค้า</option>
+        <option value="cleanser">เซรั่ม</option>
+        <option value="serum">ครีมบำรุงผิว</option>
+        <option value="moisturizer">กันแดด</option>
+        <option value="moisturizer">ผลิตภัณฑ์สำหรับผิว</option>
+      </select>
+      <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">
+        <%= inline_svg_tag "icons/arrow-down-icon.svg", class: "size-3" %>
+      </span>
+    </div>
+  </div>
+  <div class="mb-8">
+    <%= form.label :skin_concern_key, class: "block text-base font-regular text-text-primary mb-2" do %>
+      ประเภทผิวที่เหมาะกับสินค้าของคุณ <span class="text-text-accents-red">*</span>
+    <% end %>
+    <div class="relative">
+      <%= form.select :skin_concern_key,
+                      options_for_select([ [ "เลือกประเภทผิว", "" ],
+                                           [ "ผิวเป็นสิว", "acne_skin" ],
+                                           [ "ผิวแห้ง", "dry_skin" ],
+                                           [ "ผิวผสม", "combination_skin" ],
+                                           [ "ผิวแพ้ง่าย", "sensitive_skin" ],
+                                           [ "ผิวหมองคล้ำ", "dull_skin" ],
+                                           [ "ผิวมัน", "oily_skin" ],
+                                           [ "ผิวรอยดำ", "dark_spots_skin" ],
+                                           [ "ผิวรอยแดง", "red_spots_skin" ] ],
+                                         product.skin_concern_key),
+                      {},class: step2_select %>
+      <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">
+        <%= inline_svg_tag "icons/arrow-down-icon.svg", class: "size-3" %>
+      </span>
+    </div>
+  </div>
+  <div class="mb-8">
+    <label class="block text-base font-regular text-text-primary mb-2" for="product_volume">
+      ปริมาณ <span class="text-text-accents-red">*</span>
+    </label>
+    <div class="flex items-stretch gap-2">
+      <input id="product_volume" type="number" step="1" min="0" name="product[volume]" placeholder="ระบุปริมาณสินค้า" class="min-w-0 flex-1 <%= step2_input %>" autocomplete="off">
+      <div class="relative shrink-0 min-w-[4.5rem]">
+        <select name="product[volume_unit]" class="h-[2.75rem] w-full <%= step2_input %> appearance-none pr-9 text-sm leading-normal">
+          <option value="ml">ml</option>
+          <option value="g">g</option>
+        </select>
+        <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">
+          <%= inline_svg_tag "icons/arrow-down-icon.svg", class: "size-3" %>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="mb-8">
+    <%= form.label :description, "คำอธิบายสินค้า", class: "block text-base font-regular text-text-primary mb-2" %>
+    <div data-controller="character-count" data-character-count-max-value="400">
+      <%= form.text_area :description,
+                         placeholder: "เขียนรายละเอียดของสินค้า",
+                         rows: 5,
+                         class: "w-full resize-y min-h-[7.5rem] rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none invalid:border-text-accents-red invalid:focus:border-text-accents-red",
+                         data: {
+                           character_count_target: "field",
+                           action: "input->character-count#update paste->character-count#update",
+                         } %>
+      <p class="mt-1 text-right text-xs text-text-neutral-300" data-character-count-target="count" aria-live="polite">0/400</p>
+      <p class="mt-0.5 text-right text-xs text-text-accents-red hidden" data-character-count-target="message" role="alert"></p>
+    </div>
+  </div>
+  <div class="mb-8">
+    <%= form.label :product_usage, "วิธีใช้สินค้า", class: "block text-base font-regular text-text-primary mb-2" %>
+    <div data-controller="character-count" data-character-count-max-value="150">
+      <%= form.text_area :usage,
+                         placeholder: "ระบุวิธีใช้",
+                         rows: 4,
+                         class: "w-full resize-y min-h-[5.5rem] rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none invalid:border-text-accents-red invalid:focus:border-text-accents-red",
+                         data: {
+                           character_count_target: "field",
+                           action: "input->character-count#update paste->character-count#update",
+                         } %>
+      <p class="mt-1 text-right text-xs text-text-neutral-300" data-character-count-target="count" aria-live="polite">0/150</p>
+      <p class="mt-0.5 text-right text-xs text-text-accents-red hidden" data-character-count-target="message" role="alert"></p>
+    </div>
+  </div>
+  <button type="button" class="w-full py-3.5 rounded-full bg-Primary-color text-white text-sm font-semibold shadow-sm hover:opacity-95 active:scale-[0.99] transition" data-action="click->product-form#openConfirm">
+    ยืนยัน
+  </button>
+</div>
