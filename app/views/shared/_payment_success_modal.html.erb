@@ -1,0 +1,38 @@
+<div
+  class="fixed inset-0 z-[100] flex items-center justify-center p-6"
+  data-controller="payment-success-modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="payment-success-title"
+>
+  <button
+    type="button"
+    class="absolute inset-0 bg-black/45 backdrop-blur-[2px] transition-opacity"
+    data-action="click->payment-success-modal#close"
+    aria-label="ปิด"
+  ></button>
+
+  <div class="relative w-full max-w-[320px] rounded-3xl bg-white px-6 pb-7 pt-8 text-center shadow-2xl ring-1 ring-black/5">
+    <div
+      class="mx-auto mb-6 flex h-[7.5rem] w-[7.5rem] items-center justify-center rounded-full"
+      style="background: radial-gradient(circle at 30% 25%, #FFE4E1 0%, #FFF5F8 45%, #FFD6E8 100%);"
+    >
+      <%= inline_svg_tag "icons/payment-success-illustration.svg", class: "h-[5.5rem] w-[5.5rem]" %>
+    </div>
+
+    <h2 id="payment-success-title" class="text-xl font-bold text-text-primary">
+      ชำระเงินสำเร็จ
+    </h2>
+    <p class="mt-3 text-sm leading-relaxed text-text-neutral-300">
+      ลูกค้าจะยืนยันการรับสินค้าเมื่อได้รับสินค้าเรียบร้อย
+    </p>
+
+    <button
+      type="button"
+      data-action="click->payment-success-modal#close"
+      class="mt-8 w-full rounded-full bg-Primary-color py-3.5 text-sm font-semibold text-icon-onPrimaryAction shadow-sm transition hover:opacity-95 active:scale-[0.99]"
+    >
+      ตกลง
+    </button>
+  </div>
+</div>

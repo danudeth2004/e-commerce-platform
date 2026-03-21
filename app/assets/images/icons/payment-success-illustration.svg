@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id="ps-card" x1="24" y1="28" x2="72" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF69B4"/>
+      <stop offset="1" stop-color="#FF1493"/>
+    </linearGradient>
+    <linearGradient id="ps-bag" x1="68" y1="30" x2="96" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFB6C8"/>
+      <stop offset="1" stop-color="#FF1493"/>
+    </linearGradient>
+  </defs>
+  <!-- simplified hands / exchange: card left, coin/bag right -->
+  <path d="M22 48c0-4 3-7 7-7h38c4 0 7 3 7 7v14c0 4-3 7-7 7H29c-4 0-7-3-7-7V48z" fill="url(#ps-card)" opacity=".95"/>
+  <rect x="28" y="46" width="36" height="22" rx="3" fill="white" fill-opacity=".35"/>
+  <rect x="32" y="52" width="20" height="3" rx="1" fill="white" fill-opacity=".8"/>
+  <ellipse cx="78" cy="42" rx="14" ry="10" fill="url(#ps-bag)" opacity=".9"/>
+  <path d="M70 50h16v12c0 3-2.5 5-5.5 5h-5c-3 0-5.5-2-5.5-5V50z" fill="#FF1493"/>
+  <!-- check -->
+  <circle cx="60" cy="82" r="22" fill="#FF1493" fill-opacity=".12" stroke="#FF1493" stroke-width="2.5"/>
+  <path d="M49 82l8 8 16-18" stroke="#FF1493" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

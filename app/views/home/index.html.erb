@@ -7,3 +7,7 @@
     <%= render "home/partials/all_products", products: @essential_products %>
   </div>
 </div>
+
+<% if @show_payment_success_modal %>
+  <%= render "shared/payment_success_modal" %>
+<% end %>

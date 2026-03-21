@@ -44,14 +44,15 @@ class CheckoutsController < ApplicationController
 
   def pay
     OmiseService::CreateCharge.new(order: @order, token: params[:omise_token]).call
+    @order.reload
 
     if @order.paid?
       @order.order_store_payouts.each do |payout|
         TransferToStoreJob.perform_now(payout.id)
       end
-      redirect_to root_path, notice: "Payment success ✅"
+      redirect_to root_path, flash: { payment_success: true }
     else
-      redirect_to root_path, alert: "Payment failed ❌"
+      redirect_to root_path, alert: "ชำระเงินไม่สำเร็จ กรุณาลองใหม่"
     end
   end
 

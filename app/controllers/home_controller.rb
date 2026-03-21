@@ -6,6 +6,7 @@ class HomeController < ApplicationController
     @bestsellers        = bestsellers
     @bestseller_tabs    = bestseller_tabs
     @essential_products = essential_products
+    @show_payment_success_modal = flash.delete(:payment_success).present?
   end
 
   def show
