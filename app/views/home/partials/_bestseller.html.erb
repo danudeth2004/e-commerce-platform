@@ -1,12 +1,5 @@
 <section class="px-4 pt-5" data-controller="bestseller">
   <div class="text-xl font-semibold text-text-primary mb-3">สินค้าขายดีติดอันดับ</div>
-  <div class="flex gap-2 overflow-x-auto pb-3 mb-2" style="-ms-overflow-style:none; scrollbar-width:none;">
-    <% tabs.each_with_index do |tab, i| %>
-      <button class="tab-btn shrink-0 px-4 py-1.5 rounded-xl text-sm transition-all" style="<%= i == 0 ? 'background:#FF1493; color:white;' : 'background:transparent; color:#9CA3AF;' %>" data-action="click->bestseller#setTab" data-tab="<%= tab %>">
-        <%= tab %>
-      </button>
-    <% end %>
-  </div>
   <div class="flex flex-col">
     <% bestsellers.each_with_index do |item, i| %>
       <div class="flex items-center gap-3 py-4 cursor-pointer <%= i.odd? ? 'bg-Tertiary-color bg-opacity-20' : 'bg-white' %>">
