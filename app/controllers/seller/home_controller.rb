@@ -3,11 +3,8 @@ module Seller
     before_action :authenticate_seller_user!
 
     def index
-      @store = current_seller_user.store ||
-               current_seller_user.build_store(
-                 name: "Glad2Glow Official Store",
-                 location: "Bangkok, Thailand"
-               )
+      @store = current_seller_user.store || current_seller_user.build_store(name: "Glad2Glow Official Store", location: "Bangkok, Thailand")
+      @products = @store.persisted? ? @store.products.order(created_at: :desc) : []
     end
 
     # def create

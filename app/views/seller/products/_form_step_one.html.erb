@@ -5,7 +5,7 @@
     data-action="click->product-images#delegateClick"
     data-product-images-max-value="5"
     data-product-images-max-bytes-value="<%= 1.megabyte %>"
-    >
+  >
     <label for="product_images_input" class="block text-base font-regular text-text-primary mb-2">
       รูปสินค้า <span class="text-text-accents-red">*</span>
     </label>
@@ -14,9 +14,9 @@
       data-product-images-target="dropZone"
       data-action="
         click->product-images#openPicker
-      dragEnter->product-images#dragEnter
-      dragOver->product-images#dragOver
-      dragLeave->product-images#dragLeave
+      dragenter->product-images#dragEnter
+      dragover->product-images#dragOver
+      dragleave->product-images#dragLeave
       drop->product-images#drop
       ">
       <%= form.file_field :images, multiple: true, accept: "image/jpeg,image/png,.jpg,.jpeg,.png",class: "hidden", id: "product_images_input", data: { product_images_target: "fileInput", action: "change->product-images#picked", } %>
@@ -28,6 +28,7 @@
         รองรับไฟล์ JPG, JPEG, PNG ขนาดไม่เกิน 1MB (สูงสุด 5 รูป)
       </p>
     </div>
+    <div class="mt-3 flex gap-2 overflow-x-auto" data-product-images-target="previewRow"></div>
     <p class="hidden mt-2 text-xs text-text-accents-red" data-product-images-target="error" role="alert"></p>
   </div>
   <div class="mb-8">

@@ -50,13 +50,24 @@
     </div>
   </section>
 
-  <section class="mt-16 flex flex-col items-center text-center text-xs text-gray-500">
-    <%= image_tag "empty_product.png", class: "w-28 h-28 mb-4" %>
-    <p class="font-medium text-gray-700">
-      ยังไม่มีสินค้าในร้านค้าของคุณ
-    </p>
-    <p class="mt-1 text-[11px]">
-      เพิ่มสินค้าชิ้นแรกของคุณในร้านค้าได้ที่นี่
-    </p>
-  </section>
+  <% if @products.any? %>
+    <section class="mt-6 space-y-3">
+      <% @products.each do |product| %>
+        <div class="bg-white rounded-xl border border-gray-100 px-4 py-3">
+          <p class="text-sm font-medium text-gray-900"><%= product.title %></p>
+          <p class="mt-1 text-xs text-gray-500"><%= humanized_money_with_symbol(product.amount) %></p>
+        </div>
+      <% end %>
+    </section>
+  <% else %>
+    <section class="mt-16 flex flex-col items-center text-center text-xs text-gray-500">
+      <%= image_tag "empty_product.png", class: "w-28 h-28 mb-4" %>
+      <p class="font-medium text-gray-700">
+        ยังไม่มีสินค้าในร้านค้าของคุณ
+      </p>
+      <p class="mt-1 text-[11px]">
+        เพิ่มสินค้าชิ้นแรกของคุณในร้านค้าได้ที่นี่
+      </p>
+    </section>
+  <% end %>
 </div>

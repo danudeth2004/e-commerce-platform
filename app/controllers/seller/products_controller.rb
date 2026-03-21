@@ -14,6 +14,7 @@ module Seller
       if @product.save
         redirect_to seller_root_path, notice: "เพิ่มสินค้าเรียบร้อยแล้ว"
       else
+        flash.now[:alert] = @product.errors.full_messages.to_sentence
         render :new, status: :unprocessable_entity
       end
     end
@@ -35,6 +36,12 @@ module Seller
         :amount,
         :description,
         :skin_concern_key,
+        :category,
+        :effect,
+        :volume,
+        :volume_unit,
+        :promotion_price,
+        :usage,
         images: []
       )
 
