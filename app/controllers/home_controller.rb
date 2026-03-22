@@ -6,12 +6,17 @@ class HomeController < ApplicationController
     @bestsellers        = bestsellers
     @bestseller_tabs    = bestseller_tabs
     @essential_products = essential_products
+
     @show_payment_success_modal = flash[:payment_success] == true
     flash.delete(:payment_success)
   end
 
   def show
-    @product = Product.find(params[:id])
+    @product = Product
+                 .joins(:store)
+                 .merge(Seller::Store.active)
+                 .with_attached_images
+                 .find(params[:id])
 
     @product_image       = @product
     @brand_section       = @product
@@ -20,9 +25,6 @@ class HomeController < ApplicationController
   end
 
   private
-  # data สำหรับหน้า Home:
-  # - banners/skin_concerns เป็น static config ใน controller
-  # - flash/bestseller/essential ดึงจาก FlagProduct + Product ใน database อย่างเดียว
 
   def banners
     [
@@ -36,13 +38,19 @@ class HomeController < ApplicationController
     SkinConcern.all
   end
 
+  def bestseller_tabs
+    [ "ทั้งหมด", "เซรั่ม", "ครีมบำรุงผิว", "กันแดด", "มอยส์เจอไรเซอร์" ]
+  end
+
+  def essential_products
+    base_products
+      .limit(20)
+      .map { |product| product_card_payload(product) }
+  end
+
   def flash_products
     flagged_products(:flash, limit: 10)
       .map { |fp| product_card_payload(fp.product, fp) }
-  end
-
-  def bestseller_tabs
-    [ "ทั้งหมด", "เซรั่ม", "ครีมบำรุงผิว", "กันแดด", "มอยส์เจอไรเซอร์" ]
   end
 
   def bestsellers
@@ -50,18 +58,24 @@ class HomeController < ApplicationController
       .map { |fp| bestseller_payload(fp.product, fp) }
   end
 
-  def essential_products
-    Product.all
-      .map { |product| product_card_payload(product) }
+  def base_products
+    Product
+      .joins(:store)
+      .merge(Seller::Store.active)
+      .with_attached_images
   end
 
   def flagged_products(flag_type, limit:)
-    FlagProduct.for_home_section(flag_type, limit: limit)
+    FlagProduct
+      .for_home_section(flag_type, limit: limit)
+      .joins(product: :store)
+      .merge(Seller::Store.active)
+      .includes(product: { images_attachments: :blob })
   end
 
   def product_card_payload(product, flag_product = nil)
     original_price = money_to_baht(flag_product&.original_amount_cents)
-    price = money_to_baht(product.amount_cents)
+    price          = money_to_baht(product.amount_cents)
 
     {
       id: product.id,
@@ -84,9 +98,15 @@ class HomeController < ApplicationController
     }
   end
 
+  def product_image_url(product)
+    return nil unless product.images.attached?
+
+    helpers.rails_blob_path(product.images.first, only_path: true)
+  end
+
   def discount_percent(price:, original_price:)
     return nil if price.blank? || original_price.blank?
-    return nil unless original_price.to_i.positive? && original_price.to_i > price.to_i
+    return nil unless original_price.to_i > price.to_i
 
     (((original_price.to_f - price.to_f) / original_price.to_f) * 100).round
   end
@@ -95,11 +115,5 @@ class HomeController < ApplicationController
     return nil if amount_cents.nil?
 
     (amount_cents.to_i / 100.0).round
-  end
-
-  def product_image_url(product)
-    return nil unless product.images.attached?
-
-    helpers.rails_blob_path(product.images.first, only_path: true)
   end
 end
