@@ -54,8 +54,19 @@ class HomeController < ApplicationController
   end
 
   def bestsellers
-    flagged_products(:bestseller, limit: 10)
-      .map { |fp| bestseller_payload(fp.product, fp) }
+    # flagged_products(:bestseller, limit: 10)
+    #   .map { |fp| bestseller_payload(fp.product, fp) }
+    Product
+      .joins(order_items: :order)
+      .joins(:store)
+      .merge(Seller::Store.active)
+      .where(orders: { status: "paid" })
+      .group("products.id")
+      .reorder(nil)
+      .order(Arel.sql("SUM(order_items.quantity) DESC"))
+      .limit(5)
+      .with_attached_images
+      .map { |product| bestseller_payload(product) }
   end
 
   def base_products
