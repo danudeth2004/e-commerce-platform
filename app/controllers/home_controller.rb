@@ -51,9 +51,7 @@ class HomeController < ApplicationController
   end
 
   def essential_products
-    Product
-      .includes(images_attachments: :blob)
-      .limit(4)
+    Product.all
       .map { |product| product_card_payload(product) }
   end
 

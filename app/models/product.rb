@@ -21,6 +21,8 @@ class Product < ApplicationRecord
   validates :amount_currency, presence: true
   validates :category_key, presence: true, inclusion: { in: ProductCategory.keys }
 
+  default_scope -> { order(created_at: :desc) }
+
   private
 
   def assign_defaults
