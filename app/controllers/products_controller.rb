@@ -6,7 +6,7 @@ class ProductsController < ApplicationController
     @category_key = params[:category].presence
     @category_key = nil unless ProductCategory.keys.include?(@category_key)
 
-    @products = Product.all
+    @products = Product.joins(:store).merge(Seller::Store.active)
     @products = @products.where(skin_concern_key: @skin_concern_key) if @skin_concern_key.present?
     @products = @products.where(category_key: @category_key) if @category_key.present?
 
