@@ -6,9 +6,9 @@
     <%= link_to "ดูทั้งหมด", products_path, class: "text-sm text-Primary-color font-medium" %>
   </div>
 
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
     <% products.each do |product| %>
-      <%= render "shared/product_card", product: product %>
+      <%= render "shared/product_card", product: product, full_width: true %>
     <% end %>
   </div>
 </section>

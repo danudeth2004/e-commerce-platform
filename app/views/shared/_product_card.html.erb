@@ -14,7 +14,7 @@
 <% link_opts[:data] = { controller: "product-card", product_id: product[:id] } if show_cart %>
 <%= link_to product_path(product[:id]), **link_opts do %>
   <%# Product Image %>
-  <div class="relative w-full <%= size == 'large' ? 'aspect-square' : 'h-32' %> bg-gray-50 flex items-center justify-center overflow-hidden">
+  <div class="relative w-full aspect-[4/4] bg-gray-50 flex items-center justify-center overflow-hidden">
     <% if product[:image_url].present? %>
       <%= image_tag product[:image_url],
             class: "w-full h-full object-contain p-2",
