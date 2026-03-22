@@ -1,4 +1,4 @@
-<%= form_with model: [ :seller, product ], html: { data: { product_form_target: "form" } } do |form| %>
+<%= form_with model: [ :seller, product ], html: { multipart: true, data: { product_form_target: "form" } } do |form| %>
   <%= render "form_step_one", form: form %>
   <%= render "form_step_two", form: form, product: product %>
   <%= render "confirm_modal" %>

@@ -65,7 +65,7 @@
                          desc: product.description.to_s,
                          price: product.amount_cents / 100,
                          original_price: nil,
-                         image_url: (product.images.attached? ? url_for(product.images.first) : nil),
+                         image_url: (rails_blob_path(product.images.first, only_path: true) if product.images.first.present?),
                          discount_percent: nil
                        },
                        show_cart: false,

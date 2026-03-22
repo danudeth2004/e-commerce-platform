@@ -71,7 +71,6 @@ export default class ProductImagesController extends Controller {
   picked(event) {
     const { files } = event.target
     if (files?.length) this.addFiles(files)
-    event.target.value = ""
   }
 
   clearError() {

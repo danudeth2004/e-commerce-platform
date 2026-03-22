@@ -69,5 +69,5 @@ Rails.application.routes.draw do
   get "products", to: "products#index", as: :products
   get "products/:id", to: "home#show", as: :product
 
-  match "*path", to: redirect("/"), via: :all
+  match "*path", to: redirect("/"), via: :all, constraints: ->(req) { !req.path.start_with?("/rails/active_storage") }
 end
