@@ -16,4 +16,6 @@ class Seller::Store < ApplicationRecord
     inactive: "inactive",
     suspended: "suspended"
   }
+
+  default_scope -> { order(id: :asc) }
 end
