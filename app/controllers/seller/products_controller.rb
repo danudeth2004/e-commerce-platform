@@ -25,7 +25,7 @@ module Seller
       current_seller_user.store ||
         current_seller_user.create_store!(
           name: "Glad2Glow Official Store",
-          location: current_seller_user.location.presence || "Bangkok, Thailand"
+          location: "Bangkok, Thailand"
         )
     end
 
