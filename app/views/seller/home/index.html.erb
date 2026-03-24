@@ -75,7 +75,8 @@
                     </button>
 
                     <div class="hidden absolute right-0 mt-1 w-40 rounded-xl shadow-lg bg-white ring-1 ring-black/5 py-1 text-xs" data-menu-target="panel">
-                        <%= button_tag type: "button", class: "w-full text-left block px-4 py-2 text-gray-800 hover:bg-gray-50" do %>
+                        <%= link_to edit_seller_store_path(@store),
+                        class: "w-full text-left block px-4 py-2 text-gray-800 hover:bg-gray-50" do %>
                         แก้ไขโปรไฟล์ร้านค้า
                         <% end %>
                         <%= link_to new_seller_product_path,

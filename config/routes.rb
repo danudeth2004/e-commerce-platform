@@ -30,7 +30,7 @@ Rails.application.routes.draw do
     }
     
     resources :products, only: [ :new, :create ]
-    resources :stores, only: [ :new, :create ]
+    resources :stores, only: [ :new, :create, :edit, :update ]
 
     root "home#index"
   end

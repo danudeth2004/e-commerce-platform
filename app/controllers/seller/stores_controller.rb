@@ -1,8 +1,9 @@
 module Seller
   class StoresController < BaseController
     layout "devise"
-    skip_before_action :setup_store!, only: [:new, :create]
-    before_action :redirect_if_has_store
+    skip_before_action :setup_store!
+    before_action :set_store, only: [:edit, :update]
+    before_action :redirect_if_has_store, only: [:new, :create]
 
     def new
       @store = Seller::Store.new
@@ -21,7 +22,24 @@ module Seller
       end
     end
 
+    def edit
+    end
+
+    def update
+      if @store.update(store_params)
+        OmiseService::UpdateRecipient.new(store: @store).call
+
+        redirect_to seller_root_path, notice: "แก้ไขโปรไฟล์ร้านค้าสำเร็จ"
+      else
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
     private
+
+    def set_store
+      @store = Seller::Store.find(current_seller_user.store.id)
+    end
 
     def store_params
       params.require(:seller_store).permit(:name, :description, :location, :cover, :logo, :bank_code, :bank_number, :bank_name)
