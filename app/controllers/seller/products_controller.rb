@@ -1,7 +1,5 @@
 module Seller
   class ProductsController < BaseController
-    before_action :authenticate_seller_user!
-
     def new
       @store = ensure_store!
       @product = @store.products.new

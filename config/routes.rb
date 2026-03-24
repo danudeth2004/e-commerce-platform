@@ -28,8 +28,9 @@ Rails.application.routes.draw do
       registrations: "seller/users/registrations",
       sessions: "seller/users/sessions"
     }
-
+    
     resources :products, only: [ :new, :create ]
+    resources :stores, only: [ :new, :create ]
 
     root "home#index"
   end

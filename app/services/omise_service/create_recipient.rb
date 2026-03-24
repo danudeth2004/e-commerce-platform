@@ -10,17 +10,15 @@ module OmiseService
       recipient = Omise::Recipient.create(
         name: @store.name,
         type: "individual",
-        email: @store.seller_user.email,
+        email: @store.owner.email,
         bank_account: {
-          brand: "bbl",
-          number: "1234567890",
-          name: @store.name
+          brand: @store.bank_code,
+          number: @store.bank_number,
+          name: @store.bank_name
         }
       )
 
-      @store.update!(
-        omise_recipient_id: recipient.id
-      )
+      @store.update!(omise_recipient_id: recipient.id)
 
       recipient
     end
