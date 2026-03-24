@@ -49,11 +49,11 @@
     </div>
   </div>
   <div class="mb-8">
-    <%= form.label :promotion_price, "ราคาโปรโมชั่น", class: "block text-base font-regular text-text-primary mb-2" %>
+    <%= form.label :promotion, "ราคาโปรโมชั่น", class: "block text-base font-regular text-text-primary mb-2" %>
     <p class="text-xs text-text-neutral-300 mb-2">
       กรอกราคาขายหลังจากหักส่วนลดจากราคาเต็ม
     </p>
-    <%= form.number_field :promotion_price, step: 1, min: 0, placeholder: "ระบุราคาหลังลด", class: "w-full rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none", autocomplete: "off" %>
+    <%= form.number_field :promotion, step: 1, min: 0, placeholder: "ระบุราคาหลังลด", class: "w-full rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none", autocomplete: "off" %>
   </div>
   <button type="button" class="w-full py-3.5 rounded-full bg-[#FF1493] text-white text-sm font-semibold shadow-sm hover:opacity-95 active:scale-[0.99] transition" data-action="click->product-form#showStepTwo">
     ถัดไป

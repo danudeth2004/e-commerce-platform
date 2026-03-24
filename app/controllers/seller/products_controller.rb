@@ -1,14 +1,15 @@
 module Seller
   class ProductsController < BaseController
     layout "devise"
+    before_action :set_store, only: [:new, :create]
 
     def new
-      @store = ensure_store!
       @product = @store.products.new
     end
 
     def create
-      @store = ensure_store!
+      p "ก"
+      p product_params
       @product = @store.products.new(product_params)
 
       if @product.save
@@ -21,12 +22,8 @@ module Seller
 
     private
 
-    def ensure_store!
-      current_seller_user.store ||
-        current_seller_user.create_store!(
-          name: "Glad2Glow Official Store",
-          location: "Bangkok, Thailand"
-        )
+    def set_store
+      @store = Seller::Store.find(current_seller_user.store.id)
     end
 
     def product_params
@@ -34,13 +31,13 @@ module Seller
         :title,
         :sku,
         :amount,
+        :promotion,
         :description,
         :skin_concern_key,
         :category_key,
         :effect,
         :volume,
         :volume_unit,
-        :promotion_price,
         :usage,
         images: []
       )
@@ -48,6 +45,11 @@ module Seller
       if permitted[:amount].present?
         permitted[:amount_cents] = (permitted.delete(:amount).to_f * 100).to_i
         permitted[:amount_currency] = "THB"
+      end
+
+      if permitted[:promotion].present?
+        permitted[:promotion_cents] = (permitted.delete(:promotion).to_f * 100).to_i
+        permitted[:promotion_currency] = "THB"
       end
 
       permitted

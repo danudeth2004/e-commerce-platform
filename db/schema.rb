@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_24_151645) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_24_180230) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -138,11 +138,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_151645) do
     t.string "category_key"
     t.datetime "created_at", null: false
     t.text "description"
+    t.string "effect"
+    t.integer "promotion_cents", default: 0, null: false
+    t.string "promotion_currency", default: "THB", null: false
     t.bigint "seller_store_id", null: false
     t.string "skin_concern_key"
     t.string "sku", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.text "usage"
+    t.integer "volume"
+    t.string "volume_unit"
     t.index ["category_key"], name: "index_products_on_category_key"
     t.index ["seller_store_id"], name: "index_products_on_seller_store_id"
     t.index ["skin_concern_key"], name: "index_products_on_skin_concern_key"

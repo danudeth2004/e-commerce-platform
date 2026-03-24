@@ -2,6 +2,7 @@ class Product < ApplicationRecord
   belongs_to :store, class_name: "Seller::Store", foreign_key: :seller_store_id
 
   monetize :amount_cents
+  monetize :promotion_cents
   before_validation :assign_defaults
 
   has_many_attached :images
@@ -9,17 +10,12 @@ class Product < ApplicationRecord
   has_many :cart_items, dependent: :destroy
   has_many :order_items
 
-  attr_accessor :effect,
-                :skin_type,
-                :volume,
-                :volume_unit,
-                :promotion_price,
-                :usage
-
-  validates :title, presence: true
+  validates :title, :volume, :volume_unit, presence: true
   validates :sku, presence: true, uniqueness: true
   validates :amount_cents, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :amount_currency, presence: true
+  validates :promotion_cents, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :promotion_currency, presence: true
   validates :category_key, presence: true, inclusion: { in: ProductCategory.keys }
 
   default_scope -> { order(created_at: :desc) }
@@ -28,6 +24,7 @@ class Product < ApplicationRecord
 
   def assign_defaults
     self.amount_currency = "THB" if amount_currency.blank?
+    self.promotion_currency = "THB" if amount_currency.blank?
     self.sku = generate_sku if sku.blank?
   end
 
