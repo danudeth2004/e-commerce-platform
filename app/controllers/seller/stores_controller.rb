@@ -1,18 +1,16 @@
 module Seller
   class StoresController < BaseController
+    layout "devise"
+
     skip_before_action :setup_store!
     before_action :set_store, only: [:edit, :update]
     before_action :redirect_if_has_store, only: [:new, :create]
 
     def new
-      layout "devise"
-
       @store = Seller::Store.new
     end
 
     def create
-      layout "devise"
-
       @store = Seller::Store.new(store_params)
       @store.owner = current_seller_user
 

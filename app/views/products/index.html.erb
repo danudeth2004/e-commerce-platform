@@ -1,39 +1,42 @@
 <div class="w-full min-h-screen bg-white">
-  <div class="w-full max-w-screen-xl mx-auto px-4 py-6 space-y-4">
-    <% if @skin_concern_key.present? %>
-      <% concern = SkinConcern.all.find { |c| c[:key] == @skin_concern_key } %>
-      <h1 class="text-xl font-semibold text-text-primary">
-        สินค้าสำหรับ <%= concern&.dig(:label) || @skin_concern_key %>
-      </h1>
-    <% else %>
-      <h1 class="text-xl font-semibold text-text-primary">
-        สินค้าทั้งหมด
-      </h1>
-    <% end %>
+    <div class="w-full max-w-screen-xl mx-auto px-4 py-6 space-y-4">
+        <% if @skin_concern_key.present? %>
+        <% concern = SkinConcern.all.find { |c| c[:key] == @skin_concern_key } %>
+        <h1 class="text-xl font-semibold text-text-primary">
+            สินค้าสำหรับ <%= concern&.dig(:label) || @skin_concern_key %>
+        </h1>
+        <% else %>
+        <h1 class="text-xl font-semibold text-text-primary">
+            สินค้าทั้งหมด
+        </h1>
+        <% end %>
 
-    <%= render "shared/product_category_filter",
-               current_category_key: @category_key,
-               path_proc: lambda { |key|
-                 opts = {}
-                 opts[:skin_concern] = @skin_concern_key if @skin_concern_key.present?
-                 opts[:category] = key if key.present?
-                 products_path(opts)
-               } %>
+        <%= turbo_frame_tag "products_frame" do %>
+        <%= render "shared/product_category_filter",
+             current_category_key: @category_key,
+             path_proc: lambda { |key|
+               opts = {}
+               opts[:skin_concern] = @skin_concern_key if @skin_concern_key.present?
+               opts[:category] = key if key.present?
+               products_path(opts)
+             } %>
 
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-      <% @products.each do |product| %>
-        <%= render "shared/product_card",
-                   product: {
-                     id: product.id,
-                     name: product.title,
-                     desc: product.description,
-                     price: product.amount_cents / 100,
-                     original_price: nil,
-                     image_url: (rails_blob_path(product.images.first, only_path: true) if product.images.first.present?),
-                     discount_percent: nil,
-                   },
-                   full_width: true %>
-      <% end %>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mt-3">
+            <% @products.each do |product| %>
+            <%= render "shared/product_card",
+                 product: {
+                   id: product.id,
+                   name: product.title,
+                   desc: product.description,
+                   price: product.amount_cents / 100,
+                   original_price: nil,
+                   image_url: (rails_blob_path(product.images.first, only_path: true) if product.images.first.present?),
+                   discount_percent: nil,
+                 },
+                 full_width: true %>
+            <% end %>
+        </div>
+        <% end %>
     </div>
-  </div>
+</div>
 </div>

@@ -1,4 +1,3 @@
-<%# Reusable category pills. Pass (current_category_key), (path_proc). path_proc.call(nil) = ทั้งหมด %>
 <% path_proc = local_assigns.fetch(:path_proc) %>
 <% current = current_category_key.presence %>
 <nav class="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 -mx-0.5 px-0.5" aria-label="กรองประเภทสินค้า">
@@ -7,7 +6,8 @@
               class: [
                 "shrink-0 rounded-lg px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors",
                 all_active ? "text-white bg-[#FF1493]" : "text-gray-400 hover:text-gray-600"
-              ].join(" ") do %>
+              ].join(" "),
+              data: { turbo_frame: "products_frame" } do %>
     ทั้งหมด
   <% end %>
   <% ProductCategory.all.each do |cat| %>
@@ -16,7 +16,8 @@
                 class: [
                   "shrink-0 rounded-lg px-3.5 py-1.5 text-xs whitespace-nowrap transition-colors",
                   active ? "font-semibold text-white bg-[#FF1493]" : "font-medium text-gray-400 hover:text-gray-600"
-                ].join(" ") do %>
+                ].join(" "),
+                data: { turbo_frame: "products_frame" } do %>
       <%= cat[:label] %>
     <% end %>
   <% end %>

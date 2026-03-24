@@ -8,11 +8,12 @@
 <% size ||= "small" %>
 <% show_cart = local_assigns.fetch(:show_cart, true) %>
 <% full_width = local_assigns.fetch(:full_width, false) %>
+<% link_to_path = local_assigns.fetch(:link_to_path, product_path(product[:id])) %>
 <% card_class = [ full_width ? "w-full" : "shrink-0 w-40",
                   "bg-white rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-200" ].join(" ") %>
 <% link_opts = { class: card_class, style: "box-shadow: 0 1px 4px 0 rgba(0,0,0,0.06), 0 4px 10px 0 rgba(0,0,0,0.06)" } %>
 <% link_opts[:data] = { controller: "product-card", product_id: product[:id] } if show_cart %>
-<%= link_to product_path(product[:id]), **link_opts do %>
+<%= link_to link_to_path, **link_opts, data: { turbo_frame: "_top" } do %>
   <%# Product Image %>
   <div class="relative w-full aspect-[4/4] bg-gray-50 flex items-center justify-center overflow-hidden">
     <% if product[:image_url].present? %>
