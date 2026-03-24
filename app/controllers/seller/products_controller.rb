@@ -1,5 +1,7 @@
 module Seller
   class ProductsController < BaseController
+    layout "devise"
+
     def new
       @store = ensure_store!
       @product = @store.products.new
