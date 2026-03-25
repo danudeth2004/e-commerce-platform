@@ -35,9 +35,17 @@ class Users::SessionsController < Devise::SessionsController
   end
 
   # DELETE /resource/sign_out
-  # def destroy
-  #   super
-  # end
+  def destroy
+    if current_seller_user
+      sign_out(:seller_user)
+      redirect_to user_session_path and return
+    elsif current_user
+      sign_out(:user)
+      redirect_to root_path and return
+    end
+
+    redirect_to root_path
+  end
 
   # protected
 

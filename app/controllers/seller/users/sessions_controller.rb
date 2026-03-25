@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Seller::Users::SessionsController < Devise::SessionsController
-  layout "seller"
+  layout "devise"
 
   # before_action :configure_sign_in_params, only: [:create]
 
