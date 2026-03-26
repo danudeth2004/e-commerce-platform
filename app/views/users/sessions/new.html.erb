@@ -14,7 +14,9 @@
 
       <div class="mb-4">
         <%= f.label :email, "ที่อยู่อีเมล",
-            class: "block text-base font-regular text-text-primary mb-2" %>
+            class: "block text-base font-regular text-text-primary mb-2" do %>
+            ที่อยู่อีเมล <span class="text-red-500">*</span>
+            <% end %>
 
         <div class="relative">
             <span class="absolute inset-y-0 left-3 flex items-center text-gray-300">
@@ -38,8 +40,9 @@
 
      <div class="mb-6">
   <%= f.label :password, "รหัสผ่าน",
-    class: "block text-base font-regular text-text-primary mb-2" %>
-
+    class: "block text-base font-regular text-text-primary mb-2" do %>
+    รหัสผ่าน <span class="text-red-500">*</span>
+  <% end %>
   <div class="relative">
     <span class="absolute inset-y-0 left-3 flex items-center text-gray-300">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6"

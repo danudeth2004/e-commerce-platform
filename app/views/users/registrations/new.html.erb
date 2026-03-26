@@ -15,8 +15,10 @@
       <div class="grid grid-cols-2 gap-3 mb-4">
 
         <div>
-          <%= f.label :first_name, "ชื่อ",
-            class: "block text-base font-regular text-text-primary mb-2" %>
+          <%= f.label :first_name, "ชื่อ ",
+            class: "block text-base font-regular text-text-primary mb-2" do %>
+            ชื่อ <span class="text-red-500">*</span>
+          <% end %>
 
           <%= f.text_field :first_name,
             required: true,
@@ -25,8 +27,10 @@
         </div>
 
         <div>
-          <%= f.label :last_name, "นามสกุล",
-            class: "block text-base font-regular text-text-primary mb-2" %>
+          <%= f.label :last_name, "นามสกุล ",
+            class: "block text-base font-regular text-text-primary mb-2" do %>
+            นามสกุล <span class="text-red-500">*</span>
+          <% end %>
 
           <%= f.text_field :last_name,
             required: true,
@@ -47,7 +51,9 @@
 
       <div class="mb-4">
         <%= f.label :phone_number, "เบอร์โทรศัพท์",
-          class: "block text-base font-regular text-text-primary mb-2" %>
+          class: "block text-base font-regular text-text-primary mb-2" do%>
+          เบอร์โทรศัพท์ <span class="text-red-500">*</span>
+          <% end %>
 
         <%= f.text_field :phone_number,
           required: true,
@@ -57,7 +63,9 @@
 
       <div class="mb-4">
         <%= f.label :email, "ที่อยู่อีเมล",
-          class: "block text-base font-regular text-text-primary mb-2" %>
+          class: "block text-base font-regular text-text-primary mb-2" do%>
+          ที่อยู่อีเมล <span class="text-red-500">*</span>
+          <% end %>
 
         <%= f.email_field :email,
           autocomplete: "email",
@@ -68,7 +76,9 @@
 
       <div class="mb-4">
         <%= f.label :password, "รหัสผ่าน",
-          class: "block text-base font-regular text-text-primary mb-2" %>
+          class: "block text-base font-regular text-text-primary mb-2" do %>
+          รหัสผ่าน <span class="text-red-500">*</span>
+        <% end %>
 
         <% if @minimum_password_length %>
           <p class="text-xs text-gray-400 mb-2">
@@ -85,7 +95,9 @@
 
       <div class="mb-6">
         <%= f.label :password_confirmation, "ยืนยันรหัสผ่าน",
-          class: "block text-base font-regular text-text-primary mb-2" %>
+          class: "block text-base font-regular text-text-primary mb-2" do%>
+          ยืนยันรหัสผ่าน <span class="text-red-500">*</span>
+          <% end %>
 
         <%= f.password_field :password_confirmation,
           required: true,

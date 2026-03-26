@@ -45,4 +45,10 @@ module.exports = {
       },
     },
   },
+  variants: {
+    extend: {
+      textColor: ['invalid', 'valid'],
+    },
+  },
+  plugins: [],
 };

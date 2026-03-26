@@ -2,3 +2,12 @@
 
 @import "tailwindcss";
 
+@layer components {
+  select:invalid {
+    color: #9ca3af; /* gray-400 */
+  }
+
+  select:valid {
+    color: #111827; /* gray-900 */
+  }
+}
