@@ -1,0 +1,23 @@
+<section class="w-full max-w-md mx-auto text-center" aria-labelledby="empty-marketplace-heading">
+  <div class="rounded-3xl border border-pink-100 bg-gradient-to-br from-pink-50/90 via-white to-white px-6 py-12 shadow-sm">
+    <div class="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-4xl shadow-inner shadow-pink-100/80" aria-hidden="true">
+      🏪
+    </div>
+    <h1 id="empty-marketplace-heading" class="text-xl font-semibold text-text-primary">
+      ยังไม่มีสินค้าในขณะนี้
+    </h1>
+    <p class="mt-3 text-sm text-text-neutral-300 font-light leading-relaxed">
+      เรากำลังเปิดรับร้านค้ามาขายบนแพลตฟอร์ม
+      คุณสามารถเริ่มเปิดร้านและเพิ่มสินค้าได้ที่นี่
+    </p>
+    <div class="mt-8">
+      <%= link_to "เปิดร้านค้ากับเรา", new_seller_user_registration_path,
+          class: "inline-flex w-full sm:w-auto items-center justify-center rounded-full bg-gradient-to-r from-pink-500 to-pink-600 px-8 py-3.5 text-base font-medium text-white shadow-lg shadow-pink-200/60 hover:opacity-95 active:scale-[0.99] transition" %>
+    </div>
+    <p class="mt-6 text-sm text-text-neutral-300 font-light">
+      มีบัญชีผู้ขายแล้ว ?
+      <%= link_to "เข้าสู่ระบบผู้ขาย", new_seller_user_session_path,
+          class: "font-medium text-pink-600 hover:underline" %>
+    </p>
+  </div>
+</section>

@@ -6,6 +6,8 @@ class HomeController < ApplicationController
     @bestsellers        = bestsellers
     @bestseller_tabs    = bestseller_tabs
     @essential_products = essential_products
+    @marketplace_has_products = base_products.exists?
+    @hide_app_header = !@marketplace_has_products
 
     @show_payment_success_modal = flash[:payment_success] == true
     flash.delete(:payment_success)

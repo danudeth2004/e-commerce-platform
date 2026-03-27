@@ -3,12 +3,20 @@
     <h2 class="text-xl font-semibold text-text-primary">
       สินค้าทั้งหมดที่น่าสนใจ
     </h2>
-    <%= link_to "ดูทั้งหมด", products_path, class: "text-sm text-Primary-color font-medium" %>
-  </div>
-
-  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-    <% products.each do |product| %>
-      <%= render "shared/product_card", product: product, full_width: true %>
+    <% if products.any? %>
+      <%= link_to "ดูทั้งหมด", products_path, class: "text-sm text-Primary-color font-medium" %>
     <% end %>
   </div>
+
+  <% if products.any? %>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <% products.each do |product| %>
+        <%= render "shared/product_card", product: product, full_width: true %>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-sm text-text-neutral-300 font-light text-center py-8 rounded-2xl border border-dashed border-gray-200 bg-gray-50/50">
+      ยังไม่มีสินค้าในหมวดนี้
+    </p>
+  <% end %>
 </section>
