@@ -32,7 +32,7 @@ module Orders
           title: product.title,
           sku: product.sku,
           quantity: item.quantity,
-          amount_cents: product.amount_cents
+          amount_cents: product.final_price_cents
         )
       end
     end

@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include ProductDisplayHelper
   def current_cart_item_count
     return 0 unless user_signed_in?
 

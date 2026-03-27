@@ -1,12 +1,20 @@
+<% flash_products = local_assigns.fetch(:flash_products) %>
+<% flash_countdown_end_unix = local_assigns.fetch(:flash_countdown_end_unix) %>
 <section class="rounded-l-2xl">
   <div class="rounded-l-2xl p-4 bg-Secondary-color bg-opacity-20">
     <h2 class="text-xl font-semibold text-text-primary text-center mb-3">สินค้าราคาพิเศษสำหรับวันนี้</h2>
-    <div class="flex items-center justify-center gap-2 mb-4" data-controller="countdown" data-countdown-end-value="<%= (Time.now.end_of_day).to_i %>">
-      <div class="bg-gray-600 text-white p-2 rounded-xl min-w-[44px] text-center" data-countdown-target="hours">24</div>
+    <% end_ts = flash_countdown_end_unix %>
+    <% rem = [ end_ts - Time.current.to_i, 0 ].max %>
+    <% h0, m0, s0 = rem / 3600, (rem % 3600) / 60, rem % 60 %>
+    <p class="text-center text-xs text-text-neutral-300 mb-2">
+      นับถอยหลังถึงเวลาที่โปรสิ้นสุดเร็วที่สุดในกลุ่มนี้ (หรือสิ้นวันถ้าไม่ได้กำหนดเวลา)
+    </p>
+    <div class="flex items-center justify-center gap-2 mb-4" data-controller="countdown" data-countdown-end-value="<%= end_ts %>">
+      <div class="bg-gray-600 text-white p-2 rounded-xl min-w-[44px] text-center tabular-nums" data-countdown-target="hours"><%= h0 < 100 ? format("%02d", h0) : h0 %></div>
       <span class="text-gray-600 font-bold text-lg">:</span>
-      <div class="bg-gray-600 text-white p-2 rounded-xl min-w-[44px] text-center" data-countdown-target="minutes">59</div>
+      <div class="bg-gray-600 text-white p-2 rounded-xl min-w-[44px] text-center tabular-nums" data-countdown-target="minutes"><%= format("%02d", m0) %></div>
       <span class="text-gray-600 font-bold text-lg">:</span>
-      <div class="bg-gray-600 text-white p-2 rounded-xl min-w-[44px] text-center" data-countdown-target="seconds">59</div>
+      <div class="bg-gray-600 text-white p-2 rounded-xl min-w-[44px] text-center tabular-nums" data-countdown-target="seconds"><%= format("%02d", s0) %></div>
     </div>
     <div class="flex gap-3 overflow-x-auto pb-1" style="-ms-overflow-style:none; scrollbar-width:none;">
       <% flash_products.each do |product| %>

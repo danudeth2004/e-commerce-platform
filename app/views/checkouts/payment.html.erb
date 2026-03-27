@@ -53,7 +53,8 @@
             <% product = oi.product %>
             <% fp = @promo_flag_by_product_id[product.id] %>
             <% line_cents = oi.amount_cents * oi.quantity %>
-            <% orig_unit = fp && fp.original_amount_cents.to_i > oi.amount_cents ? fp.original_amount_cents : nil %>
+            <% list_unit_cents = [ product.amount_cents, fp&.original_amount_cents.to_i ].compact.max %>
+            <% orig_unit = list_unit_cents > oi.amount_cents ? list_unit_cents : nil %>
             <% pct =
                  if orig_unit
                    (((orig_unit - oi.amount_cents).to_f / orig_unit) * 100).round

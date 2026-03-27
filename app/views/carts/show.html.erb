@@ -22,7 +22,7 @@
     <% end %>
   </div>
   <% if @cart_items.any? %>
-    <% total_cents = @cart_items.sum { |i| i.product.amount_cents * i.quantity } %>
+    <% total_cents = @cart_items.sum { |i| i.product.final_price_cents * i.quantity } %>
     <%= render "carts/summary_bar", total_cents: total_cents %>
   <% end %>
 </div>

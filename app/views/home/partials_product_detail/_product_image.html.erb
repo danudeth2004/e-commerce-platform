@@ -1,10 +1,7 @@
-<% price = (product.amount_cents.to_i / 100.0).round %>
-<% flash_flag = product.flag_products.flash.first %>
-<% original_price = flash_flag&.original_amount_cents ? (flash_flag.original_amount_cents / 100.0).round : nil %>
-<% discount_percent =
-     if original_price.present? && original_price > price
-       (((original_price - price).to_f / original_price) * 100).round
-     end %>
+<% p = product_detail_price_parts(product) %>
+<% price = p[:price] %>
+<% original_price = p[:original] %>
+<% discount_percent = p[:discount_percent] %>
 <div class="relative bg-gradient-to-br from-pink-50 to-purple-50 px-8 py-6">
   <% if product.images.attached? %>
     <%= image_tag product.images.first, class: "w-full h-auto object-contain" %>

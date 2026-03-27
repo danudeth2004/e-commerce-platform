@@ -24,19 +24,10 @@
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mt-3">
             <% @products.each do |product| %>
             <%= render "shared/product_card",
-                 product: {
-                   id: product.id,
-                   name: product.title,
-                   desc: product.description,
-                   price: product.amount_cents / 100,
-                   original_price: nil,
-                   image_url: (rails_blob_path(product.images.first, only_path: true) if product.images.first.present?),
-                   discount_percent: nil,
-                 },
+                 product: product_to_card_hash(product),
                  full_width: true %>
             <% end %>
         </div>
         <% end %>
     </div>
-</div>
 </div>

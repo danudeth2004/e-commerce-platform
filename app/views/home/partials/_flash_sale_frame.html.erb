@@ -1,0 +1,12 @@
+<% products = local_assigns.fetch(:flash_products) %>
+<% countdown_end_unix = local_assigns.fetch(:flash_countdown_end_unix) %>
+<%= turbo_frame_tag "flash_sale",
+      data: {
+        controller: "flash-sale-live",
+        action: "countdown:complete->flash-sale-live#refresh",
+        "flash-sale-live-refresh-url-value": home_flash_sale_path
+      } do %>
+  <% if products.any? %>
+    <%= render "home/partials/flash_sale", flash_products: products, flash_countdown_end_unix: countdown_end_unix %>
+  <% end %>
+<% end %>

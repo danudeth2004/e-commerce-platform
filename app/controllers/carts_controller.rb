@@ -68,7 +68,7 @@ class CartsController < ApplicationController
       .each_with_object({}) do |fp, memo|
         product = fp.product
         next unless product
-        next unless fp.original_amount_cents.to_i > product.amount_cents
+        next unless fp.original_amount_cents.to_i > product.final_price_cents
 
         memo[fp.product_id] ||= fp
       end

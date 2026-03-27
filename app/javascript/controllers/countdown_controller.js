@@ -5,6 +5,7 @@ export default class extends Controller {
   static values  = { end: Number }
 
   connect() {
+    this.completeDispatched = false
     this.tick()
     this.timer = setInterval(() => this.tick(), 1000)
   }
@@ -21,10 +22,16 @@ export default class extends Controller {
     const m = Math.floor((remaining % 3600) / 60)
     const s = remaining % 60
 
-    this.hoursTarget.textContent   = String(h).padStart(2, "0")
+    this.hoursTarget.textContent   = h < 100 ? String(h).padStart(2, "0") : String(h)
     this.minutesTarget.textContent = String(m).padStart(2, "0")
     this.secondsTarget.textContent = String(s).padStart(2, "0")
 
-    if (remaining === 0) clearInterval(this.timer)
+    if (remaining === 0) {
+      clearInterval(this.timer)
+      if (!this.completeDispatched) {
+        this.completeDispatched = true
+        this.dispatch("complete", { bubbles: true })
+      }
+    }
   }
 }

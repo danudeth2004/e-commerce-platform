@@ -2,7 +2,7 @@ class HomeController < ApplicationController
   def index
     @banners            = banners
     @skin_concerns      = skin_concerns
-    @flash_products     = flash_products
+    assign_flash_sale!
     @bestsellers        = bestsellers
     @bestseller_tabs    = bestseller_tabs
     @essential_products = essential_products
@@ -26,7 +26,18 @@ class HomeController < ApplicationController
     @product_bottom_bar  = @product
   end
 
+  def flash_sale
+    assign_flash_sale!
+    render layout: false
+  end
+
   private
+
+  def assign_flash_sale!
+    @flash_sale_entries = build_flash_sale_entries
+    @flash_products = @flash_sale_entries.map { |product, fp| product_card_payload(product, fp) }
+    @flash_countdown_end_unix = flash_sale_countdown_end_unix(@flash_sale_entries.map(&:first))
+  end
 
   def banners
     [
@@ -50,9 +61,42 @@ class HomeController < ApplicationController
       .map { |product| product_card_payload(product) }
   end
 
-  def flash_products
-    flagged_products(:flash, limit: 10)
-      .map { |fp| product_card_payload(fp.product, fp) }
+  # [[product, flag_product|nil], ...] — 1) FlagProduct flash 2) สินค้าลดราคาจริง
+  def build_flash_sale_entries
+    flagged = flagged_products(:flash, limit: 10)
+    if flagged.any?
+      return flagged.map { |fp| [ fp.product, fp ] }
+    end
+
+    time = Time.current
+    out = []
+    base_products.includes(:campaigns).find_each do |product|
+      next unless product.final_price_cents(time) < product.amount_cents
+
+      out << [ product, nil ]
+      break if out.size >= 10
+    end
+    out
+  end
+
+  # เวลาสิ้นสุดที่ใกล้ที่สุดจากโปรสินค้า (promotion_ends_at) + แคมเปญที่เกี่ยวข้อง — ใช้นับถอยหลังจริง
+  def flash_sale_countdown_end_unix(products)
+    time = Time.zone.now
+    return time.end_of_day.to_i if products.blank?
+
+    candidates = []
+    products.each do |p|
+      next unless p.final_price_cents(time) < p.amount_cents
+
+      candidates << p.promotion_ends_at if p.promotion_ends_at.present? && p.promotion_ends_at > time
+
+      p.campaigns.active_at(time).each do |c|
+        candidates << c.ends_at if c.ends_at > time
+      end
+    end
+
+    earliest = candidates.compact.min
+    earliest ? earliest.to_i : time.end_of_day.to_i
   end
 
   def bestsellers
@@ -87,46 +131,18 @@ class HomeController < ApplicationController
   end
 
   def product_card_payload(product, flag_product = nil)
-    original_price = money_to_baht(flag_product&.original_amount_cents)
-    price          = money_to_baht(product.amount_cents)
-
-    {
-      id: product.id,
-      name: product.title,
-      desc: product.description,
-      price:,
-      original_price:,
-      discount_percent: discount_percent(price:, original_price:),
-      image_url: product_image_url(product)
-    }
+    helpers.product_to_card_hash(product, flag_product: flag_product)
   end
 
   def bestseller_payload(product, flag_product = nil)
+    h = helpers.product_to_card_hash(product, flag_product: flag_product)
     {
-      brand: product.title,
-      desc: product.description,
-      price: money_to_baht(product.amount_cents),
-      original_price: money_to_baht(flag_product&.original_amount_cents),
-      image_url: product_image_url(product)
+      brand: h[:name],
+      desc: h[:desc],
+      price: h[:price],
+      original_price: h[:original_price],
+      image_url: h[:image_url]
     }
   end
 
-  def product_image_url(product)
-    return nil unless product.images.attached?
-
-    helpers.rails_blob_path(product.images.first, only_path: true)
-  end
-
-  def discount_percent(price:, original_price:)
-    return nil if price.blank? || original_price.blank?
-    return nil unless original_price.to_i > price.to_i
-
-    (((original_price.to_f - price.to_f) / original_price.to_f) * 100).round
-  end
-
-  def money_to_baht(amount_cents)
-    return nil if amount_cents.nil?
-
-    (amount_cents.to_i / 100.0).round
-  end
 end

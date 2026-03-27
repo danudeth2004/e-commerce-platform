@@ -4,7 +4,9 @@
       <%= render "home/partials/banner", banners: @banners %>
       <%= render "home/partials/skin_concern", skin_concerns: @skin_concerns %>
       <% if @flash_products.any? %>
-        <%= render "home/partials/flash_sale", flash_products: @flash_products %>
+        <%= render "home/partials/flash_sale_frame",
+                    flash_products: @flash_products,
+                    flash_countdown_end_unix: @flash_countdown_end_unix %>
       <% end %>
       <% if @bestsellers.any? %>
         <%= render "home/partials/bestseller", bestsellers: @bestsellers, tabs: @bestseller_tabs %>

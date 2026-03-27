@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_24_180230) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_28_120002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,6 +52,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_180230) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admin_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
+  end
+
+  create_table "campaign_products", force: :cascade do |t|
+    t.bigint "campaign_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "product_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["campaign_id", "product_id"], name: "index_campaign_products_on_campaign_id_and_product_id", unique: true
+    t.index ["campaign_id"], name: "index_campaign_products_on_campaign_id"
+    t.index ["product_id"], name: "index_campaign_products_on_product_id"
+  end
+
+  create_table "campaigns", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "discount_percent", default: 0, null: false
+    t.datetime "ends_at", null: false
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "starts_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_campaigns_on_slug", unique: true
+    t.index ["starts_at", "ends_at"], name: "index_campaigns_on_starts_at_and_ends_at"
   end
 
   create_table "cart_items", force: :cascade do |t|
@@ -141,6 +163,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_180230) do
     t.string "effect"
     t.integer "promotion_cents", default: 0, null: false
     t.string "promotion_currency", default: "THB", null: false
+    t.datetime "promotion_ends_at"
+    t.datetime "promotion_starts_at"
     t.bigint "seller_store_id", null: false
     t.string "skin_concern_key"
     t.string "sku", null: false
@@ -205,6 +229,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_24_180230) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "campaign_products", "campaigns"
+  add_foreign_key "campaign_products", "products"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "users"

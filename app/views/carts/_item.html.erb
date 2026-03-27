@@ -1,12 +1,20 @@
 <% product = item.product %>
 <% promo_map = local_assigns.fetch(:promo_flag_by_product_id) %>
 <% promo = promo_map[product.id] %>
-<% line_cents = product.amount_cents * item.quantity %>
-<% unit_baht = product.amount_cents / 100 %>
-<% orig_baht = promo ? promo.original_amount_cents / 100 : nil %>
+<% unit_pay_cents = product.final_price_cents %>
+<% line_cents = unit_pay_cents * item.quantity %>
+<% unit_baht = unit_pay_cents / 100 %>
+<% list_baht = product.amount_cents / 100 %>
+<% orig_from_flag = promo ? promo.original_amount_cents / 100 : nil %>
+<% orig_baht =
+     if orig_from_flag && orig_from_flag > unit_baht
+       orig_from_flag
+     elsif list_baht > unit_baht
+       list_baht
+     end %>
 <% discount_pct =
-     if promo && promo.original_amount_cents.to_i.positive?
-       (((promo.original_amount_cents - product.amount_cents).to_f / promo.original_amount_cents) * 100).round
+     if orig_baht && orig_baht > unit_baht
+       (((orig_baht - unit_baht).to_f / orig_baht) * 100).round
      end %>
 
 <div class="rounded-2xl border border-gray-100 bg-white p-3 shadow-[0_1px_8px_rgba(0,0,0,0.06)]">

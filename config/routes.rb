@@ -5,6 +5,8 @@ Rails.application.routes.draw do
       sessions: "admin/users/sessions"
     }
 
+    resources :campaigns, except: [ :show ]
+
     resources :order_store_payouts, only: [ :index, :show ] do
       post :pay
     end
@@ -69,6 +71,8 @@ Rails.application.routes.draw do
   end
   get "products", to: "products#index", as: :products
   get "products/:id", to: "home#show", as: :product
+
+  get "home/flash_sale", to: "home#flash_sale", as: :home_flash_sale
 
   match "*path", to: redirect("/"), via: :all, constraints: ->(req) { !req.path.start_with?("/rails/active_storage") }
 end

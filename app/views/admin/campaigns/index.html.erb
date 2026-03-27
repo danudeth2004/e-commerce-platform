@@ -1,0 +1,38 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-2xl font-bold text-gray-900">แคมเปญลดราคา</h1>
+    <%= link_to "สร้างแคมเปญ", new_admin_campaign_path, class: "rounded-lg bg-blue-600 text-white px-4 py-2 text-sm font-medium hover:bg-blue-700" %>
+  </div>
+
+  <table class="min-w-full divide-y divide-gray-200 border">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">ชื่อ</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">เริ่ม</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">สิ้นสุด</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">ส่วนลด %</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">สินค้า</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700"></th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-100">
+      <% @campaigns.each do |c| %>
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-2 text-sm text-gray-800"><%= c.name %></td>
+          <td class="px-4 py-2 text-sm text-gray-600"><%= c.starts_at.strftime("%d/%m/%Y %H:%M") %></td>
+          <td class="px-4 py-2 text-sm text-gray-600"><%= c.ends_at.strftime("%d/%m/%Y %H:%M") %></td>
+          <td class="px-4 py-2 text-sm text-gray-800"><%= c.discount_percent %>%</td>
+          <td class="px-4 py-2 text-sm text-gray-600"><%= c.products.count %> รายการ</td>
+          <td class="px-4 py-2 text-sm space-x-2">
+            <%= link_to "แก้ไข", edit_admin_campaign_path(c), class: "text-blue-600 hover:underline" %>
+            <%= button_to "ลบ", admin_campaign_path(c), method: :delete, form: { data: { turbo_confirm: "ลบแคมเปญนี้?" } }, class: "text-red-600 hover:underline text-sm bg-transparent border-0 cursor-pointer p-0 inline" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @campaigns.empty? %>
+    <p class="text-gray-500 text-sm mt-4">ยังไม่มีแคมเปญ</p>
+  <% end %>
+</div>

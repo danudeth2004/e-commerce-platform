@@ -25,13 +25,11 @@ class CheckoutsController < ApplicationController
     @promo_flag_by_product_id = promo_flags_for_checkout(product_ids)
 
     @list_price_subtotal_cents = @order_items.sum do |oi|
+      p = oi.product
       fp = @promo_flag_by_product_id[oi.product_id]
-      unit_list =
-        if fp && fp.original_amount_cents.to_i > oi.amount_cents
-          fp.original_amount_cents
-        else
-          oi.amount_cents
-        end
+      candidates = [ p.amount_cents ]
+      candidates << fp.original_amount_cents if fp&.original_amount_cents
+      unit_list = candidates.compact.max
       unit_list * oi.quantity
     end
 
@@ -80,7 +78,7 @@ class CheckoutsController < ApplicationController
         .each_with_object({}) do |fp, memo|
           product = fp.product
           next unless product
-          next unless fp.original_amount_cents.to_i > product.amount_cents
+          next unless fp.original_amount_cents.to_i > product.final_price_cents
 
           memo[fp.product_id] ||= fp
         end

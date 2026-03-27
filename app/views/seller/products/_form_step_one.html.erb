@@ -48,12 +48,39 @@
       </span>
     </div>
   </div>
+  <div class="mb-6 rounded-xl border border-pink-100 bg-pink-50/60 px-4 py-3 text-xs text-text-primary leading-relaxed">
+    <p class="font-semibold mb-1">ราคาและเวลาโปร — ทำงานยังไง</p>
+    <ul class="list-disc pl-4 space-y-1 text-text-neutral-300">
+      <li><strong class="text-text-primary">ราคาเต็ม</strong> = ราคาปกติที่แสดงขีดฆ่าเมื่อมีโปร</li>
+      <li><strong class="text-text-primary">ราคาโปร</strong> = ราคาขายเมื่อโปรใช้ได้ (ต้องต่ำกว่าราคาเต็ม)</li>
+      <li>ถ้า <strong>ไม่ใส่วันเริ่ม–สิ้นสุด</strong> แต่มีราคาโปรที่ถูกกว่าราคาเต็ม = ลดได้ทันที</li>
+      <li>ถ้า <strong>ใส่วัน</strong> = ลดเฉพาะช่วงนั้นเท่านั้น — <strong>นอกช่วงจะแสดงราคาเต็ม</strong> (ดูเหมือนไม่ลด)</li>
+      <li>ราคาโปรในช่องกรอกเป็นหน่วย <strong>บาท</strong> — ระบบจะเก็บเป็นสตางค์ให้ (เช่น 13,000 บาท ไม่ใช่ 130 บาท)</li>
+      <li>แคมเปญใหญ่ของเว็บ (เช่น 11.11) แอดมินตั้งแยกที่เมนูแคมเปญ — จะลดทับจากราคาหลังโปรร้านอีกที</li>
+    </ul>
+  </div>
+
   <div class="mb-8">
     <%= form.label :promotion, "ราคาโปรโมชั่น", class: "block text-base font-regular text-text-primary mb-2" %>
     <p class="text-xs text-text-neutral-300 mb-2">
       กรอกราคาขายหลังจากหักส่วนลดจากราคาเต็ม
     </p>
     <%= form.number_field :promotion, step: 1, min: 0, placeholder: "ระบุราคาหลังลด", class: "w-full rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none", autocomplete: "off" %>
+  </div>
+  <div class="mb-8">
+    <%= form.label :promotion_starts_at, class: "block text-base font-regular text-text-primary mb-2" do %>
+      เริ่มโปรโมชั่น <span class="text-text-neutral-300 font-light">(ไม่บังคับ)</span>
+    <% end %>
+    <p class="text-xs text-text-neutral-300 mb-2">
+      ว่างไว้ = ถ้ามีราคาโปรที่ต่ำกว่าราคาเต็ม จะใช้ราคาโปรได้ทันที — กำหนดวันเวลาได้ถ้าต้องการให้ลดเฉพาะช่วงนั้น
+    </p>
+    <%= form.datetime_field :promotion_starts_at, class: "w-full rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary focus:border-Primary-color focus:outline-none" %>
+  </div>
+  <div class="mb-8">
+    <%= form.label :promotion_ends_at, class: "block text-base font-regular text-text-primary mb-2" do %>
+      สิ้นสุดโปรโมชั่น <span class="text-text-neutral-300 font-light">(ไม่บังคับ)</span>
+    <% end %>
+    <%= form.datetime_field :promotion_ends_at, class: "w-full rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary focus:border-Primary-color focus:outline-none" %>
   </div>
   <button type="button" class="w-full py-3.5 rounded-full bg-[#FF1493] text-white text-sm font-semibold shadow-sm hover:opacity-95 active:scale-[0.99] transition" data-action="click->product-form#showStepTwo">
     ถัดไป

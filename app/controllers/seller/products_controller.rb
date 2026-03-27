@@ -8,8 +8,6 @@ module Seller
     end
 
     def create
-      p "ก"
-      p product_params
       @product = @store.products.new(product_params)
 
       if @product.save
@@ -32,6 +30,8 @@ module Seller
         :sku,
         :amount,
         :promotion,
+        :promotion_starts_at,
+        :promotion_ends_at,
         :description,
         :skin_concern_key,
         :category_key,
@@ -41,6 +41,9 @@ module Seller
         :usage,
         images: []
       )
+
+      permitted[:promotion_starts_at] = permitted[:promotion_starts_at].presence
+      permitted[:promotion_ends_at] = permitted[:promotion_ends_at].presence
 
       if permitted[:amount].present?
         permitted[:amount_cents] = (permitted.delete(:amount).to_f * 100).to_i
