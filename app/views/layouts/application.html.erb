@@ -13,9 +13,7 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <%= render "layouts/google_fonts" %>
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -24,7 +22,7 @@
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
 </head>
 
-<body class="font-sans">
+<body class="font-sans antialiased">
     <main class="min-h-screen bg-white">
         <% unless @hide_app_header %>
         <% header_icon_btn = "inline-flex items-center justify-center size-11 shrink-0 rounded-[15px] border border-pink-100/70 bg-gradient-to-br from-[#ffc4dc] via-[#ffe8f2] to-white text-white shadow-sm transition hover:opacity-95 active:scale-[0.98]" %>

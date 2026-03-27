@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 
 <head>
-    <title><%= content_for(:title) || "Admin: E Commerce Platform" %></title>
+    <title><%= content_for(:title) || "E Commerce Platform" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="E Commerce Platform">
@@ -17,11 +17,12 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
+    <%= render "layouts/google_fonts" %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 </head>
 
-<body class="bg-white text-gray-800">
+<body class="bg-white text-gray-800 font-sans antialiased">
     <main class="min-h-screen flex items-top justify-center pt-10">
         <div class="w-[80dvh] px-6 py-10 bg-white">
             <%= yield %>
