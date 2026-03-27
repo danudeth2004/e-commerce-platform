@@ -1,0 +1,18 @@
+# Thai translations for Devise (see config/locales/devise.en.yml)
+
+th:
+  devise:
+    failure:
+      already_authenticated: "คุณเข้าสู่ระบบอยู่แล้ว"
+      inactive: "บัญชีของคุณยังไม่เปิดใช้งาน"
+      invalid: "อีเมลหรือรหัสผ่านไม่ถูกต้อง"
+      locked: "บัญชีของคุณถูกล็อก"
+      last_attempt: "คุณเหลือโอกาสเข้าสู่ระบบอีกครั้งเดียวก่อนบัญชีจะถูกล็อก"
+      not_found_in_database: "อีเมลหรือรหัสผ่านไม่ถูกต้อง"
+      timeout: "เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง"
+      unauthenticated: "กรุณาเข้าสู่ระบบหรือสมัครสมาชิกก่อน"
+      unconfirmed: "กรุณายืนยันที่อยู่อีเมลก่อนใช้งาน"
+    sessions:
+      signed_in: "เข้าสู่ระบบสำเร็จ"
+      signed_out: "ออกจากระบบแล้ว"
+      already_signed_out: "ออกจากระบบแล้ว"

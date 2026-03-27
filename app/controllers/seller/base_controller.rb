@@ -9,7 +9,8 @@ module Seller
       def setup_store!
         return if current_seller_user.store.present?
 
-        redirect_to new_seller_store_path
+        redirect_to new_seller_store_path,
+          alert: "กรุณาสร้างบัญชีร้านค้าของคุณก่อนเริ่มใช้งาน"
       end
   end
 end

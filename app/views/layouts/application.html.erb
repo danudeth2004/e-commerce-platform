@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="th">
-
-<head>
+  <head>
     <title><%= content_for(:title) || "Buyer: E Commerce Platform" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,83 +19,80 @@
     <script src="https://cdn.omise.co/omise.js"></script>
     <script src="https://cdn.omise.co/omise-card.js"></script>
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
-</head>
-
-<body class="font-sans antialiased">
+  </head>
+  <body class="font-sans antialiased">
     <main class="min-h-screen bg-white">
-        <% unless @hide_app_header %>
+      <% if flash.any? %>
+        <div class="w-full max-w-screen-xl mx-auto px-4 pt-3">
+          <%= render "layouts/flash_messages" %>
+        </div>
+      <% end %>
+      <% unless @hide_app_header %>
         <% header_icon_btn = "inline-flex items-center justify-center size-11 shrink-0 rounded-[15px] border border-pink-100/70 bg-gradient-to-br from-[#ffc4dc] via-[#ffe8f2] to-white text-white shadow-sm transition hover:opacity-95 active:scale-[0.98]" %>
         <header class="w-full max-w-screen-xl mx-auto px-4 pt-4 pb-2">
-            <div class="flex items-center gap-2.5 sm:gap-3">
-                <%= form_with url: products_path, method: :get, local: true, class: "flex-1 min-w-0", role: "search" do %>
-                <%= hidden_field_tag :skin_concern, params[:skin_concern] if params[:skin_concern].present? %>
-                <%= hidden_field_tag :category, params[:category] if params[:category].present? %>
-                <div class="relative flex items-center">
-                    <label for="header-search-q" class="sr-only">ค้นหาสินค้า</label>
-                    <span class="pointer-events-none absolute left-3.5 flex text-gray-400" aria-hidden="true">
-                        <%= inline_svg_tag "icons/search-icon.svg", class: "w-[18px] h-[18px]" %>
-                    </span>
-                    <%= text_field_tag :q, params[:q],
+          <div class="flex items-center gap-2.5 sm:gap-3">
+            <%= form_with url: products_path, method: :get, local: true, class: "flex-1 min-w-0", role: "search" do %>
+              <%= hidden_field_tag :skin_concern, params[:skin_concern] if params[:skin_concern].present? %>
+              <%= hidden_field_tag :category, params[:category] if params[:category].present? %>
+              <div class="relative flex items-center">
+                <label for="header-search-q" class="sr-only">ค้นหาสินค้า</label>
+                <span class="pointer-events-none absolute left-3.5 flex text-gray-400" aria-hidden="true">
+                  <%= inline_svg_tag "icons/search-icon.svg", class: "w-[18px] h-[18px]" %>
+                </span>
+                <%= text_field_tag :q, params[:q],
                                            id: "header-search-q",
                                            placeholder: "Vaseline",
                                            autocomplete: "off",
                                            class: "w-full rounded-full border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-200/60" %>
-                </div>
-                <% end %>
-                <div class="flex items-center gap-2 shrink-0">
-                    <%= link_to(user_signed_in? ? cart_path : new_user_session_path,
+              </div>
+            <% end %>
+            <div class="flex items-center gap-2 shrink-0">
+              <%= link_to(user_signed_in? ? cart_path : new_user_session_path,
                                 class: "#{header_icon_btn} relative") do %>
-                    <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-[22px] h-[22px] text-white" %>
-                    <% if user_signed_in? %>
-                    <% count = current_cart_item_count %>
-                    <% if count.positive? %>
+                <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-[22px] h-[22px] text-white" %>
+                <% if user_signed_in? %>
+                  <% count = current_cart_item_count %>
+                  <% if count.positive? %>
                     <span class="absolute -top-1 -right-1 min-w-[1.125rem] rounded-full bg-red-500 px-1 py-0.5 text-center text-[10px] font-semibold leading-none text-white">
-                        <%= count %>
+                      <%= count %>
                     </span>
-                    <% end %>
-                    <% end %>
-                    <% end %>
-                    <div class="relative inline-block text-left">
-                        <input type="checkbox" id="user-menu-toggle" class="hidden peer">
-
-                        <label for="user-menu-toggle" class="<%= header_icon_btn %> cursor-pointer">
-                            <%= inline_svg_tag "icons/user-icon.svg", class: "w-[22px] h-[22px] text-white" %>
-                        </label>
-
-                        <label for="user-menu-toggle" class="fixed inset-0 hidden peer-checked:block z-40 cursor-default"></label>
-
-                        <div class="absolute right-0 z-50 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl
+                  <% end %>
+                <% end %>
+              <% end %>
+              <div class="relative inline-block text-left">
+                <input type="checkbox" id="user-menu-toggle" class="hidden peer">
+                <label for="user-menu-toggle" class="<%= header_icon_btn %> cursor-pointer">
+                  <%= inline_svg_tag "icons/user-icon.svg", class: "w-[22px] h-[22px] text-white" %>
+                </label>
+                <label for="user-menu-toggle" class="fixed inset-0 hidden peer-checked:block z-40 cursor-default"></label>
+                <div class="absolute right-0 z-50 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl
               opacity-0 scale-95 -translate-y-2
               peer-checked:opacity-100 peer-checked:scale-100 peer-checked:translate-y-0
               transition-all duration-200">
-
-                            <div class="py-1">
-
-                                <% if user_signed_in? %>
-                                <%= button_to destroy_user_session_path,
+                  <div class="py-1">
+                    <% if user_signed_in? %>
+                      <%= button_to destroy_user_session_path,
               method: :delete,
               class: "w-full text-left" do %>
-                                <div class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                                    <span class="iconify" data-icon="lucide:log-out" data-width="16"></span>
-                                    <span>ออกจากระบบ</span>
-                                </div>
-                                <% end %>
-                                <% else %>
-                                <%= link_to new_user_session_path,
-              class: "block px-4 py-2 text-sm text-primary hover:bg-gray-50" do %>
-                                เข้าสู่ระบบ
-                                <% end %>
-                                <% end %>
-
-                            </div>
+                        <div class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                          <span class="iconify" data-icon="lucide:log-out" data-width="16"></span>
+                          <span>ออกจากระบบ</span>
                         </div>
-                    </div>
+                      <% end %>
+                    <% else %>
+                      <%= link_to new_user_session_path,
+              class: "block px-4 py-2 text-sm text-primary hover:bg-gray-50" do %>
+                        เข้าสู่ระบบ
+                      <% end %>
+                    <% end %>
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </header>
-        <% end %>
-        <%= yield %>
+      <% end %>
+      <%= yield %>
     </main>
-</body>
-
+  </body>
 </html>
