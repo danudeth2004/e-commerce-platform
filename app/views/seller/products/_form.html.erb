@@ -1,5 +1,5 @@
 <%= form_with model: [ :seller, product ], html: { multipart: true, data: { product_form_target: "form" } } do |form| %>
-  <%= render "form_step_one", form: form %>
+  <%= render "form_step_one", form: form, product: product %>
   <%= render "form_step_two", form: form, product: product %>
-  <%= render "confirm_modal" %>
+  <%= render "confirm_modal", product: product %>
 <% end %>

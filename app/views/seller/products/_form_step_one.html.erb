@@ -1,9 +1,20 @@
+<% images_max_new = product.persisted? ? [ 5 - product.images.attachments.size, 0 ].max : 5 %>
 <div data-product-form-target="stepOne">
+  <% if product.persisted? && product.images.attached? %>
+    <div class="mb-4">
+      <p class="text-xs text-text-neutral-300 mb-2">รูปปัจจุบัน (เพิ่มรูปใหม่ได้อีกสูงสุด <%= images_max_new %> รูป รวมไม่เกิน 5 รูป)</p>
+      <div class="flex gap-2 flex-wrap">
+        <% product.images.each do |img| %>
+          <%= image_tag img, class: "w-16 h-16 object-cover rounded-xl border border-[#E0E0E0]" %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
   <div
     class="mb-6"
     data-controller="product-images"
     data-action="click->product-images#delegateClick"
-    data-product-images-max-value="5"
+    data-product-images-max-value="<%= images_max_new %>"
     data-product-images-max-bytes-value="<%= 1.megabyte %>"
   >
     <label for="product_images_input" class="block text-base font-regular text-text-primary mb-2">
@@ -42,7 +53,7 @@
       ราคาเต็ม <span class="text-text-accents-red">*</span>
     <% end %>
     <div class="flex items-stretch gap-2">
-      <%= form.number_field :amount, step: 1, min: 0, placeholder: "ระบุราคาเต็ม", class: "min-w-0 flex-1 rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none", autocomplete: "off" %>
+      <%= form.number_field :amount, step: 1, min: 0, value: product.persisted? ? (product.amount_cents.to_i / 100.0) : nil, placeholder: "ระบุราคาเต็ม", class: "min-w-0 flex-1 rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none", autocomplete: "off" %>
       <span class="inline-flex items-center justify-center rounded-lg border border-border-neutral bg-bg-neutral-color px-3 text-sm text-text-neutral-300 shrink-0 min-w-[3.25rem]">
         บาท
       </span>
@@ -65,7 +76,7 @@
     <p class="text-xs text-text-neutral-300 mb-2">
       กรอกราคาขายหลังจากหักส่วนลดจากราคาเต็ม
     </p>
-    <%= form.number_field :promotion, step: 1, min: 0, placeholder: "ระบุราคาหลังลด", class: "w-full rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none", autocomplete: "off" %>
+    <%= form.number_field :promotion, step: 1, min: 0, value: product.persisted? ? (product.promotion_cents.to_i / 100.0) : nil, placeholder: "ระบุราคาหลังลด", class: "w-full rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none", autocomplete: "off" %>
   </div>
   <div class="mb-8">
     <%= form.label :promotion_starts_at, class: "block text-base font-regular text-text-primary mb-2" do %>

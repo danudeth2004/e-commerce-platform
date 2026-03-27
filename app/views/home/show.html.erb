@@ -3,4 +3,6 @@
   <%= render "home/partials_product_detail/brand_section", product: @product %>
   <%= render "home/partials_product_detail/product_description", product: @product %>
 </div>
-<%= render "home/partials_product_detail/product_bottom_bar", product: @product %>
+<% unless seller_owns_product?(@product) %>
+  <%= render "home/partials_product_detail/product_bottom_bar", product: @product %>
+<% end %>

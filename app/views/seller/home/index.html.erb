@@ -1,125 +1,116 @@
 <div class="w-full min-h-screen bg-white">
-    <div class="w-full max-w-screen-xl mx-auto space-y-8 py-6 px-4">
-        <section class="bg-white rounded-2xl shadow-sm">
-            <div class="relative">
-                <div class="bg-gray-200 h-44 w-full">
-                    <% if @store.cover.attached? %>
-                    <%= image_tag rails_blob_path(@store.cover, only_path: true),
+  <div class="w-full max-w-screen-xl mx-auto space-y-8 py-6 px-4">
+    <section class="bg-white rounded-2xl shadow-sm">
+      <div class="relative">
+        <div class="bg-gray-200 h-44 w-full">
+          <% if @store.cover.attached? %>
+            <%= image_tag rails_blob_path(@store.cover, only_path: true),
               class: "w-full h-full object-cover",
               alt: @store.name,
               loading: "lazy" %>
-                    <% end %>
-                </div>
-
-                <div class="absolute top-2 right-2 group">
-                    <% if @store.active? %>
-                    <span class="px-2 py-1 text-[10px] font-medium rounded-full bg-green-100 text-green-700 cursor-default">
-                        พร้อมใช้งาน
-                    </span>
-                    <% elsif @store.inactive? %>
-                    <span class="px-2 py-1 text-[10px] font-medium rounded-full bg-yellow-100 text-yellow-700 cursor-default">
-                        รอการตรวจสอบ
-                    </span>
-                    <% elsif @store.suspended? %>
-                    <span class="px-2 py-1 text-[10px] font-medium rounded-full bg-red-100 text-red-700 cursor-default">
-                        ถูกระงับ
-                    </span>
-                    <% end %>
-
-                    <div class="absolute right-0 top-full mt-2 w-max max-w-[220px]
+          <% end %>
+        </div>
+        <div class="absolute top-2 right-2 group">
+          <% if @store.active? %>
+            <span class="px-2 py-1 text-[10px] font-medium rounded-full bg-green-100 text-green-700 cursor-default">
+              พร้อมใช้งาน
+            </span>
+          <% elsif @store.inactive? %>
+            <span class="px-2 py-1 text-[10px] font-medium rounded-full bg-yellow-100 text-yellow-700 cursor-default">
+              รอการตรวจสอบ
+            </span>
+          <% elsif @store.suspended? %>
+            <span class="px-2 py-1 text-[10px] font-medium rounded-full bg-red-100 text-red-700 cursor-default">
+              ถูกระงับ
+            </span>
+          <% end %>
+          <div class="absolute right-0 top-full mt-2 w-max max-w-[220px]
             opacity-0 group-hover:opacity-100 transition-opacity duration-200
             pointer-events-none z-10">
-                        <div class="bg-gray-800 text-white text-[10px] rounded-md px-2 py-1 relative">
-                            <div class="absolute -top-1 right-2 w-2 h-2 bg-gray-800 rotate-45"></div>
-                            <% if @store.active? %>
-                            ร้านของคุณเปิดขายได้ตามปกติ ลูกค้าสามารถสั่งซื้อสินค้าได้
-                            <% elsif @store.inactive? %>
-                            ร้านค้ากำลังรอการตรวจสอบโดยผู้ดูแลระบบ แต่สามารถปรับแต่งร้านค้าของคุณได้ตามปกติ
-                            <% elsif @store.suspended? %>
-                            ร้านค้าถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ
-                            <% end %>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="absolute -bottom-12 left-8 w-28 h-28 rounded-full bg-white p-1 shadow-sm">
-                    <div class="w-full h-full rounded-full overflow-hidden border border-gray-200">
-                        <% if @store.logo.attached? %>
-                        <%= image_tag rails_blob_path(@store.logo, only_path: true),
+            <div class="bg-gray-800 text-white text-[10px] rounded-md px-2 py-1 relative">
+              <div class="absolute -top-1 right-2 w-2 h-2 bg-gray-800 rotate-45"></div>
+              <% if @store.active? %>
+                ร้านของคุณเปิดขายได้ตามปกติ ลูกค้าสามารถสั่งซื้อสินค้าได้
+              <% elsif @store.inactive? %>
+                ร้านค้ากำลังรอการตรวจสอบโดยผู้ดูแลระบบ แต่สามารถปรับแต่งร้านค้าของคุณได้ตามปกติ
+              <% elsif @store.suspended? %>
+                ร้านค้าถูกระงับการใช้งาน กรุณาติดต่อผู้ดูแลระบบ
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <div class="absolute -bottom-12 left-8 w-28 h-28 rounded-full bg-white p-1 shadow-sm">
+          <div class="w-full h-full rounded-full overflow-hidden border border-gray-200">
+            <% if @store.logo.attached? %>
+              <%= image_tag rails_blob_path(@store.logo, only_path: true),
                 class: "w-full h-full object-cover",
                 alt: @store.name,
                 loading: "lazy" %>
-                        <% end %>
-                    </div>
-                </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="pt-16 pb-6 px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-6">
+        <div class="w-full">
+          <div class="flex items-center justify-between">
+            <div class="flex-1 pr-6">
+              <h1 class="text-xl md:text-2xl font-semibold text-gray-900 break-words">
+                <%= @store.name %>
+              </h1>
             </div>
-
-            <div class="pt-16 pb-6 px-6 flex flex-col md:flex-row md:justify-between md:items-start gap-6">
-                <div class="w-full">
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1 pr-6">
-                            <h1 class="text-xl md:text-2xl font-semibold text-gray-900 break-words">
-                                <%= @store.name %>
-                            </h1>
-                        </div>
-
-                        <div class="relative shrink-0" data-controller="menu">
-                            <button type="button" class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200" data-action="click->menu#toggle">
-                                <span class="flex flex-col gap-[2px]">
-                                    <span class="w-[3px] h-[3px] rounded-full bg-gray-700"></span>
-                                    <span class="w-[3px] h-[3px] rounded-full bg-gray-700"></span>
-                                    <span class="w-[3px] h-[3px] rounded-full bg-gray-700"></span>
-                                </span>
-                            </button>
-
-                            <div class="hidden absolute right-0 mt-2 w-44 rounded-xl shadow-lg bg-white ring-1 ring-black/5 py-1 text-xs" data-menu-target="panel">
-                                <%= link_to edit_seller_store_path(@store),
+            <div class="relative shrink-0" data-controller="menu">
+              <button type="button" class="flex items-center justify-center w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200" data-action="click->menu#toggle">
+                <span class="flex flex-col gap-[2px]">
+                  <span class="w-[3px] h-[3px] rounded-full bg-gray-700"></span>
+                  <span class="w-[3px] h-[3px] rounded-full bg-gray-700"></span>
+                  <span class="w-[3px] h-[3px] rounded-full bg-gray-700"></span>
+                </span>
+              </button>
+              <div class="hidden absolute right-0 mt-2 w-44 rounded-xl shadow-lg bg-white ring-1 ring-black/5 py-1 text-xs" data-menu-target="panel">
+                <%= link_to edit_seller_store_path(@store),
         class: "block px-4 py-2 text-gray-800 hover:bg-gray-50" do %>
-                                แก้ไขโปรไฟล์ร้านค้า
-                                <% end %>
-
-                                <%= link_to new_seller_product_path,
+                  แก้ไขโปรไฟล์ร้านค้า
+                <% end %>
+                <%= link_to new_seller_product_path,
         class: "block px-4 py-2 text-gray-800 hover:bg-gray-50" do %>
-                                เพิ่มสินค้า
-                                <% end %>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="mt-2 text-sm text-gray-500">
-                        <%= @store.description.presence || "สร้างคำอธิบายร้านค้าแบบสั้น ๆ เพื่อบอกสไตล์ จุดเด่น และบริการของคุณให้ลูกค้าเข้าใจได้ง่ายขึ้น" %>
-                    </p>
-                </div>
+                  เพิ่มสินค้า
+                <% end %>
+              </div>
             </div>
-        </section>
-
-        <%= turbo_frame_tag "products_frame" do %>
-        <% if @store.persisted? && @store.products.exists? %>
+          </div>
+          <p class="mt-2 text-sm text-gray-500">
+            <%= @store.description.presence || "สร้างคำอธิบายร้านค้าแบบสั้น ๆ เพื่อบอกสไตล์ จุดเด่น และบริการของคุณให้ลูกค้าเข้าใจได้ง่ายขึ้น" %>
+          </p>
+        </div>
+      </div>
+    </section>
+    <%= turbo_frame_tag "products_frame" do %>
+      <% if @store.persisted? && @store.products.exists? %>
         <section class="space-y-4 mt-4">
-            <%= render "shared/product_category_filter",
+          <%= render "shared/product_category_filter",
            current_category_key: @category_key,
            path_proc: ->(key) { key.present? ? seller_root_path(category: key) : seller_root_path } %>
-
-            <% if @products.any? %>
+          <% if @products.any? %>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                <% @products.each do |product| %>
+              <% @products.each do |product| %>
                 <%= render "shared/product_card",
                    product: product_to_card_hash(product),
                    show_cart: false,
                    full_width: true,
-                   link_to_path: "#" %>
-                <% end %>
+                   link_to_path: product_path(product) %>
+              <% end %>
             </div>
-            <% else %>
+          <% else %>
             <p class="text-center text-sm text-gray-500 py-8">ไม่มีสินค้าในร้านค้าของคุณ</p>
-            <% end %>
+          <% end %>
         </section>
-        <% else %>
+      <% else %>
         <section class="flex flex-col items-center text-center text-sm text-gray-500 py-16 space-y-2">
-            <%= image_tag "empty_product.png", class: "w-36 h-36" %>
-            <p class="font-medium text-gray-700">ยังไม่มีสินค้าในร้านค้าของคุณ</p>
-            <p>เพิ่มสินค้าชิ้นแรกของคุณในร้านค้าได้ที่นี่</p>
+          <%= image_tag "empty_product.png", class: "w-36 h-36" %>
+          <p class="font-medium text-gray-700">ยังไม่มีสินค้าในร้านค้าของคุณ</p>
+          <p>เพิ่มสินค้าชิ้นแรกของคุณในร้านค้าได้ที่นี่</p>
         </section>
-        <% end %>
-        <% end %>
-    </div>
+      <% end %>
+    <% end %>
+  </div>
 </div>

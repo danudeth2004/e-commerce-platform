@@ -1,7 +1,8 @@
 module Seller
   class ProductsController < BaseController
     layout "devise"
-    before_action :set_store, only: [:new, :create]
+    before_action :set_store, only: [ :new, :create, :edit, :update, :destroy ]
+    before_action :set_product, only: [ :edit, :update, :destroy ]
 
     def new
       @product = @store.products.new
@@ -18,10 +19,46 @@ module Seller
       end
     end
 
+    def edit
+    end
+
+    def update
+      attrs = product_params.except(:images)
+      if @product.update(attrs)
+        attach_new_images_if_any(@product)
+        redirect_to product_path(@product), notice: "อัปเดตสินค้าแล้ว"
+      else
+        flash.now[:alert] = @product.errors.full_messages.to_sentence
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      if @product.order_items.exists?
+        redirect_to product_path(@product), alert: "ไม่สามารถลบสินค้าที่เคยถูกสั่งซื้อได้"
+        return
+      end
+
+      @product.destroy
+      redirect_to seller_root_path, notice: "ลบสินค้าแล้ว"
+    end
+
     private
 
     def set_store
       @store = Seller::Store.find(current_seller_user.store.id)
+    end
+
+    def set_product
+      @product = @store.products.find(params[:id])
+    end
+
+    def attach_new_images_if_any(product)
+      files = params.dig(:product, :images)
+      return if files.blank?
+
+      files = Array(files).compact.reject(&:blank?)
+      product.images.attach(files) if files.any?
     end
 
     def product_params
@@ -50,8 +87,12 @@ module Seller
         permitted[:amount_currency] = "THB"
       end
 
-      if permitted[:promotion].present?
-        permitted[:promotion_cents] = (permitted.delete(:promotion).to_f * 100).to_i
+      promo = permitted.delete(:promotion)
+      if promo.present?
+        permitted[:promotion_cents] = (promo.to_f * 100).to_i
+        permitted[:promotion_currency] = "THB"
+      else
+        permitted[:promotion_cents] = 0
         permitted[:promotion_currency] = "THB"
       end
 
@@ -59,4 +100,3 @@ module Seller
     end
   end
 end
-

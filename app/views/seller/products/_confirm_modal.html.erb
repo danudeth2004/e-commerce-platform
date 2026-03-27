@@ -3,8 +3,13 @@
     <div class="mb-4">
       <%= image_tag "add_product.png", class: "size-24 mx-auto" %>
     </div>
-    <p class="text-sm font-semibold text-text-primary mb-1">ยืนยันการเพิ่มสินค้า</p>
-    <p class="text-xs text-text-secondary mb-5">คุณต้องการเพิ่มสินค้านี้เข้าสู่ร้านค้าของคุณใช่หรือไม่ สามารถแก้ไขข้อมูลภายหลังได้</p>
+    <% if product.persisted? %>
+      <p class="text-sm font-semibold text-text-primary mb-1">ยืนยันการแก้ไข</p>
+      <p class="text-xs text-text-secondary mb-5">คุณต้องการบันทึกการแก้ไขสินค้านี้ใช่หรือไม่</p>
+    <% else %>
+      <p class="text-sm font-semibold text-text-primary mb-1">ยืนยันการเพิ่มสินค้า</p>
+      <p class="text-xs text-text-secondary mb-5">คุณต้องการเพิ่มสินค้านี้เข้าสู่ร้านค้าของคุณใช่หรือไม่ สามารถแก้ไขข้อมูลภายหลังได้</p>
+    <% end %>
     <div class="space-y-2">
       <button type="button" class="w-full py-3 rounded-full bg-Primary-color text-white text-sm font-semibold shadow-sm" data-action="click->product-form#submit">
         ยืนยัน

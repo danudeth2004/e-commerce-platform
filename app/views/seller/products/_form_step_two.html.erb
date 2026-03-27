@@ -46,16 +46,16 @@
     </div>
   </div>
   <div class="mb-8">
-    <label class="block text-base font-regular text-text-primary mb-2" for="product_volume">
+    <%= form.label :volume, class: "block text-base font-regular text-text-primary mb-2" do %>
       ปริมาณ <span class="text-text-accents-red">*</span>
-    </label>
+    <% end %>
     <div class="flex items-stretch gap-2">
-      <input id="product_volume" type="number" step="1" min="0" name="product[volume]" placeholder="ระบุปริมาณสินค้า" class="min-w-0 flex-1 <%= step2_input %>" autocomplete="off">
+      <%= form.number_field :volume, step: 1, min: 0, placeholder: "ระบุปริมาณสินค้า", class: "min-w-0 flex-1 #{step2_input}", autocomplete: "off" %>
       <div class="relative shrink-0 min-w-[4.5rem]">
-        <select name="product[volume_unit]" class="h-[2.75rem] w-full <%= step2_input %> appearance-none pr-9 text-sm leading-normal">
-          <option value="ml">ml</option>
-          <option value="g">g</option>
-        </select>
+        <%= form.select :volume_unit,
+                        [ [ "ml", "ml" ], [ "g", "g" ] ],
+                        {},
+                        { class: "h-[2.75rem] w-full #{step2_input} appearance-none pr-9 text-sm leading-normal" } %>
         <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">
           <%= inline_svg_tag "icons/arrow-down-icon.svg", class: "size-3" %>
         </span>
