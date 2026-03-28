@@ -59,35 +59,15 @@
                   <% end %>
                 <% end %>
               <% end %>
-              <div class="relative inline-block text-left">
-                <input type="checkbox" id="user-menu-toggle" class="hidden peer">
-                <label for="user-menu-toggle" class="<%= header_icon_btn %> cursor-pointer">
+              <% if user_signed_in? %>
+                <%= link_to users_profile_path, class: header_icon_btn, aria: { label: "โปรไฟล์ของฉัน" } do %>
                   <%= inline_svg_tag "icons/user-icon.svg", class: "w-[22px] h-[22px] text-white" %>
-                </label>
-                <label for="user-menu-toggle" class="fixed inset-0 hidden peer-checked:block z-40 cursor-default"></label>
-                <div class="absolute right-0 z-50 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl
-              opacity-0 scale-95 -translate-y-2
-              peer-checked:opacity-100 peer-checked:scale-100 peer-checked:translate-y-0
-              transition-all duration-200">
-                  <div class="py-1">
-                    <% if user_signed_in? %>
-                      <%= button_to destroy_user_session_path,
-              method: :delete,
-              class: "w-full text-left" do %>
-                        <div class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                          <span class="iconify" data-icon="lucide:log-out" data-width="16"></span>
-                          <span>ออกจากระบบ</span>
-                        </div>
-                      <% end %>
-                    <% else %>
-                      <%= link_to new_user_session_path,
-              class: "block px-4 py-2 text-sm text-primary hover:bg-gray-50" do %>
-                        เข้าสู่ระบบ
-                      <% end %>
-                    <% end %>
-                  </div>
-                </div>
-              </div>
+                <% end %>
+              <% else %>
+                <%= link_to new_user_session_path, class: header_icon_btn, aria: { label: "เข้าสู่ระบบ" } do %>
+                  <%= inline_svg_tag "icons/user-icon.svg", class: "w-[22px] h-[22px] text-white" %>
+                <% end %>
+              <% end %>
             </div>
           </div>
         </header>

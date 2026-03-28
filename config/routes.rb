@@ -49,6 +49,8 @@ Rails.application.routes.draw do
 
   namespace :users do
     get "role", to: "role#index"
+    get "profile", to: "profiles#show", as: :profile
+    resources :orders, only: [ :index ]
   end
 
   resource :checkout, only: [] do
