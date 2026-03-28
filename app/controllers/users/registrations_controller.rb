@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
-  layout "devise"
+  layout :buyer_registration_layout
+
+  before_action :hide_header_on_account_edit, only: [ :edit, :update ]
 
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
@@ -40,7 +42,15 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  # protected
+  protected
+
+  def buyer_registration_layout
+    %w[edit update].include?(action_name) ? "application" : "devise"
+  end
+
+  def hide_header_on_account_edit
+    @hide_app_header = true
+  end
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_up_params

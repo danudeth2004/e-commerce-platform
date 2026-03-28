@@ -1,42 +1,145 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<% content_for :title, "แก้ไขบัญชีของฉัน" %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+<% input_class = "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
+<% label_class = "block text-base font-regular text-text-primary mb-2" %>
 
-  <div class="field">
-    <p><%= f.label :email %></p>
-    <p><%= f.email_field :email, autofocus: true, autocomplete: "email" %></p>
-  </div>
-
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
-  <% end %>
-
-  <div class="field">
-    <p><%= f.label :password %> <i>(leave blank if you don't want to change it)</i></p>
-    <p><%= f.password_field :password, autocomplete: "new-password" %></p>
-    <% if @minimum_password_length %>
-      <p><em><%= @minimum_password_length %> characters minimum</em></p>
+<div class="min-h-screen bg-white max-w-md mx-auto pb-12">
+  <header class="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-gray-100 bg-white px-4 py-3">
+    <%= link_to users_profile_path, class: "inline-flex size-10 items-center justify-center rounded-full text-gray-700 hover:bg-gray-100 shrink-0", aria: { label: "กลับ" } do %>
+      <span class="iconify text-2xl" data-icon="lucide:chevron-left" data-width="24"></span>
     <% end %>
+    <h1 class="text-base font-semibold text-gray-900 truncate px-2">แก้ไขบัญชีของฉัน</h1>
+    <div class="size-10 shrink-0" aria-hidden="true"></div>
+  </header>
+
+  <div class="px-4 pt-6">
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, multipart: true, data: { turbo: false } }) do |f| %>
+      <%= render "users/shared/error_messages", resource: resource %>
+
+      <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+        <div class="mb-4 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2.5 text-sm text-amber-900">
+          กำลังรอยืนยันอีเมลใหม่: <span class="font-medium"><%= resource.unconfirmed_email %></span>
+        </div>
+      <% end %>
+
+      <section class="mb-8">
+        <h2 class="text-sm font-semibold text-gray-900 mb-3">รูปโปรไฟล์</h2>
+        <div class="flex flex-col items-center">
+          <div class="relative size-28 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100">
+            <% if resource.avatar.attached? %>
+              <%= image_tag resource.avatar, alt: "", id: "user-avatar-preview-img", class: "absolute inset-0 z-10 size-full object-cover" %>
+            <% else %>
+              <img alt="" id="user-avatar-preview-img" class="hidden absolute inset-0 z-10 size-full object-cover">
+            <% end %>
+            <div id="user-avatar-preview-fallback" class="absolute inset-0 z-0 bg-[repeating-conic-gradient(#e5e7eb_0%_25%,#f3f4f6_0%_50%)] bg-[length:12px_12px] <%= resource.avatar.attached? ? "hidden" : "" %>" aria-hidden="true"></div>
+          </div>
+          <%= label_tag "user_avatar_input", class: "mt-3 flex cursor-pointer flex-col items-center" do %>
+            <span class="text-sm font-medium text-Primary-color hover:underline">เลือกรูปจากเครื่อง</span>
+            <%= f.file_field :avatar, accept: "image/*", class: "sr-only", id: "user_avatar_input" %>
+          <% end %>
+          <p class="mt-1 text-center text-xs text-gray-400">รองรับ JPG, PNG, WebP</p>
+        </div>
+      </section>
+
+      <section class="mb-6">
+        <h2 class="text-sm font-semibold text-gray-900 mb-3">ข้อมูลส่วนตัว</h2>
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <%= f.label :first_name, class: label_class do %>
+              ชื่อ <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.text_field :first_name, required: true, placeholder: "กรอกชื่อ", class: input_class %>
+          </div>
+          <div>
+            <%= f.label :last_name, class: label_class do %>
+              นามสกุล <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.text_field :last_name, required: true, placeholder: "กรอกนามสกุล", class: input_class %>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <%= f.label :location, "ที่อยู่จัดส่ง", class: label_class %>
+          <%= f.text_field :location, placeholder: "กรอกที่อยู่จัดส่งของคุณ", class: input_class %>
+        </div>
+
+        <div class="mb-4">
+          <%= f.label :phone_number, class: label_class do %>
+            เบอร์โทรศัพท์ <span class="text-red-500">*</span>
+          <% end %>
+          <%= f.text_field :phone_number, required: true, placeholder: "0812345678", autocomplete: "tel", class: input_class %>
+        </div>
+
+        <div class="mb-4">
+          <%= f.label :email, class: label_class do %>
+            อีเมล <span class="text-red-500">*</span>
+          <% end %>
+          <%= f.email_field :email, autocomplete: "email", required: true, class: input_class %>
+        </div>
+      </section>
+
+      <section class="mb-6 rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
+        <h2 class="text-sm font-semibold text-gray-900 mb-1">เปลี่ยนรหัสผ่าน</h2>
+        <p class="text-xs text-gray-500 mb-4">เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยนรหัสผ่าน</p>
+
+        <% if @minimum_password_length %>
+          <p class="text-xs text-gray-400 mb-2">อย่างน้อย <%= @minimum_password_length %> ตัวอักษร</p>
+        <% end %>
+
+        <div class="mb-4">
+          <%= f.label :password, "รหัสผ่านใหม่", class: label_class %>
+          <%= f.password_field :password, autocomplete: "new-password", placeholder: "รหัสผ่านใหม่", class: input_class %>
+        </div>
+
+        <div class="mb-0">
+          <%= f.label :password_confirmation, "ยืนยันรหัสผ่านใหม่", class: label_class %>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "ยืนยันรหัสผ่านใหม่", class: input_class %>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <div class="mb-4">
+          <%= f.label :current_password, class: label_class do %>
+            รหัสผ่านปัจจุบัน <span class="text-red-500">*</span>
+          <% end %>
+          <p class="text-xs text-gray-500 mb-2">ใช้ยืนยันก่อนบันทึกการเปลี่ยนแปลง</p>
+          <%= f.password_field :current_password, autocomplete: "current-password", required: true, placeholder: "รหัสผ่านปัจจุบัน", class: input_class %>
+        </div>
+      </section>
+
+      <%= f.submit "บันทึกการเปลี่ยนแปลง",
+        class: "w-full py-3.5 text-white text-base font-medium rounded-full bg-gradient-to-r from-pink-500 to-pink-600 shadow-lg shadow-pink-200 hover:opacity-90 active:scale-[0.98] transition duration-200" %>
+    <% end %>
+
+    <section class="mt-10 rounded-2xl border border-red-100 bg-red-50/40 p-4">
+      <h2 class="text-sm font-semibold text-red-900">ลบบัญชี</h2>
+      <p class="mt-1 text-xs text-red-800/80 leading-relaxed">
+        การลบบัญชีจะลบข้อมูลของคุณจากระบบ คำสั่งซื้อในอดีตอาจยังถูกเก็บไว้ตามกฎหมาย
+      </p>
+      <div class="mt-4">
+        <%= button_to "ลบบัญชีถาวร",
+          registration_path(resource_name),
+          method: :delete,
+          form: { data: { turbo_confirm: "ยืนยันการลบบัญชี? การกระทำนี้ไม่สามารถย้อนกลับได้" } },
+          class: "w-full rounded-full border border-red-300 bg-white py-2.5 text-sm font-medium text-red-600 shadow-sm transition hover:bg-red-50" %>
+      </div>
+    </section>
   </div>
+</div>
 
-  <div class="field">
-    <p><%= f.label :password_confirmation %></p>
-    <p><%= f.password_field :password_confirmation, autocomplete: "new-password" %></p>
-  </div>
-
-  <div class="field">
-    <p><%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i></p>
-    <p><%= f.password_field :current_password, autocomplete: "current-password" %></p>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Update" %>
-  </div>
-<% end %>
-
-<h3>Cancel my account</h3>
-
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
-
-<%= link_to "Back", :back %>
+<script>
+  (function () {
+    var input = document.getElementById("user_avatar_input");
+    var img = document.getElementById("user-avatar-preview-img");
+    var fallback = document.getElementById("user-avatar-preview-fallback");
+    if (!input || !img || !fallback) return;
+    input.addEventListener("change", function () {
+      var file = input.files && input.files[0];
+      if (!file || !file.type.match(/^image\//)) return;
+      var url = URL.createObjectURL(file);
+      img.src = url;
+      img.classList.remove("hidden");
+      fallback.classList.add("hidden");
+    });
+  })();
+</script>
