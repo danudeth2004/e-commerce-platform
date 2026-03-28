@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :seller_owns_product?
 
-  # ผู้ขายล็อกอิน seller และสินค้านี้อยู่ร้านของตัวเอง (ใช้หน้ารายละเอียดสินค้า)
   def seller_owns_product?(product)
     return false unless seller_user_signed_in?
 

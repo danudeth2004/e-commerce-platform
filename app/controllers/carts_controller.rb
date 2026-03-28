@@ -17,8 +17,8 @@ class CartsController < ApplicationController
       return redirect_back fallback_location: cart_path, alert: "กรุณาเลือกจำนวนอย่างน้อย 1 ชิ้น"
     end
 
-    item.quantity ||= 0
-    item.quantity += quantity_to_add if item.quantity > 1
+    base_qty = item.persisted? ? item.quantity.to_i : 0
+    item.quantity = base_qty + quantity_to_add
     item.save!
 
     redirect_back fallback_location: cart_path, notice: "เพิ่มสินค้าในตะกร้าแล้ว"
