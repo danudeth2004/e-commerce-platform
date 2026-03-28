@@ -38,7 +38,7 @@ module Seller
       attrs = product_params.except(:images)
       if @product.update(attrs)
         attach_new_images_if_any(@product)
-        redirect_to product_path(@product), notice: "อัปเดตสินค้าแล้ว"
+        redirect_to product_path(@product, seller_preview: 1), notice: "อัปเดตสินค้าแล้ว"
       else
         flash.now[:alert] = @product.errors.full_messages.to_sentence
         render :edit, status: :unprocessable_entity
@@ -47,12 +47,12 @@ module Seller
 
     def destroy
       if @product.order_items.exists?
-        redirect_to product_path(@product), alert: "ไม่สามารถลบสินค้าที่เคยถูกสั่งซื้อได้"
+        redirect_to product_path(@product, seller_preview: 1), alert: "ไม่สามารถลบสินค้าที่เคยถูกสั่งซื้อได้"
         return
       end
 
       if @product.standard? && @product.product_bundle_items_as_component.exists?
-        redirect_to product_path(@product), alert: "ไม่สามารถลบได้ — สินค้านี้ถูกใช้ในเซต กรุณาลบหรือแก้เซตก่อน"
+        redirect_to product_path(@product, seller_preview: 1), alert: "ไม่สามารถลบได้ — สินค้านี้ถูกใช้ในเซต กรุณาลบหรือแก้เซตก่อน"
         return
       end
 

@@ -97,10 +97,6 @@
     <%= turbo_frame_tag "products_frame" do %>
       <% if @store.persisted? && @store.products.exists? %>
         <div class="space-y-8 mt-4">
-          <%= render "shared/product_category_filter",
-           current_category_key: @category_key,
-           path_proc: ->(key) { key.present? ? seller_root_path(category: key) : seller_root_path } %>
-
           <% if @bundle_products.any? %>
             <section class="space-y-3">
               <h2 class="text-base font-semibold text-gray-900">เซตสินค้า</h2>
@@ -110,7 +106,7 @@
                      product: product_to_card_hash(product),
                      show_cart: false,
                      full_width: true,
-                     link_to_path: product_path(product) %>
+                     link_to_path: product_path(product, seller_preview: 1) %>
                 <% end %>
               </div>
             </section>
@@ -127,7 +123,7 @@
                      product: product_to_card_hash(product),
                      show_cart: false,
                      full_width: true,
-                     link_to_path: product_path(product) %>
+                     link_to_path: product_path(product, seller_preview: 1) %>
                 <% end %>
               </div>
             </section>

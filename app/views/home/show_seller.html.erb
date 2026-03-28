@@ -1,0 +1,13 @@
+<% content_for :title, @product.title %>
+<div class="w-full min-h-screen bg-gray-50 pb-10">
+  <div class="mx-auto w-full max-w-md px-4 pt-3">
+    <%= link_to seller_root_path, class: "inline-flex items-center gap-1 text-sm font-medium text-gray-600 hover:text-gray-900" do %>
+      <span class="iconify text-lg" data-icon="lucide:chevron-left" data-width="20"></span>
+      กลับหน้าร้านค้า
+    <% end %>
+    <p class="mt-1.5 text-xs text-gray-500">มุมมองผู้ขาย — ไม่แสดงแถบตะกร้าเหมือนลูกค้า</p>
+  </div>
+  <%= render "home/partials_product_detail/product_image", product: @product %>
+  <%= render "home/partials_product_detail/brand_section", product: @product %>
+  <%= render "home/partials_product_detail/product_description", product: @product %>
+</div>

@@ -25,6 +25,11 @@ class HomeController < ApplicationController
     @brand_section       = @product
     @product_description = @product
     @product_bottom_bar  = @product
+
+    if show_seller_product_page?
+      render :show_seller, layout: "seller"
+      return
+    end
   end
 
   def flash_sale
@@ -33,6 +38,13 @@ class HomeController < ApplicationController
   end
 
   private
+
+  # หน้ารายละเอียดสินค้าแบบผู้ขาย (layout seller, ไม่มีตะกร้า) — เฉพาะเมื่อล็อกอิน seller
+  def show_seller_product_page?
+    return false unless seller_user_signed_in?
+
+    params[:seller_preview].to_s == "1" || !user_signed_in?
+  end
 
   def assign_flash_sale!
     @flash_sale_entries = build_flash_sale_entries
