@@ -38,6 +38,10 @@ class CheckoutsController < ApplicationController
       if @list_price_subtotal_cents.positive? && @product_discount_cents.positive?
         ((@product_discount_cents.to_f / @list_price_subtotal_cents) * 100).round
       end
+    @coupons = [
+  { id: 1, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: true },
+  { id: 2, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: false },
+]
   end
 
   def pay

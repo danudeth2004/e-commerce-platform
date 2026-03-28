@@ -9,17 +9,23 @@
   data-amount="<%= @order.total_amount_cents %>"
 >
   <%# ที่อยู่จัดส่ง %>
-  <section class="px-4 pt-4">
+  <section class="px-4 pt-4 mb-6">
     <%= link_to edit_user_registration_path,
                 class: "flex items-start gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-sm transition hover:bg-gray-50/80" do %>
       <span class="mt-0.5 shrink-0 text-gray-500" aria-hidden="true">
-        <%= inline_svg_tag "icons/map-pin.svg", class: "h-5 w-5" %>
+        <%= inline_svg_tag "icons/map-pin-house.svg", class: "h-5 w-5" %>
       </span>
+      
       <div class="min-w-0 flex-1 text-left">
         <p class="text-sm font-semibold text-gray-900">
           <%= [ user.first_name, user.last_name ].compact_blank.join(" ") %>
           <span class="font-normal text-gray-600"><%= masked_thai_mobile(user.phone_number) %></span>
         </p>
+        <% if user.phone_number.present? %>
+          <p class="mt-1 text-xs leading-relaxed text-gray-600 whitespace-pre-line"><%= user.phone_number %></p>
+        <% else %>
+          <p class="mt-1 text-xs text-amber-700">ยังไม่ได้ระบุเบอร์โทรศัพท์ — แตะเพื่อเพิ่มเบอร์โทรศัพท์</p>
+        <% end %>
         <% if user.location.present? %>
           <p class="mt-1 text-xs leading-relaxed text-gray-600 whitespace-pre-line"><%= user.location %></p>
         <% else %>
@@ -32,20 +38,12 @@
     <% end %>
   </section>
 
-  <%# เส้นแบ่งสไตล์ airmail %>
-  <div class="mt-3 h-2.5 w-full overflow-hidden" aria-hidden="true">
-    <div
-      class="h-full w-full opacity-95"
-      style="background: repeating-linear-gradient(-45deg, #FF1493, #FF1493 5px, #FFE4E1 5px, #FFE4E1 10px);"
-    ></div>
-  </div>
-
   <%# สินค้าตามร้าน %>
   <div class="mt-4 space-y-6 px-4">
     <% @items_by_store.each do |store, items| %>
       <section>
         <div class="mb-2 flex items-center justify-between gap-2">
-          <h2 class="text-sm font-bold text-gray-900"><%= store.name %></h2>
+          <h2 class="text-base font-bold text-gray-900"><%= store.name %></h2>
         </div>
 
         <div class="space-y-3">
@@ -90,29 +88,180 @@
       </section>
     <% end %>
 
-    <div class="flex items-center gap-1.5 rounded-lg bg-Tertiary-color px-3 py-2 text-xs text-text-primary">
-      <span class="text-base leading-none" aria-hidden="true">🚚</span>
-      <span>จัดส่งฟรี</span>
-    </div>
+     <div class="mb-4">
+      <h2 class="mb-4 text-base font-bold text-gray-900">เลือกวิธีจัดส่งสินค้า</h2>
 
-    <div class="mt-2 rounded-lg bg-Tertiary-color px-3 py-2.5 text-center text-xs text-text-primary">
-      รับภายใน <%= delivery_from.strftime("%d/%m/%Y") %> – <%= delivery_to.strftime("%d/%m/%Y") %>
+      <%# จัดส่งปกติ %>
+      <label class="group mb-3 flex cursor-pointer items-center gap-3 rounded-xl border-2  border-gray-200 bg-white px-4 py-3.5 transition-all has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50">
+        <%= radio_button_tag :shipping_method, "standard", true,
+              class: "sr-only peer" %>
+
+        <%# Truck icon %>
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center">
+          <svg width="44" height="36" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="8" width="28" height="18" rx="3" fill="#f48fb1"/>
+            <rect x="2" y="8" width="28" height="5" rx="2" fill="#f06292"/>
+            <rect x="30" y="14" width="11" height="12" rx="2" fill="#f48fb1"/>
+            <rect x="32" y="16" width="7" height="7" rx="1" fill="#fce4ec"/>
+            <circle cx="9" cy="28" r="4" fill="#c2185b"/>
+            <circle cx="9" cy="28" r="2" fill="#fff"/>
+            <circle cx="33" cy="28" r="4" fill="#c2185b"/>
+            <circle cx="33" cy="28" r="2" fill="#fff"/>
+          </svg>
+        </div>
+
+        <%# Info %>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-gray-900">จัดส่งปกติ</p>
+          <p class="text-xs text-gray-400">คุณจะได้รับสินค้าภายใน 2-3 วัน</p>
+        </div>
+
+        <%# Price %>
+        <div class="flex shrink-0 flex-col items-end gap-0.5">
+          <span class="text-xs text-gray-300 line-through">฿ 25</span>
+          <span class="rounded-md bg-pink-400 px-2 py-0.5 text-xs font-bold text-white">ฟรี</span>
+        </div>
+      </label>
+
+      <%# จัดส่งด่วน %>
+      <label class="group flex cursor-pointer items-center gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition-all has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50">
+        <%= radio_button_tag :shipping_method, "express", false,
+              class: "sr-only peer" %>
+
+        <%# Fast truck icon %>
+        <div class="flex h-11 w-11 shrink-0 items-center justify-center">
+          <svg width="44" height="36" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="10" width="26" height="16" rx="3" fill="#f48fb1"/>
+            <rect x="28" y="15" width="11" height="11" rx="2" fill="#f48fb1"/>
+            <rect x="30" y="17" width="7" height="6" rx="1" fill="#fce4ec"/>
+            <circle cx="8" cy="28" r="4" fill="#c2185b"/>
+            <circle cx="8" cy="28" r="2" fill="#fff"/>
+            <circle cx="31" cy="28" r="4" fill="#c2185b"/>
+            <circle cx="31" cy="28" r="2" fill="#fff"/>
+            <text x="1" y="11" font-size="10" fill="#f59e0b">⚡</text>
+            <text x="9" y="8" font-size="8" fill="#f59e0b">⚡</text>
+          </svg>
+        </div>
+
+        <%# Info %>
+        <div class="flex-1">
+          <p class="text-sm font-semibold text-gray-900">จัดส่งด่วน</p>
+          <p class="text-xs text-gray-400">คุณจะได้รับสินค้าไม่เกิน 4-5 ชั่วโมง</p>
+        </div>
+
+        <%# Price %>
+        <div class="flex shrink-0 flex-col items-end gap-0.5">
+          <span class="text-xs text-gray-300 line-through">฿ 50</span>
+          <span class="text-sm font-bold text-pink-400">฿ 10/ร้านค้า</span>
+        </div>
+      </label>
     </div>
   </div>
 
   <%# วิธีชำระเงิน %>
-  <section class="mx-4 mt-8 rounded-2xl border border-gray-200 bg-neutral-color p-4">
-    <h3 class="text-sm font-bold text-text-primary">วิธีการชำระเงิน</h3>
-    <p class="mt-0.5 text-xs text-text-neutral-300">ชำระผ่าน Omise — บัตรเครดิต / เดบิต</p>
-    <div class="mt-3 flex items-center gap-3 rounded-xl border-2 border-Primary-color bg-white px-3 py-3 shadow-pinkGlow">
-      <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-Tertiary-color text-xs font-bold text-Primary-color">OM</span>
-      <div class="min-w-0 flex-1">
-        <p class="text-sm font-semibold text-text-primary">Omise</p>
-        <p class="text-xs text-text-neutral-300">บัตรเครดิต / เดบิต (ชำระเงินปลอดภัย)</p>
+ <section class="mx-4 mt-8 overflow-hidden rounded-2xl border border-pink-100 bg-white shadow-sm">
+
+  <%# Header %>
+  <div class="border-b border-pink-50 px-4 py-3.5">
+    <div class="flex items-center justify-between">
+      <div>
+        <h3 class="text-base font-bold text-gray-900">วิธีการชำระเงิน</h3>
+        <p class="mt-0.5 text-xs text-gray-400">ชำระผ่าน Omise — ปลอดภัยด้วย SSL</p>
       </div>
-      <span class="shrink-0 text-xs font-medium text-Primary-color">เลือกแล้ว</span>
+      <%# Lock icon %>
+      <div class="flex h-8 w-8 items-center justify-center rounded-full bg-pink-50">
+        <svg class="h-4 w-4 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+        </svg>
+      </div>
     </div>
-  </section>
+  </div>
+
+  <%# Payment card %>
+  <div class="p-4">
+    <div class="flex items-center gap-3 rounded-xl border-2 border-pink-400 bg-gradient-to-r from-pink-50 to-white px-4 py-3.5">
+
+      <%# Omise logo badge %>
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-pink-400 shadow-sm">
+        <span class="text-xs font-black tracking-tight text-white">OM</span>
+      </div>
+
+      <%# Info %>
+      <div class="min-w-0 flex-1">
+        <p class="text-sm font-semibold text-gray-900">Omise</p>
+        <div class="mt-0.5 flex items-center gap-1.5">
+          <%# Card icons %>
+          <span class="inline-flex items-center gap-1 text-xs text-gray-400">
+            <svg class="h-3 w-3" viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="4" width="22" height="16" rx="3"/></svg>
+            บัตรเครดิต / เดบิต
+          </span>
+        </div>
+      </div>
+
+      <%# Selected badge %>
+      <div class="flex shrink-0 items-center gap-1 rounded-full bg-pink-400 px-2.5 py-1">
+        <svg class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span class="text-xs font-semibold text-white">เลือกแล้ว</span>
+      </div>
+
+    </div>
+
+    <%# Accepted cards row %>
+    <div class="mt-3 flex items-center gap-2 px-1">
+      <span class="text-xs text-gray-400">รับชำระ:</span>
+      <div class="flex items-center gap-1.5">
+        <%# Visa %>
+        <span class="inline-flex h-5 items-center rounded border border-gray-200 bg-white px-1.5 text-[10px] font-black italic text-blue-700 shadow-sm">VISA</span>
+        <%# Mastercard %>
+        <span class="inline-flex h-5 items-center gap-0.5 rounded border border-gray-200 bg-white px-1.5 shadow-sm">
+          <span class="h-3 w-3 rounded-full bg-red-500 opacity-90"></span>
+          <span class="-ml-1.5 h-3 w-3 rounded-full bg-yellow-400 opacity-90"></span>
+        </span>
+        <%# JCB %>
+        <span class="inline-flex h-5 items-center rounded border border-gray-200 bg-white px-1.5 text-[10px] font-black text-green-700 shadow-sm">JCB</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<div class="mx-4 mt-8">
+  <h2 class="mb-4 text-xl font-bold text-gray-900">ส่วนลดพิเศษสำหรับคุณ</h2>
+
+  <%# Horizontal scrollable coupon list %>
+  <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+
+    <% @coupons.each do |coupon| %>
+      <label class="group relative flex w-44 shrink-0 cursor-pointer flex-col rounded-2xl border-2 border-gray-200 bg-white p-4 transition-all duration-200
+                    has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50">
+
+        <%= radio_button_tag :coupon_id, coupon[:id], false, class: "sr-only peer" %>
+
+        <%# Checkmark circle — top right (default: empty gray circle) %>
+        <div class="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-300 bg-white transition-all duration-200
+                    group-has-[:checked]:border-pink-400 group-has-[:checked]:bg-pink-400">
+          <svg class="h-3.5 w-3.5 text-white opacity-0 transition-opacity duration-200 group-has-[:checked]:opacity-100"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+
+        <%# Discount amount %>
+        <p class="pr-7 text-lg font-bold text-gray-900">ส่วนลด <%= coupon[:discount] %></p>
+
+        <%# Min order %>
+        <p class="mt-1 text-sm text-gray-500"><%= coupon[:min_order] %></p>
+
+        <%# Expiry %>
+        <p class="mt-3 text-xs text-gray-400">หมดอายุ <%= coupon[:expires_at] %></p>
+
+      </label>
+    <% end %>
+
+  </div>
+</div>
 
   <%# สรุปคำสั่งซื้อ %>
   <section class="mx-4 mt-6 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
