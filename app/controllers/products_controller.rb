@@ -1,4 +1,4 @@
-class ProductsController < ApplicationController
+class ProductsController < BaseController
   def index
     @skin_concern_key = params[:skin_concern].presence
     allowed_skin = SkinConcern::DATA.map { |d| d[:key] }

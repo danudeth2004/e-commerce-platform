@@ -1,4 +1,4 @@
-class CartsController < ApplicationController
+class CartsController < BaseController
   before_action :authenticate_user!
   before_action :set_cart
   before_action :hide_app_header, only: :show

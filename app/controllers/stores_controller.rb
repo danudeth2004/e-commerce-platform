@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # หน้าร้านค้าสำหรับผู้ซื้อ (ดูสินค้าแบรนด์จาก PDP)
-class StoresController < ApplicationController
+class StoresController < BaseController
   def show
     @store = Seller::Store.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @store.active?

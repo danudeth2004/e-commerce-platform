@@ -1,4 +1,4 @@
-class HomeController < ApplicationController
+class HomeController < BaseController
   def index
     @banners            = banners
     @skin_concerns      = skin_concerns

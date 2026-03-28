@@ -1,4 +1,4 @@
-class CheckoutsController < ApplicationController
+class CheckoutsController < BaseController
   before_action :authenticate_user!
   before_action :set_order, only: [ :payment, :pay ]
   before_action :order_paid?, only: [ :payment, :pay ]
