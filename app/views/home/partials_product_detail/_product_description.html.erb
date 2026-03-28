@@ -1,5 +1,32 @@
 <div class="px-4 py-4">
   <h2 class="text-xl font-semibold mb-3 text-text-primary">รายละเอียดสินค้า</h2>
+  <% if product.bundle? && product.skin_concern_labels.any? %>
+    <div class="flex flex-wrap gap-2 mb-4">
+      <% product.skin_concern_labels.each do |label| %>
+        <span class="inline-flex rounded-full bg-pink-100 px-3 py-1 text-xs font-medium text-pink-900">
+          <%= label %>
+        </span>
+      <% end %>
+    </div>
+  <% end %>
+  <% if product.bundle? && product.bundle_items.any? %>
+    <div class="mb-6 rounded-2xl border border-pink-100 bg-pink-50/50 px-4 py-3">
+      <p class="text-sm font-semibold text-text-primary mb-2">สินค้าในเซตนี้</p>
+      <ol class="space-y-3 list-decimal list-inside text-sm text-gray-800">
+        <% product.bundle_items.each do |item| %>
+          <% comp = item.component_product %>
+          <% h = product_to_card_hash(comp) %>
+          <li class="marker:font-semibold">
+            <span class="font-medium"><%= comp.title %></span>
+            <span class="text-gray-500"> — ฿ <%= number_with_delimiter(h[:price]) %></span>
+            <% if item.usage_instructions.present? %>
+              <p class="mt-1 text-xs text-gray-600 pl-0 list-none">วิธีใช้: <%= item.usage_instructions %></p>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+    </div>
+  <% end %>
   <% if product.description.present? %>
     <p class="text-base leading-relaxed text-gray-700">
       <%= product.description %>

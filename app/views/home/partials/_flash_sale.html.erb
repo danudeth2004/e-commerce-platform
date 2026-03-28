@@ -1,7 +1,7 @@
 <% flash_products = local_assigns.fetch(:flash_products) %>
 <% flash_countdown_end_unix = local_assigns.fetch(:flash_countdown_end_unix) %>
 <section class="rounded-l-2xl">
-  <div class="rounded-l-2xl p-4 bg-Secondary-color bg-opacity-20">
+  <div class="rounded-l-2xl p-4 bg-Secondary-color bg-opacity-20 mt-4">
     <h2 class="text-xl font-semibold text-text-primary text-center mb-3">สินค้าราคาพิเศษสำหรับวันนี้</h2>
     <% end_ts = flash_countdown_end_unix %>
     <% rem = [ end_ts - Time.current.to_i, 0 ].max %>
@@ -18,7 +18,11 @@
     </div>
     <div class="flex gap-3 overflow-x-auto pb-1" style="-ms-overflow-style:none; scrollbar-width:none;">
       <% flash_products.each do |product| %>
-        <%= render "shared/product_card", product: product %>
+        <% if product[:bundle] %>
+          <%= render "shared/product_bundle_card", product: product %>
+        <% else %>
+          <%= render "shared/product_card", product: product %>
+        <% end %>
       <% end %>
     </div>
   </div>

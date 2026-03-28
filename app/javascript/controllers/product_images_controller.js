@@ -7,10 +7,28 @@ export default class ProductImagesController extends Controller {
   static values = {
     max: { type: Number, default: 5 },
     maxBytes: { type: Number, default: 1048576 },
+    // [{ url, signed_id }] — รูปที่มีอยู่แล้ว (เช่น ตอนแก้ไข) แสดงในแถวพรีวิว ไม่ใส่ใน file input
+    initialUrls: { type: Array, default: [] },
   }
 
   connect() {
     this.items = []
+    for (const raw of this.initialUrlsValue) {
+      const obj = typeof raw === "object" && raw !== null ? raw : {}
+      const url = typeof raw === "string" ? raw : obj.url
+      if (!url) continue
+      const signedId = obj.signed_id
+      const id = signedId ? `existing-${signedId}` : `existing-${globalThis.crypto?.randomUUID?.() ?? Date.now()}`
+      this.items.push({
+        id,
+        file: null,
+        url,
+        phase: "ready",
+        existing: true,
+        signedId: signedId ?? null,
+      })
+    }
+    this.render()
   }
 
   disconnect() {
@@ -19,7 +37,7 @@ export default class ProductImagesController extends Controller {
 
   revokeAllUrls() {
     for (const item of this.items) {
-      if (item.url) URL.revokeObjectURL(item.url)
+      if (item.url?.startsWith("blob:")) URL.revokeObjectURL(item.url)
     }
   }
 
@@ -155,7 +173,7 @@ export default class ProductImagesController extends Controller {
     const idx = this.items.findIndex((i) => i.id === id)
     if (idx === -1) return
     const [removed] = this.items.splice(idx, 1)
-    if (removed.url) URL.revokeObjectURL(removed.url)
+    if (removed.url?.startsWith("blob:")) URL.revokeObjectURL(removed.url)
     this.clearError()
     this.syncInput()
     this.render()
@@ -164,7 +182,7 @@ export default class ProductImagesController extends Controller {
   syncInput() {
     const dt = new DataTransfer()
     for (const item of this.items) {
-      dt.items.add(item.file)
+      if (item.file) dt.items.add(item.file)
     }
     this.fileInputTarget.files = dt.files
   }
@@ -186,6 +204,11 @@ export default class ProductImagesController extends Controller {
           <div class="absolute bottom-0 left-0 right-0 h-1 bg-white/90 px-0.5 py-px">
             <div class="h-full rounded-sm bg-emerald-500 transition-[width] duration-75" style="width: ${item.progress}%"></div>
           </div>
+        `
+      } else if (item.existing) {
+        wrap.innerHTML = `
+          <img src="${item.url}" alt="" class="w-full h-full object-cover" />
+          <span class="pointer-events-none absolute bottom-0 left-0 right-0 bg-black/55 py-0.5 text-center text-[9px] font-medium text-white">รูปเดิม</span>
         `
       } else {
         wrap.innerHTML = `

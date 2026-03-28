@@ -3,7 +3,8 @@ class ProductCategory
     { key: "serum", label: "เซรั่ม" },
     { key: "moisturizer", label: "ครีมบำรุงผิว" },
     { key: "sunscreen", label: "กันแดด" },
-    { key: "skin_care", label: "ผลิตภัณฑ์สำหรับผิว" }
+    { key: "skin_care", label: "ผลิตภัณฑ์สำหรับผิว" },
+    { key: "bundle", label: "ชุดสินค้า" }
   ].freeze
 
   def self.all

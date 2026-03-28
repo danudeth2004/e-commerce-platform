@@ -2,15 +2,44 @@
 <% price = p[:price] %>
 <% original_price = p[:original] %>
 <% discount_percent = p[:discount_percent] %>
+<% gallery_urls = product_detail_gallery_image_urls(product) %>
+<% multi = gallery_urls.size > 1 %>
 <div class="relative bg-gradient-to-br from-pink-50 to-purple-50 px-8 py-6">
-  <% if product.images.attached? %>
-    <%= image_tag product.images.first, class: "w-full h-auto object-contain" %>
+  <% if multi %>
+    <div class="relative -mx-2 z-0" data-controller="product-gallery">
+      <div
+        class="flex overflow-x-auto snap-x snap-mandatory gap-0 pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        data-product-gallery-target="track"
+        data-action="scroll->product-gallery#sync">
+        <% gallery_urls.each_with_index do |url, i| %>
+          <div class="min-w-full shrink-0 snap-center flex justify-center px-2 box-border">
+            <%= image_tag url,
+                  class: "w-full h-auto max-h-[min(72vh,320px)] object-contain",
+                  alt: "#{product.title} — รูปที่ #{i + 1}" %>
+          </div>
+        <% end %>
+      </div>
+      <div class="flex justify-center gap-1.5 mt-1" role="tablist" aria-label="เลือกรูปสินค้า">
+        <% gallery_urls.each_with_index do |_, i| %>
+          <button
+            type="button"
+            role="tab"
+            aria-current="<%= i == 0 ? 'true' : 'false' %>"
+            class="h-1.5 rounded-full transition-all duration-200 <%= i == 0 ? 'w-8 bg-Primary-color' : 'w-1.5 bg-gray-300' %>"
+            data-product-gallery-target="dot"
+            data-index="<%= i %>"
+            data-action="click->product-gallery#goTo">
+            <span class="sr-only">รูปที่ <%= i + 1 %></span>
+          </button>
+        <% end %>
+      </div>
+      <p class="text-center text-[10px] text-gray-400 mt-1">เลื่อนดูรูปได้</p>
+    </div>
   <% else %>
-    <%= image_tag "https://via.placeholder.com/300x300.png?text=#{ERB::Util.url_encode(product.title)}",
-                  class: "w-full h-auto object-contain" %>
+    <%= image_tag gallery_urls.first, class: "w-full h-auto object-contain" %>
   <% end %>
-  <div class="absolute top-4 right-4 bg-gray-300 text-gray-600 px-3 py-1 rounded-full text-xs">
-    สินค้า
+  <div class="absolute top-4 right-4 z-10 bg-gray-300 text-gray-600 px-3 py-1 rounded-full text-xs">
+    <%= product.bundle? ? "เซตสินค้า" : "สินค้า" %>
   </div>
 </div>
 <div class="px-4 py-3">

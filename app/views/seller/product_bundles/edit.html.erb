@@ -1,0 +1,11 @@
+<%= render "wizard_form",
+  editing: true,
+  form_url: seller_product_bundle_path(@product),
+  form_method: :patch,
+  product: @product,
+  candidates: @candidates,
+  candidate_prices: @candidate_prices,
+  order_ids: @order_ids,
+  usages_by_id: @usages_by_id,
+  pricing_mode: @pricing_mode,
+  bundle_amount_baht: @bundle_amount_baht %>

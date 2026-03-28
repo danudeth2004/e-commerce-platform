@@ -71,9 +71,9 @@
         class: "block px-4 py-2 text-gray-800 hover:bg-gray-50" do %>
                   แก้ไขโปรไฟล์ร้านค้า
                 <% end %>
-                <%= link_to new_seller_product_path,
+                <%= link_to choose_seller_products_path,
         class: "block px-4 py-2 text-gray-800 hover:bg-gray-50" do %>
-                  เพิ่มสินค้า
+                  เพิ่มสินค้า / จัดเซต
                 <% end %>
               </div>
             </div>
@@ -86,24 +86,47 @@
     </section>
     <%= turbo_frame_tag "products_frame" do %>
       <% if @store.persisted? && @store.products.exists? %>
-        <section class="space-y-4 mt-4">
+        <div class="space-y-8 mt-4">
           <%= render "shared/product_category_filter",
            current_category_key: @category_key,
            path_proc: ->(key) { key.present? ? seller_root_path(category: key) : seller_root_path } %>
-          <% if @products.any? %>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              <% @products.each do |product| %>
-                <%= render "shared/product_card",
-                   product: product_to_card_hash(product),
-                   show_cart: false,
-                   full_width: true,
-                   link_to_path: product_path(product) %>
-              <% end %>
-            </div>
-          <% else %>
+
+          <% if @bundle_products.any? %>
+            <section class="space-y-3">
+              <h2 class="text-base font-semibold text-gray-900">เซตสินค้า</h2>
+              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <% @bundle_products.each do |product| %>
+                  <%= render "shared/product_bundle_card",
+                     product: product_to_card_hash(product),
+                     show_cart: false,
+                     full_width: true,
+                     link_to_path: product_path(product) %>
+                <% end %>
+              </div>
+            </section>
+          <% end %>
+
+          <% if @standard_products.any? %>
+            <section class="space-y-3">
+              <h2 class="text-base font-semibold text-gray-900">
+                <%= @bundle_products.any? ? "สินค้าชิ้นเดียว" : "สินค้าทั้งหมด" %>
+              </h2>
+              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <% @standard_products.each do |product| %>
+                  <%= render "shared/product_card",
+                     product: product_to_card_hash(product),
+                     show_cart: false,
+                     full_width: true,
+                     link_to_path: product_path(product) %>
+                <% end %>
+              </div>
+            </section>
+          <% end %>
+
+          <% if @bundle_products.empty? && @standard_products.empty? %>
             <p class="text-center text-sm text-gray-500 py-8">ไม่มีสินค้าในร้านค้าของคุณ</p>
           <% end %>
-        </section>
+        </div>
       <% else %>
         <section class="flex flex-col items-center text-center text-sm text-gray-500 py-16 space-y-2">
           <%= image_tag "empty_product.png", class: "w-36 h-36" %>

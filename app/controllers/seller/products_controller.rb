@@ -1,8 +1,11 @@
 module Seller
   class ProductsController < BaseController
     layout "devise"
-    before_action :set_store, only: [ :new, :create, :edit, :update, :destroy ]
+    before_action :set_store, only: [ :choose, :new, :create, :edit, :update, :destroy ]
     before_action :set_product, only: [ :edit, :update, :destroy ]
+
+    def choose
+    end
 
     def new
       @product = @store.products.new
@@ -20,9 +23,18 @@ module Seller
     end
 
     def edit
+      if @product.bundle?
+        redirect_to edit_seller_product_bundle_path(@product)
+        return
+      end
     end
 
     def update
+      if @product.bundle?
+        redirect_to edit_seller_product_bundle_path(@product), alert: "แก้ไขเซตสินค้าได้จากฟอร์มจัดเซต"
+        return
+      end
+
       attrs = product_params.except(:images)
       if @product.update(attrs)
         attach_new_images_if_any(@product)
@@ -36,6 +48,11 @@ module Seller
     def destroy
       if @product.order_items.exists?
         redirect_to product_path(@product), alert: "ไม่สามารถลบสินค้าที่เคยถูกสั่งซื้อได้"
+        return
+      end
+
+      if @product.standard? && @product.product_bundle_items_as_component.exists?
+        redirect_to product_path(@product), alert: "ไม่สามารถลบได้ — สินค้านี้ถูกใช้ในเซต กรุณาลบหรือแก้เซตก่อน"
         return
       end
 

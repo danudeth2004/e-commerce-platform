@@ -2,7 +2,7 @@
   <p class="font-semibold text-gray-900 mb-1">แคมเปญคืออะไร (ต่างจากโปรที่ตั้งในสินค้า)</p>
   <ul class="list-disc pl-5 space-y-1 text-gray-600">
     <li><strong>โปรที่หน้าสินค้า (ผู้ขาย)</strong> — กำหนดราคาเต็ม / ราคาโปร และถ้าต้องการให้ใช้เฉพาะช่วงเวลา ให้ใส่วันเริ่ม–สิ้นสุดโปรที่ฟอร์มสินค้า</li>
-    <li><strong>แคมเปญ (แอดมิน)</strong> — ช่วงวันลดของทั้งแพลตฟอร์ม (เช่น 11.11) เลือกสินค้าเข้าร่วม และกำหนด % ลดจาก <em>ราคาหลังคำนวณโปรร้านแล้ว</em></li>
+    <li><strong>แคมเปญ (แอดมิน)</strong> — ช่วงวันลดของทั้งแพลตฟอร์ม (เช่น 11.11) เลือกสินค้าเข้าร่วม และกำหนด % ลดจาก <em>ราคาหลังคำนวณโปรร้านแล้ว</em> (เซตสินค้าไม่สามารถเข้าร่วมแคมเปญได้)</li>
     <li>ถ้าไม่ใส่วันโปรที่สินค้า แต่ใส่ราคาโปรที่ถูกกว่าราคาเต็ม = ถือว่าลดได้ทันทีจนกว่าจะแก้ราคา</li>
   </ul>
 </div>
@@ -47,7 +47,7 @@
     <%= f.label :product_ids, "สินค้าในแคมเปญ (กด Ctrl/Cmd เลือกหลายรายการ)", class: "block text-sm font-medium text-gray-700 mb-1" %>
     <%# ส่งค่าว่างได้เมื่อไม่เลือกสินค้า (เคลียร์รายการ) %>
     <%= hidden_field_tag "campaign[product_ids][]", "" %>
-    <% product_opts = Product.unscoped.joins(:store).order("seller_stores.name ASC, products.title ASC") %>
+    <% product_opts = Product.unscoped.joins(:store).where(kind: :standard).order("seller_stores.name ASC, products.title ASC") %>
     <%= f.collection_select :product_ids,
           product_opts,
           :id,

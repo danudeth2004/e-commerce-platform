@@ -1,0 +1,282 @@
+<% editing = local_assigns.fetch(:editing, false) %>
+<% form_url = local_assigns.fetch(:form_url) %>
+<% form_method = local_assigns.fetch(:form_method, :post) %>
+<% product = local_assigns.fetch(:product, nil) %>
+<% candidates = local_assigns.fetch(:candidates) %>
+<% candidate_prices = local_assigns.fetch(:candidate_prices) %>
+<% order_ids = local_assigns.fetch(:order_ids) { [] } %>
+<% usages_by_id = local_assigns.fetch(:usages_by_id, nil) %>
+<% pricing_mode = local_assigns.fetch(:pricing_mode, nil) %>
+<% bundle_amount_baht = local_assigns.fetch(:bundle_amount_baht, nil) %>
+<% step2_input = "rounded-lg border border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
+<% step2_field = "w-full #{step2_input}" %>
+<% step2_select = "w-full #{step2_input} appearance-none pr-10" %>
+<%= tag.div class: "w-full max-w-md mx-auto pb-32", data: {
+  controller: "bundle-wizard bundle-product-pick",
+  bundle_product_pick_prices_value: candidate_prices,
+  bundle_wizard_back_url_value: (editing ? seller_root_path : choose_seller_products_path),
+  bundle_wizard_require_new_images_value: !editing,
+  bundle_product_pick_initial_order_value: order_ids.to_json
+} do %>
+  <div class="flex items-center gap-3 mb-4">
+    <button
+      type="button"
+      class="inline-flex items-center justify-center w-9 h-9 rounded-full hover:bg-gray-100"
+      data-action="bundle-wizard#back"
+    >
+      <span class="text-xl leading-none text-gray-700">‹</span>
+    </button>
+    <div class="flex-1">
+      <h1 class="text-lg font-semibold text-gray-900 mb-1">
+        <%= editing ? "แก้ไขเซตสินค้า" : "จัดเซตสินค้าของคุณ" %>
+      </h1>
+      <p class="text-xs text-[#A9A9A9]" data-bundle-wizard-target="subtitle">
+        กรอกรายละเอียดของเซตสินค้าให้ครบ
+      </p>
+    </div>
+  </div>
+  <%= form_with scope: :product_bundle, url: form_url, method: form_method, local: true, multipart: true, html: {
+    class: "space-y-0",
+    novalidate: true,
+    data: { action: "submit->bundle-wizard#validateSubmit" }
+  } do |f| %>
+    <%= f.hidden_field :category_key, value: product&.category_key.presence || "bundle" %>
+    <%# --- Step 1: รายละเอียดเซต --- %>
+    <div
+      class="space-y-6"
+      data-bundle-wizard-target="step"
+      data-step-hint="กรอกรายละเอียดของเซตสินค้าให้ครบ"
+    >
+      <% unless editing %>
+        <div class="mb-4 rounded-xl border border-pink-100 bg-pink-50/60 px-4 py-3 text-xs text-text-primary leading-relaxed">
+          <p class="font-semibold mb-1">ยังไม่มีสินค้าครบ?</p>
+          <p class="text-text-neutral-300 mb-2">
+            ถ้าต้องการเพิ่มสินค้าชิ้นใหม่ก่อนจัดเซต กดด้านล่างแล้วกลับมาหน้านี้ได้ทันที
+          </p>
+          <%= link_to "ไปเพิ่มสินค้าชิ้นเดียว",
+            new_seller_product_path,
+            class: "inline-flex rounded-full border border-[#FF1493] bg-white px-3 py-1.5 text-xs font-semibold text-[#FF1493] hover:bg-pink-50" %>
+        </div>
+      <% end %>
+      <div
+        class="mb-6"
+        data-controller="product-images"
+        data-action="click->product-images#delegateClick"
+        data-product-images-max-value="5"
+        data-product-images-max-bytes-value="<%= 1.megabyte %>"
+        data-product-images-initial-urls-value="<%= h(
+          (editing && product&.images&.attached? ? product.images.map { |img| { url: rails_blob_path(img, only_path: true), signed_id: img.signed_id } } : []).to_json
+        ) %>"
+        >
+        <label for="bundle_product_images_input" class="block text-base font-regular text-text-primary mb-2">
+          รูปเซตสินค้า <% unless editing %><span class="text-text-accents-red">*</span><% end %>
+        </label>
+        <% if editing && product&.images&.attached? %>
+          <p class="text-xs text-text-neutral-300 mb-2">มีรูปเดิม <%= product.images.size %> รูป — อัปโหลดเพิ่มได้ (ไม่บังคับ)</p>
+        <% end %>
+        <div
+          class="rounded-2xl border border-dashed border-border-neutral bg-bg-neutral-color px-4 py-8 text-center transition-shadow cursor-pointer"
+          data-product-images-target="dropZone"
+          data-action="
+            click->product-images#openPicker
+          dragenter->product-images#dragEnter
+          dragover->product-images#dragOver
+          dragleave->product-images#dragLeave
+          drop->product-images#drop
+          "
+          >
+          <%= f.file_field :images, multiple: true, accept: "image/jpeg,image/png,.jpg,.jpeg,.png", class: "hidden", id: "bundle_product_images_input", data: { product_images_target: "fileInput", action: "change->product-images#picked" } %>
+          <p class="text-xs text-text-blue font-semibold">คลิกเพื่ออัปโหลดรูป</p>
+          <p class="text-xs text-text-neutral-300 leading-relaxed mt-1">
+            JPG, PNG ไม่เกิน 1MB (สูงสุด 5 รูป)
+          </p>
+        </div>
+        <div class="mt-3 flex gap-2 overflow-x-auto" data-product-images-target="previewRow"></div>
+        <p class="hidden mt-2 text-xs text-text-accents-red" data-product-images-target="error" role="alert"></p>
+      </div>
+      <div>
+        <%= f.label :title, class: "block text-base font-regular text-text-primary mb-2" do %>
+          ชื่อเซตสินค้า <span class="text-text-accents-red">*</span>
+        <% end %>
+        <%= f.text_field :title, value: product&.title, placeholder: "ระบุชื่อเซตสินค้า", class: step2_field, autocomplete: "off" %>
+      </div>
+      <div>
+        <%= f.label :description, "คำอธิบายเซตสินค้า", class: "block text-base font-regular text-text-primary mb-2" %>
+        <%= f.text_area :description, value: product&.description, rows: 4, placeholder: "อธิบายเซตนี้ให้ลูกค้าเข้าใจ", class: step2_field %>
+      </div>
+      <div>
+        <%= f.label :bundle_set_type_key, class: "block text-base font-regular text-text-primary mb-2" do %>
+          ประเภทเซต <span class="text-text-accents-red">*</span>
+        <% end %>
+        <div class="relative">
+          <%= f.select :bundle_set_type_key,
+            options_for_select([ [ "เลือกประเภทเซต", "" ] ] + Product::BUNDLE_SET_TYPE_OPTIONS, product&.bundle_set_type_key),
+            {},
+            { class: step2_select } %>
+          <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">
+            <%= inline_svg_tag "icons/arrow-down-icon.svg", class: "size-3" %>
+          </span>
+        </div>
+      </div>
+      <fieldset>
+        <legend class="block text-base font-regular text-text-primary mb-2">
+          เซตนี้เหมาะกับปัญหาผิวแบบไหน <span class="text-text-accents-red">*</span>
+        </legend>
+        <p class="text-xs text-text-neutral-300 mb-3">สามารถเลือกได้มากกว่า 1 ปัญหา</p>
+        <div class="flex flex-wrap gap-2">
+          <% SkinConcern::DATA.each do |row| %>
+            <label class="cursor-pointer" for="skin_concern_<%= row[:key] %>">
+              <%= check_box_tag "product_bundle[skin_concern_keys][]",
+                row[:key],
+                product&.skin_concern_keys_array&.include?(row[:key]),
+                id: "skin_concern_#{row[:key]}",
+                class: "peer sr-only" %>
+              <span class="inline-flex items-center rounded-full border border-pink-200 bg-pink-50 px-3 py-2 text-xs font-medium text-gray-800 transition peer-checked:border-[#FF1493] peer-checked:bg-[#FF1493] peer-checked:text-white peer-focus-visible:ring-2 peer-focus-visible:ring-pink-300">
+                <%= row[:label] %>
+              </span>
+            </label>
+          <% end %>
+        </div>
+      </fieldset>
+      <div>
+        <%= f.label :effect, "ผลลัพธ์ (ไม่บังคับ)", class: "block text-base font-regular text-text-primary mb-2" %>
+        <%= f.text_field :effect, value: product&.effect, placeholder: "เช่น ผิวชุ่มชื้น ดูกระจ่างใส", class: step2_field, autocomplete: "off" %>
+      </div>
+      <div>
+        <%= f.label :usage, "วิธีใช้เซตโดยรวม (ไม่บังคับ)", class: "block text-base font-regular text-text-primary mb-2" %>
+        <%= f.text_area :usage, value: product&.usage, rows: 3, placeholder: "สรุปภาพรวมการใช้เซต (รายละเอียดแต่ละชิ้นกรอกในขั้นถัดไป)", class: step2_field %>
+      </div>
+    </div>
+    <%# --- Step 2: เลือกสินค้า --- %>
+    <div
+      class="hidden space-y-6 pt-2"
+      data-bundle-wizard-target="step"
+      data-step-hint="เลือกสินค้าที่ต้องการจัดเซตตามลำดับการใช้งาน — สามารถเลือกได้มากกว่า 1 ตัว"
+    >
+      <p class="text-xs text-gray-500">แตะการ์ดเพื่อเลือก / ยกเลิก — ตัวเลขคือลำดับการใช้</p>
+      <div data-bundle-product-pick-target="hiddenContainer" aria-hidden="true"></div>
+      <div class="space-y-3">
+        <% candidates.each do |p| %>
+          <% card = product_to_card_hash(p) %>
+          <div class="rounded-2xl border border-gray-200 bg-white transition-shadow" data-bundle-product-pick-target="row" data-product-id="<%= p.id %>">
+            <div class="flex gap-3 p-3 items-start">
+              <button
+                type="button"
+                class="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#FF1493] bg-white text-[#FF1493]"
+                data-product-id="<%= p.id %>"
+                data-action="click->bundle-product-pick#toggle"
+                >
+                <span class="hidden absolute inset-0 flex items-center justify-center rounded-full bg-[#FF1493] text-xs font-bold text-white" data-bundle-role="badge"></span>
+                <span class="text-lg leading-none text-[#FF1493]/50" data-bundle-role="empty">○</span>
+              </button>
+              <div class="min-w-0 flex-1">
+                <div class="flex gap-2">
+                  <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                    <% if card[:image_url].present? %>
+                      <%= image_tag card[:image_url], class: "h-full w-full object-cover", alt: "" %>
+                    <% end %>
+                  </div>
+                  <div class="min-w-0">
+                    <p class="font-semibold text-gray-900 truncate"><%= p.title %></p>
+                    <p class="text-sm text-gray-700">฿ <%= number_with_delimiter(card[:price]) %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <%# --- Step 3: วิธีใช้ + ราคา --- %>
+    <div
+      class="hidden space-y-6 pt-2"
+      data-bundle-wizard-target="step"
+      data-step-hint="กรอกวิธีใช้แต่ละชิ้น และตั้งราคาเซต"
+    >
+      <div class="space-y-4">
+        <p class="text-sm font-semibold text-gray-900">วิธีการใช้งานแต่ละชิ้นในเซต</p>
+        <% candidates.each do |p| %>
+          <% card = product_to_card_hash(p) %>
+          <% usage_val = editing ? usages_by_id&.dig(p.id) : nil %>
+          <div
+            class="rounded-2xl border border-gray-200 bg-white p-3 hidden"
+            data-bundle-product-pick-target="usage"
+            data-product-id="<%= p.id %>"
+          >
+            <div class="flex gap-3 mb-3">
+              <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FF1493] text-xs font-bold text-white" data-bundle-role="usage-index"></div>
+              <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                <% if card[:image_url].present? %>
+                  <%= image_tag card[:image_url], class: "h-full w-full object-cover", alt: "" %>
+                <% end %>
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="font-semibold text-gray-900 text-sm truncate"><%= p.title %></p>
+                <p class="text-xs text-gray-600">฿ <%= number_with_delimiter(card[:price]) %></p>
+              </div>
+            </div>
+            <%= label_tag "usage_area_#{p.id}", "วิธีการใช้งาน *", class: "block text-xs font-medium text-gray-700 mb-1" %>
+            <%= text_area_tag "product_bundle[bundle_usages][#{p.id}]",
+              usage_val,
+              rows: 3,
+              placeholder: "ระบุวิธีใช้สำหรับชิ้นนี้ในเซต",
+              class: "w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400",
+              id: "usage_area_#{p.id}" %>
+          </div>
+        <% end %>
+      </div>
+      <div class="border-t border-gray-100 pt-4 space-y-4">
+        <p class="text-sm font-semibold text-gray-900">ตั้งราคาเซตสินค้า <span class="text-text-accents-red">*</span></p>
+        <div class="rounded-2xl border border-gray-200 p-4 has-[:checked]:border-[#FF1493] has-[:checked]:bg-pink-50/50">
+          <label for="bundle_pricing_mode_sum" class="flex cursor-pointer gap-3">
+            <%= f.radio_button :pricing_mode, "sum",
+              id: "bundle_pricing_mode_sum",
+              checked: (pricing_mode != "custom"),
+              class: "mt-1",
+              data: { action: "change->bundle-product-pick#pricingModeChanged" } %>
+            <span>
+              <span class="block font-medium text-gray-900">ใช้ราคาเดิม</span>
+              <span class="text-xs text-gray-500">ขายในราคารวมของสินค้าทั้งหมดที่เลือก</span>
+              <span class="mt-2 block text-sm font-semibold text-[#FF1493]" data-bundle-product-pick-target="sumDisplay">฿ 0</span>
+            </span>
+          </label>
+        </div>
+        <div class="rounded-2xl border border-gray-200 p-4 has-[:checked]:border-[#FF1493] has-[:checked]:bg-pink-50/50">
+          <label for="bundle_pricing_mode_custom" class="flex cursor-pointer gap-3">
+            <%= f.radio_button :pricing_mode, "custom",
+              id: "bundle_pricing_mode_custom",
+              checked: (pricing_mode == "custom"),
+              class: "mt-1",
+              data: { action: "change->bundle-product-pick#pricingModeChanged" } %>
+            <span class="flex-1">
+              <span class="block font-medium text-gray-900">ตั้งราคาพิเศษ</span>
+              <span class="text-xs text-gray-500">กำหนดราคาพิเศษสำหรับเซตสินค้านี้</span>
+            </span>
+          </label>
+          <div class="mt-3 hidden rounded-xl border border-pink-200 bg-pink-50/50 p-3" data-bundle-product-pick-target="customBlock">
+            <p class="mb-2 text-xs font-medium text-gray-700">ราคาขายสำหรับเซตนี้ (บาท)</p>
+            <div class="flex items-stretch gap-2">
+              <%= f.number_field :bundle_amount, value: (editing ? bundle_amount_baht : nil), step: 1, min: 1, placeholder: "ใส่ราคาสำหรับเซตสินค้านี้", class: "min-w-0 flex-1 rounded-lg border border-pink-200 bg-white px-3 py-2.5 text-sm focus:border-[#FF1493] focus:outline-none focus:ring-1 focus:ring-pink-300" %>
+              <span class="inline-flex items-center rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-600 shrink-0">บาท</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fixed bottom-0 left-0 right-0 z-30 border-t border-gray-100 bg-white/95 backdrop-blur-sm px-4 py-3 pb-4">
+      <div class="mx-auto flex max-w-md gap-3">
+        <button
+          type="button"
+          class="flex-1 rounded-full bg-[#FF1493] py-3.5 text-sm font-semibold text-white shadow-sm hover:opacity-95"
+          data-bundle-wizard-target="nextButton"
+          data-action="bundle-wizard#next"
+        >
+          ถัดไป
+        </button>
+        <%= f.submit (editing ? "บันทึกการแก้ไข" : "ยืนยันสร้างเซต"),
+          class: "hidden flex-1 rounded-full bg-[#FF1493] py-3.5 text-sm font-semibold text-white shadow-sm hover:opacity-95",
+          data: { bundle_wizard_target: "submitButton" } %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

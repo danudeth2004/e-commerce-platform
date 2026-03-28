@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_28_120002) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_28_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -154,19 +154,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_28_120002) do
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
+  create_table "product_bundle_items", force: :cascade do |t|
+    t.bigint "bundle_product_id", null: false
+    t.bigint "component_product_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.text "usage_instructions"
+    t.index ["bundle_product_id", "position"], name: "index_product_bundle_items_on_bundle_product_id_and_position"
+    t.index ["bundle_product_id"], name: "index_product_bundle_items_on_bundle_product_id"
+    t.index ["component_product_id"], name: "index_product_bundle_items_on_component_product_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.integer "amount_cents", default: 0, null: false
     t.string "amount_currency", default: "THB", null: false
+    t.string "bundle_set_type_key"
     t.string "category_key"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "effect"
+    t.string "kind", default: "standard", null: false
     t.integer "promotion_cents", default: 0, null: false
     t.string "promotion_currency", default: "THB", null: false
     t.datetime "promotion_ends_at"
     t.datetime "promotion_starts_at"
     t.bigint "seller_store_id", null: false
     t.string "skin_concern_key"
+    t.string "skin_concern_keys"
     t.string "sku", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
@@ -174,6 +189,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_28_120002) do
     t.integer "volume"
     t.string "volume_unit"
     t.index ["category_key"], name: "index_products_on_category_key"
+    t.index ["kind"], name: "index_products_on_kind"
     t.index ["seller_store_id"], name: "index_products_on_seller_store_id"
     t.index ["skin_concern_key"], name: "index_products_on_skin_concern_key"
     t.index ["sku"], name: "index_products_on_sku", unique: true
@@ -240,6 +256,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_28_120002) do
   add_foreign_key "order_store_payouts", "orders"
   add_foreign_key "order_store_payouts", "seller_stores"
   add_foreign_key "orders", "users"
+  add_foreign_key "product_bundle_items", "products", column: "bundle_product_id"
+  add_foreign_key "product_bundle_items", "products", column: "component_product_id"
   add_foreign_key "products", "seller_stores"
   add_foreign_key "seller_stores", "seller_users"
 end

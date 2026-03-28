@@ -31,7 +31,12 @@ Rails.application.routes.draw do
       sessions: "seller/users/sessions"
     }
     
-    resources :products, only: [ :new, :create, :edit, :update, :destroy ]
+    resources :products, only: [ :new, :create, :edit, :update, :destroy ] do
+      collection do
+        get :choose
+      end
+    end
+    resources :product_bundles, only: [ :new, :create, :edit, :update ]
     resources :stores, only: [ :new, :create, :edit, :update ]
 
     root "home#index"

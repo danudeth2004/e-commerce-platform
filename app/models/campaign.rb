@@ -8,6 +8,7 @@ class Campaign < ApplicationRecord
   validates :slug, uniqueness: true
   validates :discount_percent, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }
   validate :ends_after_starts
+  validate :product_ids_must_not_include_bundles
 
   before_validation :assign_slug_from_name
 
@@ -22,6 +23,15 @@ class Campaign < ApplicationRecord
   end
 
   private
+
+  def product_ids_must_not_include_bundles
+    ids = product_ids
+    return if ids.blank?
+
+    return unless Product.where(id: ids, kind: :bundle).exists?
+
+    errors.add(:base, "เซตสินค้าเข้าร่วมแคมเปญไม่ได้")
+  end
 
   def assign_slug_from_name
     self.slug = name.to_s.parameterize if slug.blank? && name.present?

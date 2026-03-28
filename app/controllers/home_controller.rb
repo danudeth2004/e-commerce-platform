@@ -18,6 +18,7 @@ class HomeController < ApplicationController
                  .joins(:store)
                  .merge(Seller::Store.active)
                  .with_attached_images
+                 .includes(bundle_items: { component_product: { images_attachments: :blob } })
                  .find(params[:id])
 
     @product_image       = @product
@@ -58,24 +59,50 @@ class HomeController < ApplicationController
   def essential_products
     base_products
       .limit(20)
-      .map { |product| product_card_payload(product) }
+      .to_a
   end
 
-  # [[product, flag_product|nil], ...] — 1) FlagProduct flash 2) สินค้าลดราคาจริง
+  # [[product, flag_product|nil], ...] — 1) FlagProduct flash 2) เซตที่ลดราคา 3) สินค้าชิ้นเดียวที่ลด (โปรร้าน+แคมเปญ)
   def build_flash_sale_entries
-    flagged = flagged_products(:flash, limit: 10)
-    if flagged.any?
-      return flagged.map { |fp| [ fp.product, fp ] }
-    end
-
     time = Time.current
     out = []
-    base_products.includes(:campaigns).find_each do |product|
-      next unless product.final_price_cents(time) < product.amount_cents
+    seen = []
 
-      out << [ product, nil ]
-      break if out.size >= 10
+    flagged_products(:flash, limit: 10).each do |fp|
+      out << [ fp.product, fp ]
+      seen << fp.product_id
     end
+
+    if out.size < 10
+      base_products
+        .where(kind: :bundle)
+        .includes(bundle_items: { component_product: { images_attachments: :blob, campaign_products: :campaign } })
+        .reorder(:id)
+        .find_each do |product|
+          next if seen.include?(product.id)
+          next unless product.bundle_discount_active?(time)
+
+          out << [ product, nil ]
+          seen << product.id
+          break if out.size >= 10
+        end
+    end
+
+    if out.size < 10
+      base_products
+        .where(kind: :standard)
+        .includes(:campaigns)
+        .reorder(:id)
+        .find_each do |product|
+          next if seen.include?(product.id)
+          next unless product.final_price_cents(time) < product.amount_cents
+
+          out << [ product, nil ]
+          seen << product.id
+          break if out.size >= 10
+        end
+    end
+
     out
   end
 
@@ -86,9 +113,11 @@ class HomeController < ApplicationController
 
     candidates = []
     products.each do |p|
-      next unless p.final_price_cents(time) < p.amount_cents
+      next unless p.bundle? ? p.bundle_discount_active?(time) : p.final_price_cents(time) < p.amount_cents
 
       candidates << p.promotion_ends_at if p.promotion_ends_at.present? && p.promotion_ends_at > time
+
+      next if p.bundle?
 
       p.campaigns.active_at(time).each do |c|
         candidates << c.ends_at if c.ends_at > time
@@ -112,6 +141,7 @@ class HomeController < ApplicationController
       .order(Arel.sql("SUM(order_items.quantity) DESC"))
       .limit(5)
       .with_attached_images
+      .includes(bundle_items: { component_product: { images_attachments: :blob } })
       .map { |product| bestseller_payload(product) }
   end
 
@@ -120,6 +150,7 @@ class HomeController < ApplicationController
       .joins(:store)
       .merge(Seller::Store.active)
       .with_attached_images
+      .includes(bundle_items: { component_product: { images_attachments: :blob } })
   end
 
   def flagged_products(flag_type, limit:)
@@ -127,7 +158,7 @@ class HomeController < ApplicationController
       .for_home_section(flag_type, limit: limit)
       .joins(product: :store)
       .merge(Seller::Store.active)
-      .includes(product: { images_attachments: :blob })
+      .includes(product: { images_attachments: :blob, bundle_items: { component_product: { images_attachments: :blob } } })
   end
 
   def product_card_payload(product, flag_product = nil)

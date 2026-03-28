@@ -1,22 +1,56 @@
-<section class="px-4 pb-8 pt-4">
-  <div class="flex items-center justify-between mb-3">
-    <h2 class="text-xl font-semibold text-text-primary">
-      สินค้าทั้งหมดที่น่าสนใจ
-    </h2>
-    <% if products.any? %>
-      <%= link_to "ดูทั้งหมด", products_path, class: "text-sm text-Primary-color font-medium" %>
-    <% end %>
-  </div>
+<% products = local_assigns.fetch(:products) %>
+<% bundles = products.select(&:bundle?) %>
+<% singles = products.reject(&:bundle?) %>
 
-  <% if products.any? %>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-      <% products.each do |product| %>
-        <%= render "shared/product_card", product: product, full_width: true %>
+<% if bundles.any? %>
+  <section class="px-4 pb-6 pt-2">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-xl font-semibold text-text-primary">
+        เซตสินค้า
+      </h2>
+      <% if products.any? %>
+        <%= link_to "ดูทั้งหมด", products_path, class: "text-sm text-Primary-color font-medium" %>
       <% end %>
     </div>
-  <% else %>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <% bundles.each do |product| %>
+        <%= render "shared/product_bundle_card",
+             product: product_to_card_hash(product),
+             full_width: true %>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<% if singles.any? %>
+  <section class="px-4 pb-8 <%= bundles.any? ? 'pt-2' : 'pt-4' %>">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-xl font-semibold text-text-primary">
+        <%= bundles.any? ? "สินค้าชิ้นเดียว" : "สินค้าทั้งหมดที่น่าสนใจ" %>
+      </h2>
+      <% if products.any? %>
+        <%= link_to "ดูทั้งหมด", products_path, class: "text-sm text-Primary-color font-medium" %>
+      <% end %>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+      <% singles.each do |product| %>
+        <%= render "shared/product_card",
+             product: product_to_card_hash(product),
+             full_width: true %>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<% if bundles.empty? && singles.empty? %>
+  <section class="px-4 pb-8 pt-4">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-xl font-semibold text-text-primary">
+        สินค้าทั้งหมดที่น่าสนใจ
+      </h2>
+    </div>
     <p class="text-sm text-text-neutral-300 font-light text-center py-8 rounded-2xl border border-dashed border-gray-200 bg-gray-50/50">
       ยังไม่มีสินค้าในหมวดนี้
     </p>
-  <% end %>
-</section>
+  </section>
+<% end %>
