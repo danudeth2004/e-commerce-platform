@@ -1,23 +1,32 @@
 <div class="px-4 py-4">
-  <div class="flex items-center justify-between bg-white rounded-2xl px-4 py-4 border border-pink-100 shadow-pinkGlow">
-    <div class="flex items-center gap-4">
-      <%# Brand Logo (ใช้ตัวอักษรแรกของชื่อ store หรือ product) %>
-      <div class="w-14 h-14 rounded-full bg-gradient-to-br from-blue-600 to-blue-900 flex items-center justify-center">
-        <span class="text-white text-xs font-semibold">
-          <%= (product.store&.name || product.title).first.upcase %>
-        </span>
-      </div>
-      <div>
-        <h2 class="text-base font-semibold text-text-primary">
-          <%= product.store&.name || product.title %>
+  <div class="flex items-center justify-between gap-3 bg-white rounded-2xl px-4 py-4 border border-pink-100 shadow-pinkGlow">
+    <div class="flex items-center gap-4 min-w-0">
+      <% store = product.store %>
+      <% if store&.logo&.attached? %>
+        <div class="w-14 h-14 rounded-full overflow-hidden border border-gray-200 shrink-0 bg-gray-50">
+          <%= image_tag rails_blob_path(store.logo, only_path: true), class: "w-full h-full object-cover", alt: store.name %>
+        </div>
+      <% else %>
+        <div class="w-14 h-14 rounded-full bg-gradient-to-br from-pink-500 to-pink-700 flex items-center justify-center shrink-0">
+          <span class="text-white text-sm font-semibold">
+            <%= (store&.name || product.title).to_s.first.upcase %>
+          </span>
+        </div>
+      <% end %>
+      <div class="min-w-0">
+        <h2 class="text-base font-semibold text-text-primary truncate">
+          <%= store&.name || product.title %>
         </h2>
         <p class="text-gray-400 text-sm">
           ร้านค้าที่ได้รับการยืนยัน
         </p>
       </div>
     </div>
-    <button class="bg-Primary-color text-white px-6 py-3 rounded-lg flex items-center gap-2 text-sm font-medium shadow-md">
-      ดูสินค้าแบรนด์นี้
-    </button>
+    <% if store&.persisted? && store.active? %>
+      <%= link_to store_path(store),
+        class: "shrink-0 inline-flex bg-Primary-color text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg items-center gap-2 text-xs sm:text-sm font-medium shadow-md hover:opacity-95" do %>
+        ดูสินค้าแบรนด์นี้
+      <% end %>
+    <% end %>
   </div>
 </div>

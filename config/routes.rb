@@ -75,6 +75,7 @@ Rails.application.routes.draw do
     patch :decrease_item
   end
   get "products", to: "products#index", as: :products
+  get "stores/:id", to: "stores#show", as: :store
   get "products/:id", to: "home#show", as: :product
 
   get "home/flash_sale", to: "home#flash_sale", as: :home_flash_sale

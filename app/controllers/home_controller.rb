@@ -18,7 +18,7 @@ class HomeController < ApplicationController
                  .joins(:store)
                  .merge(Seller::Store.active)
                  .with_attached_images
-                 .includes(bundle_items: { component_product: { images_attachments: :blob } })
+                 .includes(:store, bundle_items: { component_product: { images_attachments: :blob } })
                  .find(params[:id])
 
     @product_image       = @product
