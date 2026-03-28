@@ -1,88 +1,89 @@
 <% content_for :title, "#{@store.name} — ร้านค้า" %>
 
 <div class="w-full min-h-screen bg-white pb-24">
-  <div class="w-full max-w-md mx-auto">
-    <section class="bg-white">
-      <div class="relative">
-        <div class="bg-gray-200 h-44 w-full">
-          <% if @store.cover.attached? %>
-            <%= image_tag rails_blob_path(@store.cover, only_path: true),
+    <div class="w-full max-w-md mx-auto">
+        <section class="bg-white">
+            <div class="relative">
+                <div class="bg-gray-200 h-44 w-full">
+                    <% if @store.cover.attached? %>
+                    <%= image_tag rails_blob_path(@store.cover, only_path: true),
               class: "w-full h-full object-cover",
               alt: @store.name,
               loading: "lazy" %>
-          <% end %>
-        </div>
-        <div class="absolute -bottom-12 left-4 w-24 h-24 sm:left-6 sm:w-28 sm:h-28 rounded-full bg-white p-1 shadow-md ring-1 ring-gray-100">
-          <div class="w-full h-full rounded-full overflow-hidden border border-gray-200 bg-gray-50">
-            <% if @store.logo.attached? %>
-              <%= image_tag rails_blob_path(@store.logo, only_path: true),
+                    <% end %>
+                </div>
+                <div class="absolute -bottom-12 left-4 w-24 h-24 sm:left-6 sm:w-28 sm:h-28 rounded-full bg-white p-1 shadow-md ring-1 ring-gray-100">
+                    <div class="w-full h-full rounded-full overflow-hidden border border-gray-200 bg-gray-50">
+                        <% if @store.logo.attached? %>
+                        <%= image_tag rails_blob_path(@store.logo, only_path: true),
                 class: "w-full h-full object-cover",
                 alt: @store.name,
                 loading: "lazy" %>
-            <% else %>
-              <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-400 to-pink-600 text-white text-lg font-bold">
-                <%= @store.name.first.upcase %>
-              </div>
-            <% end %>
-          </div>
-        </div>
-      </div>
+                        <% else %>
+                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-pink-400 to-pink-600 text-white text-lg font-bold">
+                            <%= @store.name.first.upcase %>
+                        </div>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
 
-      <div class="pt-14 pb-4 px-4">
-        <h1 class="text-xl font-bold text-gray-900 leading-tight">
-          <%= @store.name %>
-        </h1>
-        <p class="mt-2 text-sm text-gray-500 leading-relaxed">
-          <%= @store.description.presence || "ร้านค้าบนแพลตฟอร์มของเรา" %>
-        </p>
-      </div>
-    </section>
+            <div class="pt-14 pb-4 px-4">
+                <h1 class="text-xl font-bold text-gray-900 leading-tight">
+                    <%= @store.name %>
+                </h1>
+                <p class="mt-2 text-sm text-gray-500 leading-relaxed">
+                    <%= @store.description.presence || "ร้านค้าบนแพลตฟอร์มของเรา" %>
+                </p>
+            </div>
+        </section>
 
-    <% if @store.products.exists? %>
-      <div class="px-4 space-y-6">
-        <%= render "shared/product_category_filter",
+        <% if @store.products.exists? %>
+        <%= turbo_frame_tag "products_frame" do %>
+        <div class="px-4 space-y-6">
+            <%= render "shared/product_category_filter",
           current_category_key: @category_key,
-          turbo_frame: false,
           path_proc: ->(key) { key.present? ? store_path(@store, category: key) : store_path(@store) } %>
 
-        <% if @bundle_products.any? %>
-          <section class="space-y-3">
-            <h2 class="text-base font-semibold text-gray-900">เซตสินค้า</h2>
-            <div class="grid grid-cols-2 gap-3">
-              <% @bundle_products.each do |product| %>
-                <%= render "shared/product_bundle_card",
+            <% if @bundle_products.any? %>
+            <section class="space-y-3">
+                <h2 class="text-base font-semibold text-gray-900">เซตสินค้า</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <% @bundle_products.each do |product| %>
+                    <%= render "shared/product_bundle_card",
                   product: product_to_card_hash(product),
                   full_width: true,
                   link_to_path: product_path(product) %>
-              <% end %>
-            </div>
-          </section>
-        <% end %>
+                    <% end %>
+                </div>
+            </section>
+            <% end %>
 
-        <% if @standard_products.any? %>
-          <section class="space-y-3">
-            <h2 class="text-base font-semibold text-gray-900">
-              <%= @bundle_products.any? ? "สินค้าชิ้นเดียว" : "สินค้าทั้งหมด" %>
-            </h2>
-            <div class="grid grid-cols-2 gap-3">
-              <% @standard_products.each do |product| %>
-                <%= render "shared/product_card",
+            <% if @standard_products.any? %>
+            <section class="space-y-3">
+                <h2 class="text-base font-semibold text-gray-900">
+                    <%= @bundle_products.any? ? "สินค้าชิ้นเดียว" : "สินค้าทั้งหมด" %>
+                </h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <% @standard_products.each do |product| %>
+                    <%= render "shared/product_card",
                   product: product_to_card_hash(product),
                   full_width: true,
                   link_to_path: product_path(product) %>
-              <% end %>
-            </div>
-          </section>
-        <% end %>
+                    <% end %>
+                </div>
+            </section>
+            <% end %>
 
-        <% if @bundle_products.empty? && @standard_products.empty? %>
-          <p class="text-center text-sm text-gray-500 py-8">ไม่มีสินค้าในหมวดนี้</p>
+            <% if @bundle_products.empty? && @standard_products.empty? %>
+            <p class="text-center text-sm text-gray-500 py-8">ไม่มีสินค้าในหมวดนี้</p>
+            <% end %>
+        </div>
         <% end %>
-      </div>
-    <% else %>
-      <div class="px-4 py-12 text-center text-sm text-gray-500">
-        <p>ยังไม่มีสินค้าในร้านนี้</p>
-      </div>
-    <% end %>
-  </div>
+        <% else %>
+        <div class="px-4 py-12 text-center text-sm text-gray-500">
+            <p>ยังไม่มีสินค้าในร้านนี้</p>
+        </div>
+        <% end %>
+    </div>
 </div>
