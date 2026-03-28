@@ -20,8 +20,8 @@
 
   <body class="font-sans antialiased">
     <main class="min-h-screen bg-white">
-      <header class="w-full max-w-screen-xl mx-auto px-4 py-4 flex items-center justify-between">
-        <%= form_with url: products_path, method: :get, local: true, class: "flex-1 min-w-0", role: "search" do %>
+      <header class="mx-auto w-full max-w-screen-xl px-4 py-4">
+        <%= form_with url: products_path, method: :get, local: true, class: "w-full min-w-0", role: "search" do %>
           <div class="relative flex items-center">
             <label for="header-search-q" class="sr-only">ค้นหาสินค้า</label>
             <span class="pointer-events-none absolute left-3.5 flex text-gray-400" aria-hidden="true">
@@ -34,33 +34,6 @@
                   class: "w-full rounded-full border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm text-gray-800 placeholder:text-gray-400 shadow-sm focus:border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-200/60" %>
           </div>
         <% end %>
-
-        <div class="relative inline-block text-left ml-4">
-          <input type="checkbox" id="user-menu-toggle" class="hidden peer">
-          <label for="user-menu-toggle" class="inline-flex items-center justify-center w-11 h-11 rounded-full bg-gradient-to-br from-[#ffc4dc] via-[#ffe8f2] to-white text-white shadow-sm cursor-pointer">
-            <%= inline_svg_tag "icons/user-icon.svg", class: "w-6 h-6 text-white" %>
-          </label>
-
-          <label for="user-menu-toggle" class="fixed inset-0 hidden peer-checked:block z-40 cursor-default"></label>
-
-          <div class="absolute right-0 z-50 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl
-                      opacity-0 scale-95 -translate-y-2
-                      peer-checked:opacity-100 peer-checked:scale-100 peer-checked:translate-y-0
-                      transition-all duration-200">
-            <div class="py-1">
-              <% if seller_user_signed_in? %>
-                <%= button_to destroy_seller_user_session_path,
-                      method: :delete,
-                      class: "w-full text-left" do %>
-                  <div class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
-                    <span class="iconify" data-icon="lucide:log-out" data-width="16"></span>
-                    <span>ออกจากระบบ</span>
-                  </div>
-                <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
       </header>
 
       <div class="w-full max-w-screen-xl mx-auto px-4">
