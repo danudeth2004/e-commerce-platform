@@ -1,4 +1,5 @@
 class HomeController < BaseController
+  skip_before_action :destroy_seller_user_session!, only: %i[show]
   def index
     @banners            = banners
     @skin_concerns      = skin_concerns
@@ -14,12 +15,16 @@ class HomeController < BaseController
   end
 
   def show
-    @product = Product
-                 .joins(:store)
-                 .merge(Seller::Store.active)
-                 .with_attached_images
-                 .includes(:store, bundle_items: { component_product: { images_attachments: :blob } })
-                 .find(params[:id])
+    if params[:seller_preview].present?
+      @product = current_seller_user.store.products.find(params[:id])
+    else
+      @product = Product
+                   .joins(:store)
+                   .merge(Seller::Store.active)
+                   .with_attached_images
+                   .includes(:store, bundle_items: { component_product: { images_attachments: :blob } })
+                   .find(params[:id])
+    end
 
     @product_image       = @product
     @brand_section       = @product
