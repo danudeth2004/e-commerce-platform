@@ -1,23 +1,30 @@
 <%# การ์ดเซตสินค้า (คนละแบบกับ product_card)
-    Params: product (hash จาก product_to_card_hash), show_cart, full_width, link_to_path
+    Params: product (hash), show_cart, full_width, link_to_path, theme: :default | :neutral
 %>
 <% show_cart = local_assigns.fetch(:show_cart, true) %>
 <% full_width = local_assigns.fetch(:full_width, false) %>
 <% link_to_path = local_assigns.fetch(:link_to_path, product_path(product[:id])) %>
+<% neutral = local_assigns.fetch(:theme, :default) == :neutral %>
 <% checkerboard_style = "background-image:linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%);background-size:14px 14px;background-position:0 0,0 7px,7px -7px,-7px 0;background-color:#f9fafb;" %>
-<% card_class = [ full_width ? "w-full" : "shrink-0 w-40",
-                  "bg-white rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-pink-100/60" ].join(" ") %>
-<% link_opts = { class: card_class, style: "box-shadow: 0 1px 4px 0 rgba(255,105,180,0.08), 0 4px 12px 0 rgba(0,0,0,0.06)" } %>
-<% link_opts[:data] = { controller: "product-card", product_id: product[:id] } if show_cart %>
+<% card_class = if neutral
+     [ full_width ? "w-full" : "shrink-0 w-40",
+       "bg-white rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 border border-gray-200" ].join(" ")
+   else
+     [ full_width ? "w-full" : "shrink-0 w-40",
+       "bg-white rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-lg transition-all duration-200 border border-pink-100/60" ].join(" ")
+   end %>
+<% card_style = neutral ? "box-shadow: 0 1px 3px 0 rgba(0,0,0,0.06), 0 2px 8px 0 rgba(0,0,0,0.04)" : "box-shadow: 0 1px 4px 0 rgba(255,105,180,0.08), 0 4px 12px 0 rgba(0,0,0,0.06)" %>
+<% link_data = { turbo_frame: "_top" } %>
+<% link_data.merge!(controller: "product-card", product_id: product[:id]) if show_cart %>
 <% thumbs = product[:bundle_thumb_urls] || [] %>
 <% overflow = product[:bundle_overflow_count].to_i %>
 <% bcount = product[:bundle_item_count].to_i %>
 
-<%= link_to link_to_path, **link_opts, data: { turbo_frame: "_top" } do %>
-  <div class="relative w-full bg-gradient-to-b from-pink-50/80 to-gray-50 px-2 pt-2 pb-1">
+<%= link_to link_to_path, class: card_class, style: card_style, data: link_data do %>
+  <div class="relative w-full <%= neutral ? "bg-gray-50/80 px-2 pt-2 pb-1" : "bg-gradient-to-b from-pink-50/80 to-gray-50 px-2 pt-2 pb-1" %>">
     <div class="flex gap-1.5">
       <% thumbs.each do |url| %>
-        <div class="flex-1 aspect-square rounded-lg overflow-hidden bg-gray-100 min-h-0 max-h-28 ring-1 ring-pink-100">
+        <div class="flex-1 aspect-square rounded-lg overflow-hidden bg-gray-100 min-h-0 max-h-28 <%= neutral ? "ring-1 ring-gray-200/80" : "ring-1 ring-pink-100" %>">
           <% if url.present? %>
             <%= image_tag url, class: "w-full h-full object-cover", alt: "", loading: "lazy" %>
           <% else %>
@@ -26,12 +33,12 @@
         </div>
       <% end %>
       <% if overflow > 0 %>
-        <div class="flex-1 aspect-square max-h-28 rounded-lg bg-pink-100/90 flex items-center justify-center text-sm font-bold text-pink-700 ring-1 ring-pink-200">
+        <div class="flex-1 aspect-square max-h-28 rounded-lg flex items-center justify-center text-sm font-bold <%= neutral ? "bg-gray-200/90 text-gray-700 ring-1 ring-gray-300" : "bg-pink-100/90 text-pink-700 ring-1 ring-pink-200" %>">
           +<%= overflow %>
         </div>
       <% end %>
     </div>
-    <p class="text-right text-[10px] text-pink-900/50 mt-1 pr-0.5 font-medium">สินค้าทั้งหมด <%= bcount %> ตัว</p>
+    <p class="text-right text-[10px] mt-1 pr-0.5 font-medium <%= neutral ? "text-gray-500" : "text-pink-900/50" %>">สินค้าทั้งหมด <%= bcount %> ตัว</p>
     <% if show_cart %>
       <button
         type="button"
@@ -44,15 +51,21 @@
     <% end %>
   </div>
   <div class="px-3 pt-2 pb-3">
-    <div class="mb-1 inline-flex rounded-full bg-pink-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-pink-800">
+    <div class="mb-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide <%= neutral ? "bg-gray-100 text-gray-700" : "bg-pink-100 text-pink-800" %>">
       เซตสินค้า
     </div>
     <div class="flex items-baseline gap-2 mb-0.5 mt-1">
-      <span class="font-prompt text-sm font-bold" style="color:#FF6B9D">
-        ฿ <%= number_with_delimiter(product[:price]) %>
-      </span>
+      <% if neutral %>
+        <span class="font-prompt text-sm font-bold text-gray-900">
+          ฿ <%= number_with_delimiter(product[:price]) %>
+        </span>
+      <% else %>
+        <span class="font-prompt text-sm font-bold" style="color:#FF6B9D">
+          ฿ <%= number_with_delimiter(product[:price]) %>
+        </span>
+      <% end %>
       <% if product[:original_price] %>
-        <span class="text-xs text-gray-300 line-through">฿ <%= number_with_delimiter(product[:original_price]) %></span>
+        <span class="text-xs text-gray-400 line-through">฿ <%= number_with_delimiter(product[:original_price]) %></span>
       <% end %>
     </div>
     <div class="text-sm font-bold text-gray-800 line-clamp-2"><%= product[:name] %></div>

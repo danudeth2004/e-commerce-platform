@@ -37,8 +37,8 @@ module ProductDisplayHelper
   def bundle_product_to_card_hash(product, flag_product: nil, time: Time.current)
     items = product.bundle_items.includes(component_product: { images_attachments: :blob })
     count = items.size
-    thumb_urls = items.map { |i| component_product_first_image_url(i.component_product) }.first(2)
-    overflow = count > 2 ? count - 2 : 0
+    thumb_urls = items.map { |i| component_product_first_image_url(i.component_product) }.first(3)
+    overflow = count > 3 ? count - 3 : 0
 
     sum_cents = items.sum { |i| i.component_product.final_price_cents(time) }
     final_cents = product.final_price_cents(time)

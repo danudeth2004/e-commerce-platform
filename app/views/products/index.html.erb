@@ -23,12 +23,18 @@
 
         <% if @bundle_products.any? %>
           <section class="mt-4 space-y-3">
-            <h2 class="text-lg font-semibold text-text-primary">เซตสินค้า</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            <div class="flex items-center justify-between gap-2">
+              <h2 class="text-lg font-semibold text-text-primary">เซตสินค้าที่เราแนะนำ</h2>
+              <%= link_to "ดูเพิ่มเติม", products_path, class: "text-sm font-medium text-Primary-color shrink-0" %>
+            </div>
+            <div class="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-1 px-1">
               <% @bundle_products.each do |product| %>
-                <%= render "shared/product_bundle_card",
-                     product: product_to_card_hash(product),
-                     full_width: true %>
+                <div class="shrink-0 w-[min(280px,85vw)] sm:w-72 snap-start">
+                  <%= render "shared/product_bundle_card",
+                       product: product_to_card_hash(product),
+                       full_width: true,
+                       theme: :neutral %>
+                </div>
               <% end %>
             </div>
           </section>
