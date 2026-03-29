@@ -50,13 +50,14 @@ Rails.application.routes.draw do
   namespace :users do
     get "role", to: "role#index"
     get "profile", to: "profiles#show", as: :profile
-    resources :orders, only: [ :index ]
+    resources :orders, only: [ :index, :show ]
   end
 
   resource :checkout, only: [] do
-    post :create_order
-    get  :payment
-    post :pay
+    post  :create_order
+    get   :payment
+    post  :pay
+    patch :cancel
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

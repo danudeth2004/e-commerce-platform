@@ -1,8 +1,8 @@
 module Orders
   class CreateFromCart
-    def initialize(cart)
-      @cart = cart
-      @user = cart.user
+    def initialize(source, user:)
+      @source = source
+      @user = user
     end
 
     def call
@@ -15,7 +15,7 @@ module Orders
         create_order_items(order)
         recalculate_order_amount!(order)
         create_store_payouts(order)
-        @cart.cart_items.destroy_all
+        clear_cart_if_needed
 
         order
       end
@@ -23,8 +23,16 @@ module Orders
 
     private
 
+    def source_items
+      if @source.respond_to?(:cart_items)
+        @source.cart_items
+      else
+        @source
+      end
+    end
+
     def create_order_items(order)
-      @cart.cart_items.includes(:product).each do |item|
+      source_items.includes(:product).each do |item|
         product = item.product
 
         order.order_items.create!(
@@ -77,6 +85,11 @@ module Orders
           amount_cents: seller_amount
         )
       end
+    end
+
+    def clear_cart_if_needed
+      return unless @source.respond_to?(:cart_items)
+      @source.cart_items.destroy_all
     end
   end
 end

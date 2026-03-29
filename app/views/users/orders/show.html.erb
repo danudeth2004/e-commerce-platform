@@ -1,0 +1,116 @@
+<div class="min-h-screen bg-white max-w-md mx-auto pb-12">
+    <header class="sticky top-0 z-30 flex items-center gap-3 border-b border-gray-100 bg-white px-4 py-3">
+        <%= link_to users_profile_path, class: "inline-flex size-10 items-center justify-center rounded-full text-gray-700 hover:bg-gray-100" do %>
+        <span class="iconify text-2xl" data-icon="lucide:chevron-left"></span>
+        <% end %>
+        <h1 class="text-base font-semibold text-gray-900">คำสั่งซื้อ #<%= @order.id %></h1>
+    </header>
+
+    <section class="px-4 pt-4">
+
+        <div class="flex items-start gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-sm">
+            <span class="mt-0.5 shrink-0 text-gray-500" aria-hidden="true">
+                <%= inline_svg_tag "icons/map-pin-house.svg", class: "h-5 w-5" %>
+            </span>
+
+            <div class="min-w-0 flex-1 text-left">
+                <p class="text-sm font-semibold text-gray-900">
+                    <%= [ current_user.first_name, current_user.last_name ].compact_blank.join(" ") %>
+                    <span class="font-normal text-gray-600"><%= masked_thai_mobile(current_user.phone_number) %></span>
+                </p>
+                <% if current_user.phone_number.present? %>
+                <p class="mt-1 text-xs leading-relaxed text-gray-600 whitespace-pre-line"><%= current_user.phone_number %></p>
+                <% else %>
+                <p class="mt-1 text-xs text-amber-700">ยังไม่ได้ระบุเบอร์โทรศัพท์ — แตะเพื่อเพิ่มเบอร์โทรศัพท์</p>
+                <% end %>
+                <% if current_user.location.present? %>
+                <p class="mt-1 text-xs leading-relaxed text-gray-600 whitespace-pre-line"><%= current_user.location %></p>
+                <% else %>
+                <p class="mt-1 text-xs text-amber-700">ยังไม่ได้ระบุที่อยู่ — แตะเพื่อเพิ่มที่จัดส่ง</p>
+                <% end %>
+            </div>
+        </div>
+    </section>
+
+    <div class="px-4 py-4 space-y-4">
+
+        <div class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+            <p class="text-xs text-gray-400">สถานะ</p>
+            <span class="mt-1 inline-block rounded-full px-2.5 py-1 text-xs font-medium
+        <%= @order.pending? ? "bg-amber-50 text-amber-800" : "bg-emerald-50 text-emerald-800" %>">
+                <%= @order.pending? ? "รอชำระเงิน" : "ชำระแล้ว" %>
+            </span>
+
+            <p class="mt-2 text-xs text-gray-500">
+                <%= @order.created_at.strftime("%d/%m/%Y %H:%M") %>
+            </p>
+        </div>
+
+        <div class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+            <p class="text-sm font-semibold text-gray-900 mb-3">รายการสินค้า</p>
+
+            <ul class="space-y-3">
+                <% @order.order_items.each do |item| %>
+                <li class="flex items-center gap-3">
+                    <div class="size-14 rounded-lg bg-gray-100 overflow-hidden">
+                        <% if item.product&.images&.attached? %>
+                        <%= image_tag rails_blob_path(item.product.images.first, only_path: true),
+                    class: "w-full h-full object-cover" %>
+                        <% else %>
+                        <div class="w-full h-full flex items-center justify-center text-xs text-gray-400">
+                            No Image
+                        </div>
+                        <% end %>
+                    </div>
+
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-900 line-clamp-1">
+                            <%= item.title %>
+                        </p>
+                        <p class="text-xs text-gray-500">
+                            x<%= item.quantity %>
+                        </p>
+                    </div>
+
+                    <p class="text-sm font-semibold text-gray-900">
+                        ฿ <%= number_with_delimiter((item.amount_cents / 100.0).round) %>
+                    </p>
+                </li>
+                <% end %>
+            </ul>
+        </div>
+
+        <div class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm space-y-2">
+            <div class="flex justify-between text-sm text-gray-600">
+                <span>ยอดสินค้า</span>
+                <span>฿ <%= number_with_precision((@order.total_amount_cents - @order.shipping_cents) / 100.0,precision: 2,delimiter: ",") %></span>
+            </div>
+
+            <div class="flex justify-between text-sm text-gray-600">
+                <span>ค่าจัดส่ง</span>
+                <span>฿ <%= number_with_delimiter(@order.shipping) %></span>
+            </div>
+
+            <div class="flex justify-between text-sm text-gray-900 font-semibold border-t pt-2">
+                <span>รวมทั้งหมด</span>
+                <span>฿ <%= number_with_delimiter(@order.total_amount) %></span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-100 bg-white px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+        <div class="mx-auto w-full max-w-md">
+            <%= button_to "สั่งซื้ออีกครั้ง",
+            create_order_checkout_path(order_id: @order.id),
+            method: :post,
+            form: {
+            data: {
+                turbo_confirm: "ระบบกำลังจะพาคุณไปที่คำสั่งซื่อนี้อีกครั้ง"
+            }
+            },
+            class: "w-full flex items-center justify-center rounded-full bg-Primary-color py-3.5 text-icon-onPrimaryAction shadow-md transition hover:opacity-95 active:scale-[0.99]"
+          %>
+        </div>
+    </div>
+</div>

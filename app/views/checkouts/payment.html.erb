@@ -302,15 +302,29 @@
         </div>
       </div>
 
-      <button
-        type="button"
-        data-action="click->omise-payment#pay"
-        data-omise-payment-target="button"
-        class="flex w-full flex-col items-center justify-center rounded-full border-0 bg-Primary-color py-3.5 text-icon-onPrimaryAction shadow-md transition hover:opacity-95 active:scale-[0.99]"
-      >
-        <span class="text-sm font-bold">สั่งซื้อ</span>
-        <span class="text-[11px] font-medium opacity-95">จัดส่งฟรี</span>
-      </button>
+      <div class="flex gap-4">
+        <% if params[:status] == "pending" %>
+          <%= button_to "ยกเลิกคำสั่งซื้อ",
+              cancel_checkout_path(order_id: @order.id),
+              method: :patch,
+              form: {
+                class: "flex-1",
+                data: {
+                  turbo_confirm: "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกคำสั่งซื้อ?"
+                }
+              },
+              class: "w-full flex items-center justify-center rounded-full border border-red-400 bg-white py-3.5 text-red-500 shadow-sm transition hover:bg-red-50 active:scale-[0.99]"
+          %>
+        <% end %>
+        <button
+          type="button"
+          data-action="click->omise-payment#pay"
+          data-omise-payment-target="button"
+          class="flex-1 flex items-center justify-center rounded-full bg-Primary-color py-3.5 text-icon-onPrimaryAction shadow-md transition hover:opacity-95 active:scale-[0.99]"
+        >
+          <span class="text-sm font-bold">สั่งซื้อ</span>
+        </button>
+      </div>
 
       <form
         action="<%= pay_checkout_path %>"

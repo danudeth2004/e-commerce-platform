@@ -5,12 +5,20 @@ class CheckoutsController < BaseController
   before_action :hide_app_header, only: :payment
 
   def create_order
-    cart = current_user.cart
-    return redirect_to cart_path, alert: "ไม่มีสินค้าในตะกร้า" if cart.blank? || cart.cart_items.empty?
+    if params[:order_id]
+      old_order = current_user.orders.find(params[:order_id])
 
-    order = Orders::CreateFromCart.new(cart).call
+      new_order = Orders::CreateFromCart.new(old_order.order_items, user: current_user).call
 
-    redirect_to payment_checkout_path(order_id: order.id)
+      redirect_to payment_checkout_path(order_id: new_order.id)
+    else
+      cart = current_user.cart
+      return redirect_to cart_path, alert: "ไม่มีสินค้าในตะกร้า" if cart.blank? || cart.cart_items.empty?
+
+      order = Orders::CreateFromCart.new(cart, user: current_user).call
+
+      redirect_to payment_checkout_path(order_id: order.id)
+    end
   end
 
   def payment
@@ -47,7 +55,7 @@ class CheckoutsController < BaseController
     shipping_cents = calculate_shipping(@order)
     total_cents = @order.total_amount_cents + shipping_cents
 
-    @order.update!(total_amount_cents: total_cents, platform_fee_cents: (total_cents * 0.1).to_i)
+    @order.update!(total_amount_cents: total_cents, shipping_cents: shipping_cents, platform_fee_cents: (total_cents * 0.1).to_i)
     OmiseService::CreateCharge.new(order: @order, token: params[:omise_token], amount: total_cents).call
     @order.reload
 
@@ -62,6 +70,18 @@ class CheckoutsController < BaseController
     else
       redirect_to root_path, alert: "ชำระเงินไม่สำเร็จ กรุณาลองใหม่"
     end
+  end
+
+  def cancel
+    order = current_user.orders.find(params[:order_id])
+
+    unless order.pending?
+      return redirect_to root_path, alert: "ไม่สามารถยกเลิกได้"
+    end
+
+    order.update!(status: :cancelled)
+
+    redirect_to users_orders_path(status: "pending"), notice: "ยกเลิกคำสั่งซื้อเรียบร้อยแล้ว"
   end
 
   private

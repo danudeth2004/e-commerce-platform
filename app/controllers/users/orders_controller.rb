@@ -12,5 +12,10 @@ module Users
       end
       @status_filter = params[:status]
     end
+
+    def show
+      @hide_app_header = true
+      @order = current_user.orders.find(params[:id])
+    end
   end
 end
