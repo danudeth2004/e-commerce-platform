@@ -21,8 +21,24 @@
                         ฿ <%= number_with_delimiter(order.total_amount.to_f.round) %>
                     </p>
                     <p class="mt-1 text-xs text-gray-500">
-                        <%= order.created_at.strftime("%d/%m/%Y %H:%M") %>
+                        <% if order.paid? %>
+                        <%= "วันที่ชำระเงิน #{order.paid_at.strftime("%d/%m/%Y %H:%M")}" %>
+                        <% else %>
+                        <%= "วันที่สร้างคำสั่งซื้อ #{order.created_at.strftime("%d/%m/%Y %H:%M")}" %>
+                        <% end %>
                     </p>
+
+                    <% if order.paid? && order.paid_at.present? %>
+                    <p class="mt-1 text-xs <%= order.shipping_cents > 0 ? "text-emerald-600" : "text-gray-500" %>">
+                        <% if order.shipping_cents > 0 %>
+                        🚚 ส่งพรุ่งนี้ (<%= (order.paid_at + 1.day).strftime("%d/%m") %>)
+                        <% else %>
+                        🚚 ส่งใน 2-3 วัน
+                        (<%= (order.paid_at + 2.days).strftime("%d/%m") %> -
+                        <%= (order.paid_at + 3.days).strftime("%d/%m") %>)
+                        <% end %>
+                    </p>
+                    <% end %>
                 </div>
 
                 <span class="shrink-0 rounded-full px-2.5 py-1 text-xs font-medium
