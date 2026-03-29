@@ -1,10 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["token", "form", "button"]
+  static targets = ["token", "form", "button", "shippingText", "totalText"]
 
   connect() {
+    this.storeCount = parseInt(this.element.dataset.storeCount || 0)
+    this.baseAmount = parseInt(this.element.dataset.amount || 0)
+
     this.waitForOmise()
+    this.updateUI()
   }
 
   waitForOmise() {
@@ -27,16 +31,57 @@ export default class extends Controller {
     })
   }
 
+  get selectedShipping() {
+    return document.querySelector('input[name="shipping_method"]:checked')?.value
+  }
+
+  get shippingCost() {
+    if (this.selectedShipping === "express") {
+      return this.storeCount * 10 * 100
+    }
+    return 0
+  }
+
+  get totalAmount() {
+    return this.baseAmount + this.shippingCost
+  }
+
+  updateUI() {
+    const shippingBaht = this.shippingCost / 100
+    const totalBaht = this.totalAmount / 100
+
+    if (this.hasShippingTextTarget) {
+      this.shippingTextTarget.innerText = `฿ ${shippingBaht.toLocaleString()}`
+    }
+
+    if (this.hasTotalTextTarget) {
+      this.totalTextTarget.innerText = `฿ ${totalBaht.toLocaleString()}`
+    }
+  }
+
+  changeShipping() {
+    this.updateUI()
+  }
+
   pay() {
-    console.log("Opening OmiseCard...")
+
+
+    const total = this.totalAmount
 
     OmiseCard.open({
-      amount: this.amount,
+      amount: total,
 
       onCreateTokenSuccess: (token) => {
         console.log("TOKEN:", token)
 
         this.tokenTarget.value = token
+
+        const input = document.createElement("input")
+        input.type = "hidden"
+        input.name = "shipping_method"
+        input.value = this.selectedShipping
+        this.formTarget.appendChild(input)
+
         this.formTarget.submit()
       },
 
@@ -48,9 +93,5 @@ export default class extends Controller {
 
   get publicKey() {
     return this.element.dataset.publicKey
-  }
-
-  get amount() {
-    return parseInt(this.element.dataset.amount)
   }
 }

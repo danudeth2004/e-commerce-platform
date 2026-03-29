@@ -39,18 +39,24 @@ class CheckoutsController < BaseController
         ((@product_discount_cents.to_f / @list_price_subtotal_cents) * 100).round
       end
     @coupons = [
-  { id: 1, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: true },
-  { id: 2, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: false },
-]
+    { id: 1, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: true },
+    { id: 2, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: false },]
   end
 
   def pay
-    OmiseService::CreateCharge.new(order: @order, token: params[:omise_token]).call
+    shipping_cents = calculate_shipping(@order)
+    total_cents = @order.total_amount_cents + shipping_cents
+
+    @order.update!(total_amount_cents: total_cents, platform_fee_cents: (total_cents * 0.1).to_i)
+    OmiseService::CreateCharge.new(order: @order, token: params[:omise_token], amount: total_cents).call
     @order.reload
+
+    order_store_payouts = @order.order_store_payouts
 
     if @order.paid?
       @order.order_store_payouts.each do |payout|
-        TransferToStoreJob.perform_now(payout.id)
+        payout.update!(amount_cents: payout.amount_cents + (10 * 100))
+        TransferToStoreJob.perform_later(payout.id)
       end
       redirect_to root_path, flash: { payment_success: true }
     else
@@ -86,5 +92,16 @@ class CheckoutsController < BaseController
 
           memo[fp.product_id] ||= fp
         end
+    end
+
+    def calculate_shipping(order)
+      return 0 unless params[:shipping_method] == "express"
+
+      store_count = order.order_items
+                        .joins(:product)
+                        .distinct
+                        .count("products.seller_store_id")
+
+      store_count * 10 * 100
     end
 end

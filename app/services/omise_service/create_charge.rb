@@ -1,15 +1,16 @@
 module OmiseService
   class CreateCharge
-    def initialize(order:, token:)
+    def initialize(order:, token:, amount:)
       @order = order
       @token = token
+      @amount = amount
     end
 
     def call
       Omise.api_key = ENV["OMISE_SECRET_KEY"]
 
       charge = Omise::Charge.create(
-        amount: @order.total_amount_cents,
+        amount: @amount,
         currency: "thb",
         card: @token,
         description: "Order ##{@order.id}"

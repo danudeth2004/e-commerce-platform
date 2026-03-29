@@ -7,6 +7,7 @@
   data-controller="omise-payment"
   data-public-key="<%= @public_key %>"
   data-amount="<%= @order.total_amount_cents %>"
+  data-store-count="<%= @items_by_store.count %>"
 >
   <%# ที่อยู่จัดส่ง %>
   <section class="px-4 pt-4 mb-6">
@@ -93,7 +94,7 @@
 
       <%# จัดส่งปกติ %>
       <label class="group mb-3 flex cursor-pointer items-center gap-3 rounded-xl border-2  border-gray-200 bg-white px-4 py-3.5 transition-all has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50">
-        <%= radio_button_tag :shipping_method, "standard", true,
+        <%= radio_button_tag :shipping_method, "standard", true, data: { action: "change->omise-payment#changeShipping" },
               class: "sr-only peer" %>
 
         <%# Truck icon %>
@@ -125,7 +126,7 @@
 
       <%# จัดส่งด่วน %>
       <label class="group flex cursor-pointer items-center gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition-all has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50">
-        <%= radio_button_tag :shipping_method, "express", false,
+        <%= radio_button_tag :shipping_method, "express", false, data: { action: "change->omise-payment#changeShipping" },
               class: "sr-only peer" %>
 
         <%# Fast truck icon %>
@@ -283,7 +284,7 @@
       <% end %>
       <div class="flex justify-between gap-3 text-gray-700">
         <dt>ยอดรวมค่าจัดส่ง</dt>
-        <dd class="font-medium text-gray-900">฿ 0</dd>
+        <dd data-omise-payment-target="shippingText" class="font-medium text-gray-900">฿ 0</dd>
       </div>
     </dl>
   </section>
@@ -294,7 +295,7 @@
       <div class="mb-3 flex items-end justify-between gap-3">
         <div>
           <p class="text-xs text-gray-600">Total (<%= @item_qty_total %> ชิ้น)</p>
-          <p class="text-xl font-bold tabular-nums text-Primary-color">฿ <%= number_with_delimiter(@subtotal_cents / 100) %></p>
+          <p data-omise-payment-target="totalText" class="text-xl font-bold tabular-nums text-Primary-color">฿ <%= number_with_delimiter(@subtotal_cents / 100) %></p>
           <% if @saved_percent.present? && @saved_percent.positive? %>
             <p class="text-xs font-medium text-Primary-color">ประหยัด <%= @saved_percent %>%</p>
           <% end %>
