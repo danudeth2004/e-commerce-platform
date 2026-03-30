@@ -12,7 +12,7 @@
         <%= inline_svg_tag "icons/map-pin-house.svg", class: "h-5 w-5" %>
       </span>
 
-      <div class="min-w-0 flex-1 text-left">
+      <div class="flex-1 text-left">
         <p class="text-sm font-semibold text-slate-900">
           <%= [ current_user.first_name, current_user.last_name ].compact_blank.join(" ") %>
           <span class="font-normal text-slate-500"><%= masked_thai_mobile(current_user.phone_number) %></span>
@@ -108,7 +108,7 @@
                   <% end %>
                 </div>
 
-                <div class="min-w-0 flex-1">
+                <div class="flex-1">
                   <p class="text-sm font-medium text-slate-900 line-clamp-1">
                     <%= item.title %>
                   </p>
@@ -118,9 +118,15 @@
                 </div>
 
                 <p class="shrink-0 text-sm font-semibold tabular-nums text-slate-900">
-                  ฿ <%= number_with_delimiter((item.amount_cents / 100.0).round) %>
+                  <%= number_with_delimiter((item.amount_cents + @order.discount_cents) / 100.0) %> ฿
                 </p>
               </li>
+              <% if @order.discount_cents > 0 && item.amount_cents != item.product.amount_cents %>
+                <li class="flex items-center gap-3">
+                    <span class="flex-1 text-sm text-green-500 text-slate-900">คูปองส่วนลด</span>
+                    <span class="text-sm text-green-500 text-slate-900">- <%= @order.discount_cents / 100.0 %> ฿</span>
+                </li>
+              <% end %>
             <% end %>
           </ul>
 
@@ -131,17 +137,22 @@
     <div class="space-y-2 rounded-2xl border border-rose-100/80 bg-white/90 p-4 shadow-md shadow-rose-100/20 ring-1 ring-rose-50/40">
       <div class="flex justify-between text-sm text-slate-600">
         <span>ยอดสินค้า</span>
-        <span class="tabular-nums">฿ <%= number_with_precision((@order.total_amount_cents - @order.shipping_cents) / 100.0, precision: 2, delimiter: ",") %></span>
+        <span class="tabular-nums"><%= number_with_precision((@order.total_amount_cents - @order.shipping_cents + @order.discount_cents) / 100.0, precision: 2, delimiter: ",") %> ฿</span>
       </div>
 
       <div class="flex justify-between text-sm text-slate-600">
         <span>ค่าจัดส่ง</span>
-        <span class="tabular-nums">฿ <%= number_with_delimiter(@order.shipping) %></span>
+        <span class="tabular-nums"><%= number_with_delimiter(@order.shipping) %> ฿</span>
+      </div>
+
+      <div class="flex justify-between text-sm text-green-500">
+        <span>คูปองส่วนลด</span>
+        <span class="tabular-nums">- <%= number_with_delimiter(@order.discount) %> ฿</span>
       </div>
 
       <div class="flex justify-between border-t border-rose-100/70 pt-3 text-sm font-semibold text-slate-900">
         <span>รวมทั้งหมด</span>
-        <span class="tabular-nums">฿ <%= number_with_delimiter(@order.total_amount) %></span>
+        <span class="tabular-nums"><%= number_with_delimiter(@order.total_amount) %> ฿</span>
       </div>
     </div>
 
