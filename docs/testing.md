@@ -41,7 +41,7 @@ bin/test test/models/application_record_test.rb
 COVERAGE=false bin/rails test
 ```
 
-เมื่อปิด coverage โหมด parallel ของ Minitest จะใช้จำนวน worker ตาม CPU ตามปกติ
+ค่าเริ่มต้นใช้ **1 worker** (ลดปัญหา fork + PostgreSQL) ถ้า `COVERAGE=false` จะรัน parallel ได้โดยตั้ง `PARALLEL_WORKERS=4` หรือ `PARALLEL_WORKERS=max` (ใช้จำนวน CPU)
 
 ### เปิด branch coverage (ช้ากว่า)
 
