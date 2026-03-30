@@ -29,39 +29,80 @@ class CheckoutsController < BaseController
     @item_qty_total = @order_items.sum(&:quantity)
     @subtotal_cents = @order.total_amount_cents
 
-    product_ids = @order_items.map(&:product_id).uniq
-    @promo_flag_by_product_id = promo_flags_for_checkout(product_ids)
-
-    @list_price_subtotal_cents = @order_items.sum do |oi|
-      p = oi.product
-      fp = @promo_flag_by_product_id[oi.product_id]
-      candidates = [ p.amount_cents ]
-      candidates << fp.original_amount_cents if fp&.original_amount_cents
-      unit_list = candidates.compact.max
-      unit_list * oi.quantity
-    end
-
-    @product_discount_cents = [ @list_price_subtotal_cents - @subtotal_cents, 0 ].max
-    @saved_percent =
-      if @list_price_subtotal_cents.positive? && @product_discount_cents.positive?
-        ((@product_discount_cents.to_f / @list_price_subtotal_cents) * 100).round
+    @coupons = current_user.coupons.active.map do |c|
+      eligible_items = @order_items.select do |oi|
+        c.products.exists?(oi.product_id)
       end
-    @coupons = [
-    { id: 1, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: true },
-    { id: 2, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: false } ]
+
+      eligible_amount = eligible_items.sum do |oi|
+        oi.amount_cents * oi.quantity
+      end
+
+      next if eligible_amount <= 0
+
+      {
+        id: c.id,
+        discount: c.discount,
+        eligible_amount_cents: eligible_amount,
+        min_order: c.min_order,
+        product_ids: eligible_items.map(&:product_id),
+        expires_at: c.expires_at.strftime("%d/%m/%Y")
+      }
+    end.compact
   end
 
   def pay
     shipping_cents = calculate_shipping(@order)
-    total_cents = @order.total_amount_cents + shipping_cents
 
-    @order.update!(total_amount_cents: total_cents, shipping_cents: shipping_cents, platform_fee_cents: (total_cents * 0.1).to_i)
+    coupon = nil
+    discount_cents = 0
+
+    if params[:coupon_id].present?
+      coupon = current_user.coupons.find_by(id: params[:coupon_id])
+
+      product_ids = params[:coupon_product_ids].to_s.split(",").map(&:to_i)
+      return 0 unless product_ids.all? { |id| coupon.coupon_products.exists?(product_id: id) }
+
+      discount_cents = calculate_coupon_discount(@order, coupon, product_ids)
+
+      @order.order_items.each do |oi|
+        if product_ids.include?(oi.product_id)
+          oi_amount_before_discount = oi.amount_cents * oi.quantity
+          discounted_amount = (oi_amount_before_discount * (1 - coupon.discount.to_f / 100)).to_i
+          oi.update!(amount_cents: (discounted_amount / oi.quantity.to_f).round)
+        end
+      end
+    end
+
+    total_cents = @order.total_amount_cents + shipping_cents - discount_cents
+
+    @order.update!(total_amount_cents: total_cents, shipping_cents: shipping_cents, discount_cents: discount_cents, platform_fee_cents: (total_cents * 0.1).to_i)
     OmiseService::CreateCharge.new(order: @order, token: params[:omise_token], amount: total_cents).call
     @order.reload
 
     order_store_payouts = @order.order_store_payouts
 
     if @order.paid?
+
+      if coupon.present?
+        coupon.update!(used: true)
+      end
+
+      @order.order_items.each do |oi|
+        total_after_discount = oi.amount_cents * oi.quantity
+        original_total = oi.product.amount_cents * oi.quantity
+
+        next if total_after_discount < original_total
+
+        new_coupon = @order.user.coupons.create!(
+          discount: 20,
+          min_order: 0,
+          started_at: @order.paid_at,
+          expires_at: @order.paid_at + 30.days
+        )
+        new_coupon.coupon_products.create!(product_id: oi.product_id)
+      end
+
       @order.order_store_payouts.each do |payout|
         payout.update!(amount_cents: payout.amount_cents + (10 * 100))
         TransferToStoreJob.perform_later(payout.id)
@@ -123,5 +164,19 @@ class CheckoutsController < BaseController
                         .count("products.seller_store_id")
 
       store_count * 10 * 100
+    end
+
+    def calculate_coupon_discount(order, coupon, product_ids)
+      return 0 unless coupon
+
+      items = order.order_items.where(product_id: product_ids)
+
+      eligible_total = items.sum do |item|
+        item.amount_cents * item.quantity
+      end
+
+      return 0 if eligible_total < coupon.min_order * 100
+
+      (eligible_total * coupon.discount / 100.0).to_i
     end
 end

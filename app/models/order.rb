@@ -5,6 +5,7 @@ class Order < ApplicationRecord
 
   monetize :total_amount_cents
   monetize :shipping_cents
+  monetize :discount_cents
   monetize :platform_fee_cents
 
   enum :status, {

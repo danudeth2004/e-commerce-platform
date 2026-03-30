@@ -35,6 +35,8 @@ class Product < ApplicationRecord
            foreign_key: :component_product_id,
            dependent: :restrict_with_error,
            inverse_of: :component_product
+  has_many :coupon_products, dependent: :destroy
+  has_many :coupons, through: :coupon_products
 
   validates :title, presence: true
   validates :volume, :volume_unit, presence: true, if: :standard?

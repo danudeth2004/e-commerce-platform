@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_30_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_30_132247) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -102,6 +102,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_120000) do
     t.index ["user_id"], name: "index_carts_on_user_id"
   end
 
+  create_table "coupon_products", force: :cascade do |t|
+    t.bigint "coupon_id", null: false
+    t.datetime "created_at", null: false
+    t.bigint "product_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coupon_id"], name: "index_coupon_products_on_coupon_id"
+    t.index ["product_id"], name: "index_coupon_products_on_product_id"
+  end
+
+  create_table "coupons", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "discount", null: false
+    t.datetime "expires_at", precision: nil, null: false
+    t.integer "min_order", default: 0, null: false
+    t.datetime "started_at", precision: nil, null: false
+    t.datetime "updated_at", null: false
+    t.boolean "used", default: false, null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_coupons_on_user_id"
+  end
+
   create_table "flag_products", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
@@ -149,6 +170,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_120000) do
 
   create_table "orders", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.integer "discount_cents", default: 0, null: false
+    t.string "discount_currency", default: "THB", null: false
     t.string "omise_charge_id"
     t.string "omise_source_id"
     t.datetime "paid_at"
@@ -261,6 +284,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_120000) do
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "users"
+  add_foreign_key "coupon_products", "coupons"
+  add_foreign_key "coupon_products", "products"
+  add_foreign_key "coupons", "users"
   add_foreign_key "flag_products", "products"
   add_foreign_key "order_items", "orders"
   add_foreign_key "order_items", "products"
