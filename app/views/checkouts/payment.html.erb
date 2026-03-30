@@ -246,15 +246,15 @@
 
           <%# Discount amount %>
           <p class="pr-7 text-lg font-bold text-gray-900">ส่วนลด <%= coupon[:discount] %>%</p>
-          <p class="mt-1 text-sm text-green-500">สำหรับ <%= coupon[:product_title] %> เท่านั้น</p>
+          <p class="mt-1 text-sm text-green-500">สำหรับสินค้า <%= coupon[:product_title] %> เท่านั้น</p>
 
           <%# Min order %>
           <% if coupon[:min_order].to_i > 0 %>
-            <p class="mt-4 text-sm text-gray-500">
+            <p class="mt-2 text-sm text-gray-500">
               ขั้นต่ำ <%= number_with_delimiter(coupon[:min_order]) %> ฿
             </p>
           <% else %>
-            <p class="mt-1 text-sm text-gray-500">ไม่มีขั้นต่ำ</p>
+            <p class="mt-2 text-sm text-gray-500">ไม่มีขั้นต่ำ</p>
           <% end %>
 
           <%# Expiry %>
