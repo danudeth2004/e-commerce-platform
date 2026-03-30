@@ -27,7 +27,7 @@
               <td class="px-4 py-2 text-sm text-gray-800">#<%= p.id %></td>
               <td class="px-4 py-2 text-sm text-gray-800">#<%= p.order_id %></td>
               <td class="px-4 py-2 text-sm text-gray-800"><%= p.store.name %></td>
-              <td class="px-4 py-2 text-sm text-gray-800 text-right">฿ <%= number_with_delimiter(p.amount_cents / 100) %></td>
+              <td class="px-4 py-2 text-sm text-gray-800 text-right"><%= number_with_delimiter(p.amount) %> ฿</td>
               <td class="px-4 py-2 text-sm font-medium text-gray-900"><%= p.status.humanize %></td>
               <td class="px-4 py-2 text-center">
                 <%= link_to "ดูรายละเอียด", admin_order_store_payout_path(p), class: "text-blue-600 hover:underline text-sm font-medium" %>

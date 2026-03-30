@@ -18,7 +18,7 @@
               <div>
                 <p class="text-xs font-medium text-slate-400">คำสั่งซื้อ #<%= order.id %></p>
                 <p class="mt-1 text-base font-bold text-slate-900 tabular-nums">
-                  ฿ <%= number_with_delimiter(order.total_amount.to_f.round) %>
+                  <%= number_with_delimiter(order.total_amount) %> ฿
                 </p>
                 <p class="mt-1 text-xs text-slate-500">
                   <% if order.paid? %>
