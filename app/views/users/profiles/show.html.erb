@@ -1,5 +1,3 @@
-<% content_for :title, "โปรไฟล์ของฉัน" %>
-
 <div class="min-h-screen bg-white max-w-md mx-auto pb-12">
   <header class="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-gray-100 bg-white px-4 py-3">
     <%= link_to root_path, class: "inline-flex size-10 items-center justify-center rounded-full text-gray-700 hover:bg-gray-100", aria: { label: "กลับ" } do %>
@@ -8,10 +6,14 @@
     <h1 class="text-base font-semibold text-gray-900">โปรไฟล์ของฉัน</h1>
     <div class="relative">
       <input type="checkbox" id="profile-menu-toggle" class="peer hidden">
-      <label for="profile-menu-toggle" class="inline-flex size-10 cursor-pointer items-center justify-center rounded-full text-gray-700 hover:bg-gray-100" aria-label="เมนู">
-        <span class="iconify" data-icon="lucide:more-horizontal" data-width="22"></span>
+      <label for="profile-menu-toggle" class="inline-flex size-10 cursor-pointer items-center justify-center rounded-full text-gray-700 hover:bg-gray-100">
+        <span class="sr-only">เปิดเมนู</span>
+        <span class="iconify" data-icon="lucide:more-horizontal" data-width="22" aria-hidden="true"></span>
       </label>
-      <label for="profile-menu-toggle" class="fixed inset-0 z-40 hidden cursor-default peer-checked:block"></label>
+      <button type="button"
+              class="fixed inset-0 z-40 hidden cursor-default border-0 bg-transparent p-0 peer-checked:block"
+              aria-label="ปิดเมนู"
+              onclick="document.getElementById('profile-menu-toggle').checked = false"></button>
       <div class="absolute right-0 z-50 mt-2 w-52 origin-top-right scale-95 rounded-xl border border-gray-100 bg-white py-1 opacity-0 shadow-lg transition peer-checked:scale-100 peer-checked:opacity-100">
         <%= link_to edit_user_registration_path, class: "block px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-50" do %>
           แก้ไขบัญชีของฉัน
@@ -41,7 +43,7 @@
     <section class="mt-8">
       <div class="mb-3 flex items-center justify-between">
         <h2 class="text-base font-semibold text-gray-900">คำสั่งซื้อของฉัน</h2>
-        <%= link_to users_orders_path, class: "text-sm font-medium text-Primary-color" do %>
+        <%= link_to users_orders_path(status: :paid), class: "text-sm font-medium text-Primary-color" do %>
           ดูประวัติการซื้อ
           <span aria-hidden="true">›</span>
         <% end %>
