@@ -3,7 +3,10 @@
 module Admin
   class OrderStorePayoutsController < Admin::BaseController
     def index
-      @payouts = OrderStorePayout.includes(:order, store: :owner).limit(200)
+      @payouts = OrderStorePayout.includes(:order, store: :owner)
+      if params[:status].present?
+        @payouts = @payouts.where(status: params[:status].downcase)
+      end
     end
 
     def show
