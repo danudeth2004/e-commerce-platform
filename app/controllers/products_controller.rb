@@ -17,9 +17,19 @@ class ProductsController < BaseController
     @products = @products.where(category_key: @category_key) if @category_key.present?
 
     q = params[:q].to_s.strip
+    @search_query = q.presence
     if q.present?
       like = "%#{Product.sanitize_sql_like(q)}%"
-      @products = @products.where("products.title ILIKE ?", like)
+      @products = @products.where(
+        <<~SQL.squish,
+          products.title ILIKE :like
+          OR COALESCE(products.description, '') ILIKE :like
+          OR products.sku ILIKE :like
+          OR COALESCE(products.effect, '') ILIKE :like
+          OR seller_stores.name ILIKE :like
+        SQL
+        like: like
+      )
     end
 
     @products = @products.includes(bundle_items: { component_product: { images_attachments: :blob } })

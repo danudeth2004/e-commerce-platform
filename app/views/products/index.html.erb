@@ -1,65 +1,70 @@
 <div class="w-full min-h-screen bg-white">
-    <div class="w-full max-w-screen-xl mx-auto px-4 py-6 space-y-6">
-        <% if @skin_concern_key.present? %>
-        <% concern = SkinConcern.all.find { |c| c[:key] == @skin_concern_key } %>
-        <h1 class="text-xl font-semibold text-text-primary">
-            สินค้าสำหรับ <%= concern&.dig(:label) || @skin_concern_key %>
-        </h1>
-        <% else %>
-        <h1 class="text-xl font-semibold text-text-primary">
-            สินค้าทั้งหมด
-        </h1>
-        <% end %>
-
-        <%= turbo_frame_tag "products_frame" do %>
-        <%= render "shared/product_category_filter",
+  <div class="w-full max-w-screen-xl mx-auto px-4 py-6 space-y-6">
+    <% if @search_query.present? %>
+      <div class="text-xl font-semibold text-text-primary">
+        ผลการค้นหา “<%= @search_query %>”
+      </div>
+    <% elsif @skin_concern_key.present? %>
+      <% concern = SkinConcern.all.find { |c| c[:key] == @skin_concern_key } %>
+      <div class="text-xl font-semibold text-text-primary">
+        สินค้าสำหรับ <%= concern&.dig(:label) || @skin_concern_key %>
+      </div>
+    <% else %>
+      <div class="text-xl font-semibold text-text-primary">
+        สินค้าทั้งหมด
+      </div>
+    <% end %>
+    <%= turbo_frame_tag "products_frame" do %>
+      <%= render "shared/product_category_filter",
              current_category_key: @category_key,
              path_proc: lambda { |key|
                opts = {}
                opts[:skin_concern] = @skin_concern_key if @skin_concern_key.present?
                opts[:category] = key if key.present?
+               opts[:q] = @search_query if @search_query.present?
                products_path(opts)
              } %>
-
-        <% if @bundle_products.any? %>
-          <section class="mt-4 space-y-3">
-            <div class="flex items-center justify-between gap-2">
-              <h2 class="text-lg font-semibold text-text-primary">เซตสินค้าที่เราแนะนำ</h2>
-              <%= link_to "ดูเพิ่มเติม", products_path, class: "text-sm font-medium text-Primary-color shrink-0" %>
-            </div>
-            <div class="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-1 px-1">
-              <% @bundle_products.each do |product| %>
-                <div class="shrink-0 w-[min(280px,85vw)] sm:w-72 snap-start">
-                  <%= render "shared/product_bundle_card",
+      <% if @bundle_products.any? %>
+        <section class="mt-4 space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div class="text-lg font-semibold text-text-primary">เซตสินค้าที่เราแนะนำ</div>
+            <%= link_to "ดูเพิ่มเติม", products_path((@search_query.present? ? { q: @search_query } : {})), class: "text-sm font-medium text-Primary-color shrink-0" %>
+          </div>
+          <div class="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-1 px-1">
+            <% @bundle_products.each do |product| %>
+              <div class="shrink-0 w-[min(280px,85vw)] sm:w-72 snap-start">
+                <%= render "shared/product_bundle_card",
                        product: product_to_card_hash(product),
                        full_width: true,
                        theme: :neutral %>
-                </div>
-              <% end %>
-            </div>
-          </section>
-        <% end %>
-
-        <% if @standard_products.any? %>
-          <section class="mt-4 space-y-3">
-            <h2 class="text-lg font-semibold text-text-primary">
-              <%= @bundle_products.any? ? "สินค้าชิ้นเดียว" : "สินค้าทั้งหมด" %>
-            </h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-              <% @standard_products.each do |product| %>
-                <%= render "shared/product_card",
+              </div>
+            <% end %>
+          </div>
+        </section>
+      <% end %>
+      <% if @standard_products.any? %>
+        <section class="mt-4 space-y-3">
+          <h2 class="text-lg font-semibold text-text-primary">
+            <%= @bundle_products.any? ? "สินค้าชิ้นเดียว" : "สินค้าทั้งหมด" %>
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+            <% @standard_products.each do |product| %>
+              <%= render "shared/product_card",
                      product: product_to_card_hash(product),
                      full_width: true %>
-              <% end %>
-            </div>
-          </section>
-        <% end %>
-
-        <% if @bundle_products.empty? && @standard_products.empty? %>
-          <p class="text-sm text-text-neutral-300 text-center py-12 rounded-2xl border border-dashed border-gray-200 bg-gray-50/50 mt-3">
+            <% end %>
+          </div>
+        </section>
+      <% end %>
+      <% if @bundle_products.empty? && @standard_products.empty? %>
+        <p class="text-sm text-text-neutral-300 text-center py-12 rounded-2xl border border-dashed border-gray-200 bg-gray-50/50 mt-3">
+          <% if @search_query.present? %>
+            ไม่พบสินค้าที่ตรงกับ “<%= @search_query %>”
+          <% else %>
             ไม่มีสินค้าในหมวดนี้
-          </p>
-        <% end %>
-        <% end %>
-    </div>
+          <% end %>
+        </p>
+      <% end %>
+    <% end %>
+  </div>
 </div>
