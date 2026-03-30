@@ -49,17 +49,39 @@
         <% end %>
       </div>
       <div class="grid grid-cols-3 gap-2">
-        <%= link_to cart_path, class: "flex flex-col items-center rounded-2xl border border-gray-100 bg-white py-4 shadow-sm transition hover:border-pink-200" do %>
-          <span class="mb-2 flex size-12 items-center justify-center rounded-full bg-pink-50 text-pink-600">
-            <span class="iconify" data-icon="lucide:shopping-cart" data-width="22"></span>
+        <% cart_n = current_cart_item_count %>
+        <%= link_to cart_path,
+                    class: "relative flex flex-col items-center rounded-2xl border border-gray-100 bg-white py-4 shadow-sm transition hover:border-pink-200",
+                    aria: { label: cart_n.positive? ? "รถเข็นของฉัน รวม #{cart_n} ชิ้น" : "รถเข็นของฉัน" } do %>
+          <span class="relative mb-2 flex size-12 items-center justify-center rounded-full bg-pink-50 text-pink-600 ring-1 ring-pink-100/80">
+            <span class="iconify" data-icon="lucide:shopping-cart" data-width="22" aria-hidden="true"></span>
+            <% if cart_n.positive? %>
+              <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm tabular-nums ring-2 ring-white">
+                <%= cart_n > 99 ? "99+" : number_with_delimiter(cart_n) %>
+              </span>
+            <% end %>
           </span>
-          <span class="text-center text-[11px] font-medium leading-tight text-gray-700">รถเข็นของฉัน</span>
+          <span class="text-center text-[11px] font-semibold leading-tight text-gray-800">รถเข็นของฉัน</span>
+          <% if cart_n.positive? %>
+            <span class="mt-1 text-center text-[10px] font-medium tabular-nums text-Primary-color">รวม <%= number_with_delimiter(cart_n) %> ชิ้น</span>
+          <% end %>
         <% end %>
-        <%= link_to users_orders_path(status: :pending), class: "flex flex-col items-center rounded-2xl border border-gray-100 bg-white py-4 shadow-sm transition hover:border-pink-200" do %>
-          <span class="mb-2 flex size-12 items-center justify-center rounded-full bg-pink-50 text-pink-600">
-            <span class="iconify" data-icon="lucide:wallet" data-width="22"></span>
+        <% pending_n = @pending_payment_items_count.to_i %>
+        <%= link_to users_orders_path(status: :pending),
+                    class: "relative flex flex-col items-center rounded-2xl border border-gray-100 bg-white py-4 shadow-sm transition hover:border-pink-200",
+                    aria: { label: pending_n.positive? ? "รอชำระเงิน รวม #{pending_n} ชิ้น" : "รอชำระเงิน" } do %>
+          <span class="relative mb-2 flex size-12 items-center justify-center rounded-full bg-amber-50 text-amber-600 ring-1 ring-amber-100/80">
+            <span class="iconify" data-icon="lucide:wallet" data-width="22" aria-hidden="true"></span>
+            <% if pending_n.positive? %>
+              <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm tabular-nums ring-2 ring-white">
+                <%= pending_n > 99 ? "99+" : number_with_delimiter(pending_n) %>
+              </span>
+            <% end %>
           </span>
-          <span class="text-center text-[11px] font-medium leading-tight text-gray-700">รอชำระเงิน</span>
+          <span class="text-center text-[11px] font-semibold leading-tight text-gray-800">รอชำระเงิน</span>
+          <% if pending_n.positive? %>
+            <span class="mt-1 text-center text-[10px] font-medium tabular-nums text-amber-600">รวม <%= number_with_delimiter(pending_n) %> ชิ้น</span>
+          <% end %>
         <% end %>
         <%= link_to users_orders_path(status: :paid), class: "flex flex-col items-center rounded-2xl border border-gray-100 bg-white py-4 shadow-sm transition hover:border-pink-200" do %>
           <span class="mb-2 flex size-12 items-center justify-center rounded-full bg-pink-50 text-pink-600">
