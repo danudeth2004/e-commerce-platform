@@ -1,12 +1,12 @@
-<div class="min-h-screen bg-white max-w-md mx-auto pb-12">
-  <header class="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-gray-100 bg-white px-4 py-3">
-    <%= link_to root_path, class: "inline-flex size-10 items-center justify-center rounded-full text-gray-700 hover:bg-gray-100", aria: { label: "กลับ" } do %>
+<div class="min-h-screen max-w-md mx-auto pb-12 bg-gradient-to-b from-rose-50/70 via-white to-slate-50/90">
+  <header class="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-rose-100/80 bg-white/85 backdrop-blur-md px-4 py-3 shadow-sm shadow-rose-100/30">
+    <%= link_to root_path, class: "inline-flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 transition", aria: { label: "กลับ" } do %>
       <span class="iconify text-2xl" data-icon="lucide:chevron-left" data-width="24"></span>
     <% end %>
-    <h1 class="text-base font-semibold text-gray-900">โปรไฟล์ของฉัน</h1>
+    <h1 class="text-base font-semibold tracking-tight text-slate-900">โปรไฟล์ของฉัน</h1>
     <div class="relative">
       <input type="checkbox" id="profile-menu-toggle" class="peer hidden">
-      <label for="profile-menu-toggle" class="inline-flex size-10 cursor-pointer items-center justify-center rounded-full text-gray-700 hover:bg-gray-100">
+      <label for="profile-menu-toggle" class="inline-flex size-10 cursor-pointer items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 transition">
         <span class="sr-only">เปิดเมนู</span>
         <span class="iconify" data-icon="lucide:more-horizontal" data-width="22" aria-hidden="true"></span>
       </label>
@@ -14,12 +14,12 @@
               class="fixed inset-0 z-40 hidden cursor-default border-0 bg-transparent p-0 peer-checked:block"
               aria-label="ปิดเมนู"
               onclick="document.getElementById('profile-menu-toggle').checked = false"></button>
-      <div class="absolute right-0 z-50 mt-2 w-52 origin-top-right scale-95 rounded-xl border border-gray-100 bg-white py-1 opacity-0 shadow-lg transition peer-checked:scale-100 peer-checked:opacity-100">
-        <%= link_to edit_user_registration_path, class: "block px-4 py-2.5 text-sm text-gray-800 hover:bg-gray-50" do %>
+      <div class="absolute right-0 z-50 mt-2 w-52 origin-top-right scale-95 rounded-2xl border border-rose-100/90 bg-white/95 py-1.5 opacity-0 shadow-xl shadow-rose-200/40 ring-1 ring-black/5 transition peer-checked:scale-100 peer-checked:opacity-100 backdrop-blur-sm">
+        <%= link_to edit_user_registration_path, class: "block px-4 py-2.5 text-sm font-medium text-slate-800 hover:bg-rose-50/80 transition" do %>
           แก้ไขบัญชีของฉัน
         <% end %>
         <%= button_to destroy_user_session_path, method: :delete, class: "w-full text-left" do %>
-          <span class="block px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">ออกจากระบบ</span>
+          <span class="block px-4 py-2.5 text-sm font-medium text-rose-600 hover:bg-rose-50 transition">ออกจากระบบ</span>
         <% end %>
       </div>
     </div>
@@ -27,87 +27,87 @@
 
   <div class="px-4 pt-6">
     <div class="flex flex-col items-center text-center">
-      <div class="size-24 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100">
+      <div class="size-24 shrink-0 overflow-hidden rounded-full border-4 border-white bg-gradient-to-br from-rose-100 to-pink-50 shadow-lg shadow-rose-200/50 ring-2 ring-rose-100/80">
         <% if @user.avatar.attached? %>
           <%= image_tag @user.avatar, class: "size-full object-cover", alt: "" %>
         <% else %>
-          <div class="size-full bg-[repeating-conic-gradient(#e5e7eb_0%_25%,#f3f4f6_0%_50%)] bg-[length:12px_12px]"></div>
+          <div class="size-full bg-[repeating-conic-gradient(#fce7f3_0%_25%,#fdf2f8_0%_50%)] bg-[length:12px_12px]"></div>
         <% end %>
       </div>
-      <p class="mt-4 text-lg font-bold text-gray-900">
+      <p class="mt-4 text-lg font-bold tracking-tight text-slate-900">
         <%= [@user.first_name, @user.last_name].compact_blank.join(" ") %>
       </p>
-      <p class="mt-1 text-sm text-gray-500"><%= @user.email %></p>
+      <p class="mt-1 text-sm text-slate-500"><%= @user.email %></p>
     </div>
 
     <section class="mt-8">
       <div class="mb-3 flex items-center justify-between">
-        <h2 class="text-base font-semibold text-gray-900">คำสั่งซื้อของฉัน</h2>
-        <%= link_to users_orders_path(status: :paid), class: "text-sm font-medium text-Primary-color" do %>
+        <h2 class="text-base font-semibold text-slate-900">คำสั่งซื้อของฉัน</h2>
+        <%= link_to users_orders_path(status: :paid), class: "text-sm font-semibold text-rose-600 hover:text-rose-700 transition" do %>
           ดูประวัติการซื้อ
-          <span aria-hidden="true">›</span>
+          <span aria-hidden="true" class="ml-0.5">›</span>
         <% end %>
       </div>
-      <div class="grid grid-cols-3 gap-2">
+      <div class="grid grid-cols-3 gap-2.5">
         <% cart_n = current_cart_item_count %>
         <%= link_to cart_path,
-                    class: "relative flex flex-col items-center rounded-2xl border border-gray-100 bg-white py-4 shadow-sm transition hover:border-pink-200",
+                    class: "relative flex flex-col items-center rounded-2xl border border-rose-100/80 bg-white/90 py-4 shadow-md shadow-rose-100/25 ring-1 ring-rose-50/50 transition hover:border-rose-200 hover:shadow-lg hover:shadow-rose-100/40 active:scale-[0.98]",
                     aria: { label: cart_n.positive? ? "รถเข็นของฉัน รวม #{cart_n} ชิ้น" : "รถเข็นของฉัน" } do %>
-          <span class="relative mb-2 flex size-12 items-center justify-center rounded-full bg-pink-50 text-pink-600 ring-1 ring-pink-100/80">
+          <span class="relative mb-2 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-100 to-pink-50 text-rose-600 shadow-inner ring-1 ring-rose-50/80">
             <span class="iconify" data-icon="lucide:shopping-cart" data-width="22" aria-hidden="true"></span>
             <% if cart_n.positive? %>
-              <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm tabular-nums ring-2 ring-white">
+              <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold leading-none text-white shadow-md tabular-nums ring-2 ring-white">
                 <%= cart_n > 99 ? "99+" : number_with_delimiter(cart_n) %>
               </span>
             <% end %>
           </span>
-          <span class="text-center text-[11px] font-semibold leading-tight text-gray-800">รถเข็นของฉัน</span>
+          <span class="text-center text-[11px] font-semibold leading-tight text-slate-800">รถเข็นของฉัน</span>
           <% if cart_n.positive? %>
-            <span class="mt-1 text-center text-[10px] font-medium tabular-nums text-Primary-color">รวม <%= number_with_delimiter(cart_n) %> ชิ้น</span>
+            <span class="mt-1 text-center text-[10px] font-medium tabular-nums text-rose-600">รวม <%= number_with_delimiter(cart_n) %> ชิ้น</span>
           <% end %>
         <% end %>
         <% pending_n = @pending_payment_items_count.to_i %>
         <%= link_to users_orders_path(status: :pending),
-                    class: "relative flex flex-col items-center rounded-2xl border border-gray-100 bg-white py-4 shadow-sm transition hover:border-pink-200",
+                    class: "relative flex flex-col items-center rounded-2xl border border-rose-100/80 bg-white/90 py-4 shadow-md shadow-rose-100/25 ring-1 ring-rose-50/50 transition hover:border-amber-200/80 hover:shadow-lg hover:shadow-amber-100/30 active:scale-[0.98]",
                     aria: { label: pending_n.positive? ? "รอชำระเงิน รวม #{pending_n} ชิ้น" : "รอชำระเงิน" } do %>
-          <span class="relative mb-2 flex size-12 items-center justify-center rounded-full bg-amber-50 text-amber-600 ring-1 ring-amber-100/80">
+          <span class="relative mb-2 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-50 to-amber-100/80 text-amber-600 shadow-inner ring-1 ring-amber-100/80">
             <span class="iconify" data-icon="lucide:wallet" data-width="22" aria-hidden="true"></span>
             <% if pending_n.positive? %>
-              <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold leading-none text-white shadow-sm tabular-nums ring-2 ring-white">
+              <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold leading-none text-white shadow-md tabular-nums ring-2 ring-white">
                 <%= pending_n > 99 ? "99+" : number_with_delimiter(pending_n) %>
               </span>
             <% end %>
           </span>
-          <span class="text-center text-[11px] font-semibold leading-tight text-gray-800">รอชำระเงิน</span>
+          <span class="text-center text-[11px] font-semibold leading-tight text-slate-800">รอชำระเงิน</span>
           <% if pending_n.positive? %>
             <span class="mt-1 text-center text-[10px] font-medium tabular-nums text-amber-600">รวม <%= number_with_delimiter(pending_n) %> ชิ้น</span>
           <% end %>
         <% end %>
-        <%= link_to users_orders_path(status: :paid), class: "flex flex-col items-center rounded-2xl border border-gray-100 bg-white py-4 shadow-sm transition hover:border-pink-200" do %>
-          <span class="mb-2 flex size-12 items-center justify-center rounded-full bg-pink-50 text-pink-600">
+        <%= link_to users_orders_path(status: :paid), class: "flex flex-col items-center rounded-2xl border border-rose-100/80 bg-white/90 py-4 shadow-md shadow-rose-100/25 ring-1 ring-rose-50/50 transition hover:border-rose-200 hover:shadow-lg hover:shadow-rose-100/40 active:scale-[0.98]" do %>
+          <span class="mb-2 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50/80 text-emerald-600 shadow-inner ring-1 ring-emerald-100/60">
             <span class="iconify" data-icon="lucide:package" data-width="22"></span>
           </span>
-          <span class="text-center text-[11px] font-medium leading-tight text-gray-700">รอรับสินค้า</span>
+          <span class="text-center text-[11px] font-semibold leading-tight text-slate-800">รอรับสินค้า</span>
         <% end %>
       </div>
     </section>
 
     <section class="mt-8">
-      <h2 class="text-base font-semibold text-gray-900">บัญชีของฉัน</h2>
-      <p class="mt-1 text-xs text-gray-400">สามารถแก้ไขได้ที่สามจุดด้านบนขวา</p>
-      <div class="mt-3 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+      <h2 class="text-base font-semibold text-slate-900">บัญชีของฉัน</h2>
+      <p class="mt-1 text-xs text-slate-400">แก้ไขได้จากเมนู ⋯ มุมขวาบน</p>
+      <div class="mt-3 rounded-2xl border border-rose-100/80 bg-white/90 p-4 shadow-md shadow-rose-100/20 ring-1 ring-rose-50/40">
         <dl class="space-y-3 text-sm">
           <div>
-            <dt class="text-xs text-gray-400">ชื่อ</dt>
-            <dd class="mt-0.5 font-medium text-gray-900"><%= [@user.first_name, @user.last_name].compact_blank.join(" ") %></dd>
+            <dt class="text-xs font-medium uppercase tracking-wide text-slate-400">ชื่อ</dt>
+            <dd class="mt-0.5 font-medium text-slate-900"><%= [@user.first_name, @user.last_name].compact_blank.join(" ") %></dd>
           </div>
           <div>
-            <dt class="text-xs text-gray-400">เบอร์โทร</dt>
-            <dd class="mt-0.5 text-gray-900"><%= masked_thai_mobile(@user.phone_number) %></dd>
+            <dt class="text-xs font-medium uppercase tracking-wide text-slate-400">เบอร์โทร</dt>
+            <dd class="mt-0.5 text-slate-800"><%= masked_thai_mobile(@user.phone_number) %></dd>
           </div>
           <div>
-            <dt class="text-xs text-gray-400">ที่อยู่</dt>
-            <dd class="mt-0.5 leading-relaxed text-gray-800"><%= @user.location.presence || "—" %></dd>
+            <dt class="text-xs font-medium uppercase tracking-wide text-slate-400">ที่อยู่</dt>
+            <dd class="mt-0.5 leading-relaxed text-slate-700"><%= @user.location.presence || "—" %></dd>
           </div>
         </dl>
       </div>

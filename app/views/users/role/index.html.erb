@@ -1,45 +1,41 @@
-<div class="min-h-screen bg-white flex items-start justify-center pt-10 px-4">
+<div class="min-h-screen bg-gradient-to-b from-rose-50/80 via-white to-slate-50 flex items-start justify-center pt-10 px-4 pb-12">
   <div class="w-full max-w-md">
-
-    <h1 class="text-xl font-semibold text-gray-800 mb-6">
-      เลือกประเภทบัญชีที่คุณต้องการสร้าง
+    <h1 class="text-xl font-bold tracking-tight text-slate-900 mb-2">
+      เลือกประเภทบัญชี
     </h1>
+    <p class="text-sm text-slate-500 mb-6">เลือกว่าต้องการซื้อของหรือเปิดร้านขายสินค้า</p>
 
     <%= link_to new_user_registration_path,
-      class: "flex items-center gap-4 bg-white rounded-2xl p-4 mb-4
-              shadow-md hover:shadow-lg transition" do %>
+      class: "flex items-center gap-4 rounded-2xl border border-rose-100/80 bg-white/90 p-4 mb-3 shadow-md shadow-rose-100/25 ring-1 ring-rose-50/50 transition hover:border-rose-200 hover:shadow-lg hover:shadow-rose-100/40 active:scale-[0.99]" do %>
 
-      <div class="w-12 h-12 flex items-center justify-center
-                  bg-pink-100 text-pink-500 rounded-full text-xl">
-        👤
+      <div class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-100 to-pink-50 text-rose-600 shadow-inner ring-1 ring-rose-100/60">
+        <span class="iconify text-2xl" data-icon="lucide:user-round" aria-hidden="true"></span>
       </div>
 
-      <div>
-        <p class="text-base font-semibold text-gray-800">
+      <div class="min-w-0">
+        <p class="text-base font-semibold text-slate-900">
           สร้างบัญชีผู้ใช้งาน
         </p>
-        <p class="text-sm text-gray-400">
-          สร้างบัญชีสำหรับซื้อของกับเรา
+        <p class="text-sm text-slate-500 mt-0.5">
+          สำหรับช้อปปิ้งและสั่งซื้อสินค้า
         </p>
       </div>
 
     <% end %>
 
     <%= link_to new_seller_user_registration_path,
-      class: "flex items-center gap-4 bg-white rounded-2xl p-4
-              shadow-md hover:shadow-lg transition" do %>
+      class: "flex items-center gap-4 rounded-2xl border border-rose-100/80 bg-white/90 p-4 shadow-md shadow-rose-100/25 ring-1 ring-rose-50/50 transition hover:border-rose-200 hover:shadow-lg hover:shadow-rose-100/40 active:scale-[0.99]" do %>
 
-      <div class="w-12 h-12 flex items-center justify-center
-                  bg-pink-100 text-pink-500 rounded-full text-xl">
-        🏪
+      <div class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-100 to-rose-50 text-fuchsia-700 shadow-inner ring-1 ring-fuchsia-100/60">
+        <span class="iconify text-2xl" data-icon="lucide:store" aria-hidden="true"></span>
       </div>
 
-      <div>
-        <p class="text-base font-semibold text-gray-800">
+      <div class="min-w-0">
+        <p class="text-base font-semibold text-slate-900">
           สร้างบัญชีร้านค้า
         </p>
-        <p class="text-sm text-gray-400">
-          สร้างบัญชีสำหรับเริ่มการขายของกับเรา
+        <p class="text-sm text-slate-500 mt-0.5">
+          สำหรับผู้ขายที่ต้องการลงสินค้าและจัดการร้าน
         </p>
       </div>
 

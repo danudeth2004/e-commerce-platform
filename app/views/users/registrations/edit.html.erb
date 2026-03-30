@@ -1,14 +1,12 @@
-<% content_for :title, "แก้ไขบัญชีของฉัน" %>
-
 <% input_class = "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
 <% label_class = "block text-base font-regular text-text-primary mb-2" %>
 
-<div class="min-h-screen bg-white max-w-md mx-auto pb-12">
-  <header class="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-gray-100 bg-white px-4 py-3">
-    <%= link_to users_profile_path, class: "inline-flex size-10 items-center justify-center rounded-full text-gray-700 hover:bg-gray-100 shrink-0", aria: { label: "กลับ" } do %>
+<div class="min-h-screen max-w-md mx-auto pb-12 bg-gradient-to-b from-rose-50/70 via-white to-slate-50/90">
+  <header class="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-rose-100/80 bg-white/85 backdrop-blur-md px-4 py-3 shadow-sm shadow-rose-100/30">
+    <%= link_to users_profile_path, class: "inline-flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 shrink-0 transition", aria: { label: "กลับ" } do %>
       <span class="iconify text-2xl" data-icon="lucide:chevron-left" data-width="24"></span>
     <% end %>
-    <h1 class="text-base font-semibold text-gray-900 truncate px-2">แก้ไขบัญชีของฉัน</h1>
+    <h1 class="text-base font-semibold tracking-tight text-slate-900 truncate px-2">แก้ไขบัญชีของฉัน</h1>
     <div class="size-10 shrink-0" aria-hidden="true"></div>
   </header>
 
@@ -24,18 +22,25 @@
 
       <section class="mb-8">
         <h2 class="text-sm font-semibold text-gray-900 mb-3">รูปโปรไฟล์</h2>
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center" data-controller="avatar-preview">
           <div class="relative size-28 shrink-0 overflow-hidden rounded-full border border-gray-200 bg-gray-100">
             <% if resource.avatar.attached? %>
-              <%= image_tag resource.avatar, alt: "", id: "user-avatar-preview-img", class: "absolute inset-0 z-10 size-full object-cover" %>
+              <%= image_tag resource.avatar, alt: "", class: "absolute inset-0 z-10 size-full object-cover", data: { avatar_preview_target: "image" } %>
             <% else %>
-              <img alt="" id="user-avatar-preview-img" class="hidden absolute inset-0 z-10 size-full object-cover">
+              <img alt="" class="hidden absolute inset-0 z-10 size-full object-cover" data-avatar-preview-target="image">
             <% end %>
-            <div id="user-avatar-preview-fallback" class="absolute inset-0 z-0 bg-[repeating-conic-gradient(#e5e7eb_0%_25%,#f3f4f6_0%_50%)] bg-[length:12px_12px] <%= resource.avatar.attached? ? "hidden" : "" %>" aria-hidden="true"></div>
+            <div class="absolute inset-0 z-0 bg-[repeating-conic-gradient(#e5e7eb_0%_25%,#f3f4f6_0%_50%)] bg-[length:12px_12px] <%= resource.avatar.attached? ? "hidden" : "" %>" aria-hidden="true" data-avatar-preview-target="fallback"></div>
           </div>
           <%= label_tag "user_avatar_input", class: "mt-3 flex cursor-pointer flex-col items-center" do %>
             <span class="text-sm font-medium text-Primary-color hover:underline">เลือกรูปจากเครื่อง</span>
-            <%= f.file_field :avatar, accept: "image/*", class: "sr-only", id: "user_avatar_input" %>
+            <%= f.file_field :avatar,
+                  accept: "image/*",
+                  class: "sr-only",
+                  id: "user_avatar_input",
+                  data: {
+                    avatar_preview_target: "input",
+                    action: "change->avatar-preview#preview"
+                  } %>
           <% end %>
           <p class="mt-1 text-center text-xs text-gray-400">รองรับ JPG, PNG, WebP</p>
         </div>
@@ -78,7 +83,7 @@
         </div>
       </section>
 
-      <section class="mb-6 rounded-2xl border border-gray-100 bg-gray-50/80 p-4">
+      <section class="mb-6 rounded-2xl border border-rose-100/80 bg-gradient-to-br from-rose-50/50 to-white p-4 shadow-sm ring-1 ring-rose-50/40">
         <h2 class="text-sm font-semibold text-gray-900 mb-1">เปลี่ยนรหัสผ่าน</h2>
         <p class="text-xs text-gray-500 mb-4">เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยนรหัสผ่าน</p>
 
@@ -111,7 +116,7 @@
         class: "w-full py-3.5 text-white text-base font-medium rounded-full bg-gradient-to-r from-pink-500 to-pink-600 shadow-lg shadow-pink-200 hover:opacity-90 active:scale-[0.98] transition duration-200" %>
     <% end %>
 
-    <section class="mt-10 rounded-2xl border border-red-100 bg-red-50/40 p-4">
+    <section class="mt-10 rounded-2xl border border-red-200/70 bg-gradient-to-br from-red-50/50 to-white p-4 shadow-sm ring-1 ring-red-100/30">
       <h2 class="text-sm font-semibold text-red-900">ลบบัญชี</h2>
       <p class="mt-1 text-xs text-red-800/80 leading-relaxed">
         การลบบัญชีจะลบข้อมูลของคุณจากระบบ คำสั่งซื้อในอดีตอาจยังถูกเก็บไว้ตามกฎหมาย
@@ -126,20 +131,3 @@
     </section>
   </div>
 </div>
-
-<script>
-  (function () {
-    var input = document.getElementById("user_avatar_input");
-    var img = document.getElementById("user-avatar-preview-img");
-    var fallback = document.getElementById("user-avatar-preview-fallback");
-    if (!input || !img || !fallback) return;
-    input.addEventListener("change", function () {
-      var file = input.files && input.files[0];
-      if (!file || !file.type.match(/^image\//)) return;
-      var url = URL.createObjectURL(file);
-      img.src = url;
-      img.classList.remove("hidden");
-      fallback.classList.add("hidden");
-    });
-  })();
-</script>
