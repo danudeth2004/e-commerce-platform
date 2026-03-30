@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Run Minitest with SimpleCov (see test/test_helper.rb), then open HTML report locally (not in CI).
+cd "$(dirname "$0")/.."
+
+bin/rails test "$@"
+exit_code=$?
+
+if [[ "${CI:-}" != "true" ]] && [[ -f coverage/index.html ]]; then
+  if command -v open >/dev/null 2>&1; then
+    open coverage/index.html
+  elif command -v xdg-open >/dev/null 2>&1; then
+    xdg-open coverage/index.html
+  fi
+fi
+
+exit "$exit_code"
