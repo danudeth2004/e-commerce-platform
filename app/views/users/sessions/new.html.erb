@@ -1,23 +1,22 @@
-<div class="min-h-screen bg-gradient-to-b from-rose-50/70 via-white to-slate-50/90 py-8 px-4">
-  <div class="w-full max-w-md mx-auto">
-  <div class="rounded-2xl border border-rose-100/80 bg-white/90 p-6 shadow-lg shadow-rose-100/30 ring-1 ring-rose-50/50 sm:p-8">
+<div class="w-full max-w-md mx-auto">
+  <div class=" gap-3 mb-4">
     <div class="mb-6">
-      <h2 class="text-2xl font-bold tracking-tight text-slate-900 mb-1">
+      <h2 class="text-2xl font-semibold text-text-primary mb-1">
         เข้าสู่ระบบ
       </h2>
-      <p class="text-sm text-slate-500">
-        กรอกอีเมลและรหัสผ่านเพื่อเริ่มช้อป
+      <p class="text-sm text-text-neutral-300 font-light">
+        กรอกรายละเอียดเพื่อเข้าสู่ระบบและเริ่มใช้งาน
       </p>
     </div>
     <%= render "layouts/flash_messages" %>
     <%= form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }) do |f| %>
       <div class="mb-4">
         <%= f.label :email, "ที่อยู่อีเมล",
-            class: "block text-sm font-medium text-slate-800 mb-2" do %>
-          ที่อยู่อีเมล <span class="text-rose-500">*</span>
+            class: "block text-base font-regular text-text-primary mb-2" do %>
+          ที่อยู่อีเมล <span class="text-red-500">*</span>
         <% end %>
         <div class="relative">
-          <span class="absolute inset-y-0 left-3 flex items-center text-slate-300">
+          <span class="absolute inset-y-0 left-3 flex items-center text-gray-300">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6"
                 viewBox="0 0 24 24">
               <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -28,19 +27,19 @@
             placeholder: "example@domain.com",
             autofocus: true,
             autocomplete: "email",
-            class: "w-full pl-10 pr-3 py-2.5 text-sm text-slate-900
-                    bg-white border border-rose-100/90 rounded-xl
-                    placeholder:text-slate-400
-                    focus:border-rose-400 focus:ring-2 focus:ring-rose-100 focus:outline-none transition" %>
+            class: "w-full pl-10 pr-3 py-2.5 text-sm text-text-primary
+                    bg-white border border-border-neutral rounded-lg
+                    placeholder:text-text-placeholder
+                    focus:border-Primary-color focus:outline-none" %>
         </div>
       </div>
       <div class="mb-6">
         <%= f.label :password, "รหัสผ่าน",
-    class: "block text-sm font-medium text-slate-800 mb-2" do %>
-          รหัสผ่าน <span class="text-rose-500">*</span>
+    class: "block text-base font-regular text-text-primary mb-2" do %>
+          รหัสผ่าน <span class="text-red-500">*</span>
         <% end %>
         <div class="relative">
-          <span class="absolute inset-y-0 left-3 flex items-center text-slate-300">
+          <span class="absolute inset-y-0 left-3 flex items-center text-gray-300">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.6"
         viewBox="0 0 24 24">
               <rect x="3" y="11" width="18" height="11" rx="2"/>
@@ -50,21 +49,20 @@
           <%= f.password_field :password,
       placeholder: "กรอกรหัสผ่าน",
       autocomplete: "current-password",
-      class: "w-full pl-10 pr-3 py-2.5 text-sm text-slate-900
-              bg-white border border-rose-100/90 rounded-xl
-              placeholder:text-slate-400
-              focus:border-rose-400 focus:ring-2 focus:ring-rose-100 focus:outline-none transition" %>
+      class: "w-full pl-10 pr-3 py-2.5 text-sm text-text-primary
+              bg-white border border-border-neutral rounded-lg
+              placeholder:text-text-placeholder
+              focus:border-Primary-color focus:outline-none" %>
         </div>
       </div>
       <div class="mt-6">
-        <%= f.submit "เข้าสู่ระบบ",
-    class: "w-full py-3.5 text-white text-base font-semibold rounded-full bg-gradient-to-r from-rose-500 to-pink-600 shadow-lg shadow-rose-300/40 hover:opacity-95 active:scale-[0.98] transition duration-200" %> </div>
+        <%= f.submit "เข้าสู่ระบบ", 
+    class: "w-full py-3.5 text-white text-base font-medium rounded-full bg-gradient-to-r from-pink-500 to-pink-600 shadow-lg shadow-pink-200 hover:opacity-90 active:scale-95 transition duration-200" %> </div>
     <% end %>
-    <div class="mt-6 text-center text-sm text-slate-500">
-      ยังไม่มีบัญชีผู้ใช้?
+    <div class="mt-6 text-center text-sm text-gray-400 font-light">
+      ยังไม่มีบัญชีผู้ใช้ ?
       <%= link_to "สร้างบัญชี", new_registration_path(resource_name),
-        class: "font-semibold text-rose-600 hover:text-rose-700 transition" %>
+        class: "text-pink-500 font-medium hover:underline" %>
     </div>
-  </div>
   </div>
 </div>
