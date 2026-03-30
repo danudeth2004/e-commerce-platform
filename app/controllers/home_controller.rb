@@ -33,7 +33,7 @@ class HomeController < BaseController
 
     if show_seller_product_page?
       render :show_seller, layout: "seller"
-      return
+      nil
     end
   end
 
@@ -193,5 +193,4 @@ class HomeController < BaseController
       image_url: h[:image_url]
     }
   end
-
 end

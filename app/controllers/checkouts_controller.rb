@@ -24,7 +24,7 @@ class CheckoutsController < BaseController
   def payment
     @public_key = ENV["OMISE_PUBLIC_KEY"]
 
-    @order_items = @order.order_items.includes(product: [:store, { images_attachments: :blob }])
+    @order_items = @order.order_items.includes(product: [ :store, { images_attachments: :blob } ])
     @items_by_store = @order_items.group_by { |oi| oi.product.store }
     @item_qty_total = @order_items.sum(&:quantity)
     @subtotal_cents = @order.total_amount_cents
@@ -48,7 +48,7 @@ class CheckoutsController < BaseController
       end
     @coupons = [
     { id: 1, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: true },
-    { id: 2, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: false },]
+    { id: 2, discount: "20%", min_order: "ไม่มีขั้นต่ำ", expires_at: "30 เมษายน", selected: false } ]
   end
 
   def pay

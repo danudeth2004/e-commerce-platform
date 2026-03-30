@@ -32,7 +32,7 @@ Rails.application.routes.draw do
       registrations: "seller/users/registrations",
       sessions: "seller/users/sessions"
     }
-    
+
     resources :products, only: [ :new, :create, :edit, :update, :destroy ] do
       collection do
         get :choose

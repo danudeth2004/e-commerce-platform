@@ -4,4 +4,3 @@ class AddOriginalAmountToFlagProducts < ActiveRecord::Migration[8.1]
     add_column :flag_products, :original_amount_currency, :string, null: false, default: "THB"
   end
 end
-

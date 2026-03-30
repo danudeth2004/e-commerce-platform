@@ -11,7 +11,7 @@ module TracksAppVisit
   private
 
   def should_track_app_visit?
-    return false unless request.get?
+    return false unless request.get? || request.head?
     return false if request.head?
     return false unless request.format&.html?
     return false if request.get_header("HTTP_SEC_PURPOSE") == "prefetch"

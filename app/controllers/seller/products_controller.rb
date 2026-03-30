@@ -25,7 +25,7 @@ module Seller
     def edit
       if @product.bundle?
         redirect_to edit_seller_product_bundle_path(@product)
-        return
+        nil
       end
     end
 

@@ -4,4 +4,3 @@ class FixProductsStoreIndex < ActiveRecord::Migration[8.1]
     add_index :products, :seller_store_id, if_not_exists: true
   end
 end
-
