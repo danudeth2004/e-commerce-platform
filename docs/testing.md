@@ -21,6 +21,8 @@ bin/rails test test/models/user_test.rb
 bin/rails test test/controllers/
 ```
 
+เทสคอนโทรลเลอร์เป็น **Integration tests** (`ActionDispatch::IntegrationTest`) เรียก HTTP จริงผ่าน route ใช้ `sign_in` จาก `Devise::Test::IntegrationHelpers` (รวมใน `test/test_helper.rb` แล้ว) ตัวช่วยสร้างข้อมูลเทสใช้ `ModelTestHelpers` เช่น `create_user!`, `active_store_and_product`
+
 ### รันแล้วเปิดรายงาน coverage ในเบราว์เซอร์ (เครื่อง local เท่านั้น)
 
 ```bash

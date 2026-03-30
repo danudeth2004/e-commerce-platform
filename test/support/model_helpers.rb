@@ -72,6 +72,13 @@ module ModelTestHelpers
     )
   end
 
+  def active_store_and_product
+    store = create_store!
+    store.update!(status: :active)
+    product = create_standard_product!(store: store)
+    [ store, product ]
+  end
+
   def create_bundle_product!(store:, **attrs)
     Product.create!(
       {
