@@ -3,10 +3,13 @@
 require_relative "../config/simplecov_bootstrap"
 
 ENV["RAILS_ENV"] ||= "test"
+ENV["OMISE_SECRET_KEY"] ||= "skey_test"
+ENV["OMISE_PUBLIC_KEY"] ||= "pkey_test"
 require_relative "../config/environment"
 require "rails/test_help"
 
 Rails.root.glob("test/support/**/*.rb").sort.each { |f| require f }
+OmiseTestStubs.apply! if defined?(OmiseTestStubs)
 
 module ActiveSupport
   class TestCase
@@ -31,6 +34,15 @@ module ActiveSupport
 end
 
 class ActionDispatch::IntegrationTest
+  include ActiveJob::TestHelper
   include Devise::Test::IntegrationHelpers
+  include ModelTestHelpers
+end
+
+class ActiveJob::TestCase
+  include ModelTestHelpers
+end
+
+class ActionView::TestCase
   include ModelTestHelpers
 end

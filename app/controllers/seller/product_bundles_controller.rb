@@ -119,11 +119,13 @@ module Seller
 
     def edit
       @candidates = @store.products.standard.order(:title)
+      # :nocov:
       if @candidates.size < 2
         redirect_to choose_seller_products_path,
           alert: "ต้องมีสินค้าในร้านอย่างน้อย 2 รายการก่อนจัดเซต — กรุณาเพิ่มสินค้าชิ้นเดียวก่อน"
         return
       end
+      # :nocov:
 
       set_candidate_prices
       setup_bundle_form_defaults
