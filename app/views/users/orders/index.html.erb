@@ -29,15 +29,27 @@
                     </p>
 
                     <% if order.paid? && order.paid_at.present? %>
-                    <p class="mt-1 text-xs <%= order.shipping_cents > 0 ? "text-emerald-600" : "text-gray-500" %>">
-                        <% if order.shipping_cents > 0 %>
-                        🚚 ส่งพรุ่งนี้ (<%= (order.paid_at + 1.day).strftime("%d/%m") %>)
+                      <% delivered =
+                          if order.shipping_cents > 0
+                            Time.current >= order.paid_at + 1.day
+                          else
+                            Time.current >= order.paid_at + 3.days
+                          end
+                      %>
+
+                      <p class="mt-1 text-xs <%= delivered ? "text-gray-500" : "text-emerald-600" %>">
+                        <% if delivered %>
+                          📦 ส่งสินค้าแล้ว
                         <% else %>
-                        🚚 ส่งใน 2-3 วัน
-                        (<%= (order.paid_at + 2.days).strftime("%d/%m") %> -
-                        <%= (order.paid_at + 3.days).strftime("%d/%m") %>)
+                          <% if order.shipping_cents > 0 %>
+                            🚚 ส่งพรุ่งนี้ (<%= (order.paid_at + 1.day).strftime("%d/%m") %>)
+                          <% else %>
+                            🚚 ส่งใน 2-3 วัน
+                            (<%= (order.paid_at + 2.days).strftime("%d/%m") %> -
+                            <%= (order.paid_at + 3.days).strftime("%d/%m") %>)
+                          <% end %>
                         <% end %>
-                    </p>
+                      </p>
                     <% end %>
                 </div>
 

@@ -46,18 +46,30 @@
                 <%= @order.paid_at.strftime("%d/%m/%Y %H:%M") %>
             </p>
 
-            <% if @order.paid_at.present? %>
-                <div class="mt-3 rounded-lg bg-gray-50 px-3 py-2 text-xs
-                <%= @order.shipping_cents > 0 ? "text-emerald-600" : "text-gray-600" %>">
+            <% if @order.paid? && @order.paid_at.present? %>
+                <% delivered =
+                    if @order.shipping_cents > 0
+                        Time.current >= @order.paid_at + 1.day
+                    else
+                        Time.current >= @order.paid_at + 3.days
+                    end
+                %>
 
-                <% if @order.shipping_cents > 0 %>
-                    🚚 จะจัดส่งภายในพรุ่งนี้
-                    (<%= (@order.paid_at + 1.day).strftime("%d/%m/%Y") %>)
-                <% else %>
-                    🚚 จะจัดส่งภายใน 2 - 3 วัน
-                    (<%= (@order.paid_at + 2.days).strftime("%d/%m/%Y") %> -
-                    <%= (@order.paid_at + 3.days).strftime("%d/%m/%Y") %>)
-                <% end %>
+                <div class="mt-3 rounded-lg bg-gray-50 px-3 py-2 text-xs
+                    <%= delivered ? "text-gray-500" : "text-emerald-600" %>">
+
+                    <% if delivered %>
+                    📦 ส่งสินค้าแล้ว
+                    <% else %>
+                    <% if @order.shipping_cents > 0 %>
+                        🚚 จะจัดส่งภายในพรุ่งนี้
+                        (<%= (@order.paid_at + 1.day).strftime("%d/%m/%Y") %>)
+                    <% else %>
+                        🚚 จะจัดส่งภายใน 2 - 3 วัน
+                        (<%= (@order.paid_at + 2.days).strftime("%d/%m/%Y") %> -
+                        <%= (@order.paid_at + 3.days).strftime("%d/%m/%Y") %>)
+                    <% end %>
+                    <% end %>
 
                 </div>
             <% end %>
