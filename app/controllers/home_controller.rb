@@ -185,6 +185,7 @@ class HomeController < BaseController
   def bestseller_payload(product, flag_product = nil)
     h = helpers.product_to_card_hash(product, flag_product: flag_product)
     {
+      id: h[:id],
       brand: h[:name],
       desc: h[:desc],
       price: h[:price],
