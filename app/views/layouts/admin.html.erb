@@ -10,6 +10,7 @@
 
     <%= render "layouts/google_fonts" %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <%= javascript_importmap_tags %>
 
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
@@ -21,6 +22,11 @@
         <div class="flex flex-col flex-1 min-w-0">
             <%= render "layouts/admin/topbar" %>
             <main class="p-6 lg:p-10">
+                <% if flash.any? %>
+                    <div class="mb-6">
+                        <%= render "layouts/flash_messages" %>
+                    </div>
+                <% end %>
                 <%= yield %>
             </main>
         </div>

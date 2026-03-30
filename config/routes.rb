@@ -8,7 +8,9 @@ Rails.application.routes.draw do
     resources :campaigns, except: [ :show ]
 
     resources :order_store_payouts, only: [ :index, :show ] do
-      post :pay
+      member do
+        post :pay
+      end
     end
 
     resources :stores do

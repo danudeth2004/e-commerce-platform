@@ -1,3 +1,86 @@
-<h1>
-    Admin user
-</h1>
+<div class="space-y-8">
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">ภาพรวม</h1>
+    <p class="text-gray-600 mt-1 text-sm">สรุปข้อมูลสำคัญของระบบและแนวโน้มการใช้งานแอปฝั่งลูกค้า (ไม่รวมหน้า admin / seller)</p>
+  </div>
+
+  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-4">
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900">การใช้งานแอป (ย้อนหลัง <%= @usage_days %> วัน)</h2>
+        <p class="text-sm text-gray-500 mt-1 max-w-2xl">
+          กราฟแสดงจำนวนครั้งที่โหลดหน้าเว็บฝั่งลูกค้า, จำนวน session ที่ไม่ซ้ำต่อวัน (โดยประมาณ), และจำนวนคำสั่งซื้อที่ชำระเงินสำเร็จ
+          — ใช้ดูแนวโน้มและผลตอบรับหลังปล่อยใช้งานจริง
+        </p>
+      </div>
+    </div>
+
+    <%= tag.div class: "h-72 w-full min-w-0", data: {
+          controller: "dashboard-chart",
+          dashboard_chart_labels_value: @chart_labels,
+          dashboard_chart_visits_value: @visit_series,
+          dashboard_chart_sessions_value: @session_series,
+          dashboard_chart_orders_value: @order_series
+        } do %>
+      <canvas data-dashboard-chart-target="canvas" class="w-full h-full"></canvas>
+    <% end %>
+
+    <p class="text-xs text-gray-400 mt-4">
+      ข้อมูลการเข้าชมเริ่มสะสมตั้งแต่มีการบันทึกในระบบ — วันก่อนหน้านั้นจะแสดงเป็น 0
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <%= link_to admin_stores_path, class: "block rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:border-blue-200 hover:shadow transition" do %>
+      <div class="flex items-center gap-3">
+        <span class="iconify text-2xl text-slate-600" data-icon="lucide:store"></span>
+        <div>
+          <div class="text-sm text-gray-500">ร้านค้า</div>
+          <div class="text-2xl font-bold text-gray-900"><%= @store_count %></div>
+        </div>
+      </div>
+      <p class="text-xs text-blue-600 mt-3 font-medium">จัดการร้าน →</p>
+    <% end %>
+
+    <%= link_to admin_campaigns_path, class: "block rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:border-blue-200 hover:shadow transition" do %>
+      <div class="flex items-center gap-3">
+        <span class="iconify text-2xl text-slate-600" data-icon="lucide:percent"></span>
+        <div>
+          <div class="text-sm text-gray-500">แคมเปญ</div>
+          <div class="text-2xl font-bold text-gray-900"><%= @campaign_count %></div>
+        </div>
+      </div>
+      <p class="text-xs text-blue-600 mt-3 font-medium">แก้ไขแคมเปญ →</p>
+    <% end %>
+
+    <%= link_to admin_order_store_payouts_path, class: "block rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:border-blue-200 hover:shadow transition" do %>
+      <div class="flex items-center gap-3">
+        <span class="iconify text-2xl text-amber-600" data-icon="lucide:clock"></span>
+        <div>
+          <div class="text-sm text-gray-500">โอนรอดำเนินการ</div>
+          <div class="text-2xl font-bold text-gray-900"><%= @payout_pending_count %></div>
+        </div>
+      </div>
+      <p class="text-xs text-blue-600 mt-3 font-medium">ดูรายการโอน →</p>
+    <% end %>
+
+    <%= link_to admin_order_store_payouts_path, class: "block rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:border-blue-200 hover:shadow transition" do %>
+      <div class="flex items-center gap-3">
+        <span class="iconify text-2xl text-violet-600" data-icon="lucide:loader"></span>
+        <div>
+          <div class="text-sm text-gray-500">กำลังโอน (Omise)</div>
+          <div class="text-2xl font-bold text-gray-900"><%= @payout_processing_count %></div>
+        </div>
+      </div>
+      <p class="text-xs text-blue-600 mt-3 font-medium">ตรวจสอบสถานะ →</p>
+    <% end %>
+  </div>
+
+  <div class="rounded-xl border border-dashed border-gray-200 bg-gray-50/80 p-6 text-sm text-gray-600">
+    <p class="font-medium text-gray-800 mb-2">คำแนะนำ</p>
+    <ul class="list-disc list-inside space-y-1">
+      <li>เปิด/ปิดร้านได้จากหน้ารายการร้านหรือหน้ารายละเอียดร้าน</li>
+      <li>การโอนเงินหลังลูกค้าชำระเงินจะถูกคิวอัตโนมัติ — ใช้หน้ารายการโอนเพื่อติดตามหรือสั่งโอนซ้ำเมื่อจำเป็น</li>
+    </ul>
+  </div>
+</div>

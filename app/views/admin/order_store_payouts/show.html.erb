@@ -1,42 +1,59 @@
-<%
-=begin%>
- <div class="flex flex-col gap-6">
-  <h1 class="text-2xl font-bold">
-    Payout #<%= @payout.id %>
-  </h1>
-
-  <div>
-    Status:
-    <span class="font-bold">
-      <%= @payout.status %>
-    </span>
-  </div>
-
-  <div>
-    Amount:
-    <%= number_to_currency(@payout.amount_cents / 100.0) %>
-  </div>
-
-  <% if @payout.pending? %>
-    <%= button_to "💸 Transfer To Store",
-        admin_order_store_payout_pay_path(order_store_payout_id: @payout.id),
-        method: :post,
-        class: "px-6 py-3 bg-green-400 font-bold text-xl border border-black" %>
-  <% end %>
-
-  <% if @payout.processing? %>
-    <div class="text-orange-600 font-bold">
-      Waiting transfer confirmation...
+<div class="bg-white shadow rounded-lg p-6 space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+    <div>
+      <%= link_to "← กลับไปรายการโอนเงิน", admin_order_store_payouts_path, class: "text-sm font-medium text-blue-600 hover:text-blue-800" %>
+      <h1 class="text-2xl font-bold text-gray-900 mt-2">การโอน #<%= @payout.id %></h1>
+      <p class="text-sm text-gray-600 mt-1">
+        คำสั่งซื้อ #<%= @payout.order_id %> ·
+        <%= link_to @payout.store.name, admin_store_path(@payout.store), class: "text-blue-600 hover:underline" %>
+      </p>
     </div>
+    <div class="rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm">
+      <div class="text-gray-500">สถานะ</div>
+      <div class="font-semibold text-gray-900"><%= @payout.status.humanize %></div>
+    </div>
+  </div>
 
-    <%= link_to "🔄 Refresh Status", admin_order_store_payout_path(@payout), class: "px-4 py-2 bg-yellow-300 border border-black" %>
-  <% end %>
+  <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+    <div class="rounded-lg border border-gray-100 p-4">
+      <dt class="text-gray-500">จำนวนเงิน</dt>
+      <dd class="text-lg font-semibold text-gray-900 mt-1">฿ <%= number_with_delimiter(@payout.amount_cents / 100) %></dd>
+    </div>
+    <div class="rounded-lg border border-gray-100 p-4">
+      <dt class="text-gray-500">Omise Transfer ID</dt>
+      <dd class="font-mono text-gray-900 mt-1 break-all"><%= @payout.transfer_id.presence || "—" %></dd>
+    </div>
+    <div class="rounded-lg border border-gray-100 p-4">
+      <dt class="text-gray-500">Omise Recipient</dt>
+      <dd class="font-mono text-gray-900 mt-1 break-all"><%= @payout.store.omise_recipient_id.presence || "—" %></dd>
+    </div>
+    <div class="rounded-lg border border-gray-100 p-4">
+      <dt class="text-gray-500">อัปเดตล่าสุด</dt>
+      <dd class="text-gray-900 mt-1"><%= @payout.updated_at.strftime("%d/%m/%Y %H:%M") %></dd>
+    </div>
+  </dl>
+
+  <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-gray-100">
+    <% if @payout.pending? %>
+      <%= button_to "ส่งโอนเงินผ่าน Omise",
+          pay_admin_order_store_payout_path(@payout),
+          method: :post,
+          class: "inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-700 transition" %>
+    <% end %>
+
+    <% if @payout.processing? %>
+      <p class="text-amber-700 text-sm font-medium">กำลังรอผลการโอนจาก Omise — กดรีเฟรชเพื่อซิงก์สถานะ</p>
+      <%= link_to "รีเฟรชสถานะ",
+          admin_order_store_payout_path(@payout),
+          class: "inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition" %>
+    <% end %>
 
     <% if @payout.transferred? %>
-        <div class="text-green-600 font-bold text-xl">
-            ✅ Transfer completed
-        </div>
+      <p class="text-green-700 text-sm font-medium">โอนเงินสำเร็จแล้ว</p>
     <% end %>
-</div> 
-<%
-=end%>
+
+    <% if @payout.failed? %>
+      <p class="text-red-700 text-sm font-medium">การโอนล้มเหลว — ตรวจสอบล็อกหรือ Omise dashboard</p>
+    <% end %>
+  </div>
+</div>

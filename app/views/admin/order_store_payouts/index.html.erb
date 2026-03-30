@@ -1,0 +1,43 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-2xl font-bold text-gray-900">การโอนเงินให้ร้าน</h1>
+    <%= link_to "ภาพรวม", admin_root_path, class: "text-sm font-medium text-blue-600 hover:text-blue-800" %>
+  </div>
+
+  <p class="text-sm text-gray-600 mb-6">
+    รายการล่าสุด 200 รายการ (เรียงตามเวลาอัปเดต) — ดูรายละเอียดหรือสั่งโอนเมื่อสถานะเป็นรอดำเนินการ
+  </p>
+
+  <% if @payouts.any? %>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 border">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">รหัส</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">คำสั่งซื้อ</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">ร้าน</th>
+            <th class="px-4 py-2 text-right text-sm font-semibold text-gray-700">จำนวนเงิน</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">สถานะ</th>
+            <th class="px-4 py-2 text-center text-sm font-semibold text-gray-700"></th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+          <% @payouts.each do |p| %>
+            <tr class="hover:bg-gray-50 transition">
+              <td class="px-4 py-2 text-sm text-gray-800">#<%= p.id %></td>
+              <td class="px-4 py-2 text-sm text-gray-800">#<%= p.order_id %></td>
+              <td class="px-4 py-2 text-sm text-gray-800"><%= p.store.name %></td>
+              <td class="px-4 py-2 text-sm text-gray-800 text-right">฿ <%= number_with_delimiter(p.amount_cents / 100) %></td>
+              <td class="px-4 py-2 text-sm font-medium text-gray-900"><%= p.status.humanize %></td>
+              <td class="px-4 py-2 text-center">
+                <%= link_to "ดูรายละเอียด", admin_order_store_payout_path(p), class: "text-blue-600 hover:underline text-sm font-medium" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <p class="text-gray-500">ยังไม่มีรายการโอนเงิน</p>
+  <% end %>
+</div>

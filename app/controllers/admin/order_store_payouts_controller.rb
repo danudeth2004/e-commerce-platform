@@ -1,16 +1,27 @@
-# class Admin::OrderStorePayoutsController < Admin::BaseController
-#   def show
-#     @payout = OrderStorePayout.find(params[:id])
-#     p "=" * 100
-#     p @payout
-#     OmiseService::SyncTransferStatus.new(payout: @payout).call if @payout.processing?
-#   end
+# frozen_string_literal: true
 
-#   def pay
-#     payout = OrderStorePayout.find(params[:order_store_payout_id])
+module Admin
+  class OrderStorePayoutsController < Admin::BaseController
+    def index
+      @payouts = OrderStorePayout.includes(:order, store: :owner).limit(200)
+    end
 
-#     TransferToStoreJob.perform_now(payout.id)
+    def show
+      @payout = OrderStorePayout.includes(:order, store: :owner).find(params[:id])
+      OmiseService::SyncTransferStatus.new(payout: @payout).call if @payout.processing?
+    end
 
-#     redirect_to payment_checkout_path(order_id: payout.order.id)
-#   end
-# end
+    def pay
+      payout = OrderStorePayout.find(params[:id])
+      unless payout.pending?
+        return redirect_to admin_order_store_payout_path(payout),
+          alert: "โอนได้เฉพาะรายการที่รอดำเนินการเท่านั้น"
+      end
+
+      TransferToStoreJob.perform_later(payout.id)
+
+      redirect_to admin_order_store_payout_path(payout),
+        notice: "ส่งคำสั่งโอนเงินไปยัง Omise แล้ว กรุณารอสักครู่แล้วรีเฟรชหน้านี้"
+    end
+  end
+end

@@ -1,7 +1,13 @@
 # frozen_string_literal: true
 
 class Admin::Users::RegistrationsController < Devise::RegistrationsController
-  layout "admin/devise"
+  helper AdminHelper
+
+  layout :admin_registration_layout
+
+  def admin_registration_layout
+    %w[edit update].include?(action_name) ? "admin" : "admin/devise"
+  end
 
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
@@ -61,4 +67,10 @@ class Admin::Users::RegistrationsController < Devise::RegistrationsController
   # def after_inactive_sign_up_path_for(resource)
   #   super(resource)
   # end
+
+  protected
+
+  def after_update_path_for(_resource)
+    admin_root_path
+  end
 end

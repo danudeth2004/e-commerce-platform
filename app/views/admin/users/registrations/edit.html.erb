@@ -1,42 +1,87 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
-
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-  <%= render "admin/users/shared/error_messages", resource: resource %>
-
-  <div class="field">
-    <p><%= f.label :email %></p>
-    <p><%= f.email_field :email, autofocus: true, autocomplete: "email" %></p>
+<div class="max-w-2xl space-y-8">
+  <div>
+    <%= link_to admin_root_path, class: "inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-800" do %>
+      <span class="iconify" data-icon="lucide:arrow-left" data-width="16"></span>
+      กลับไปภาพรวม
+    <% end %>
+    <h1 class="mt-4 text-2xl font-bold text-gray-900">บัญชีผู้ดูแลระบบ</h1>
+    <p class="mt-1 text-sm text-gray-600">อัปเดตอีเมลหรือรหัสผ่าน ต้องกรอกรหัสผ่านปัจจุบันเพื่อยืนยันทุกครั้ง</p>
   </div>
 
-  <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-    <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "space-y-6" }) do |f| %>
+    <%= render "admin/users/shared/error_messages", resource: resource %>
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h2 class="text-sm font-semibold text-gray-900 uppercase tracking-wide">อีเมล</h2>
+      <p class="mt-1 text-sm text-gray-500">ใช้สำหรับเข้าสู่ระบบและรับการแจ้งเตือนจากระบบ</p>
+
+      <div class="mt-4">
+        <%= f.label :email, "ที่อยู่อีเมล", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+        <%= f.email_field :email,
+              autofocus: true,
+              autocomplete: "email",
+              class: "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30" %>
+      </div>
+
+      <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+        <p class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          กำลังรอยืนยันอีเมลใหม่: <span class="font-medium"><%= resource.unconfirmed_email %></span>
+        </p>
+      <% end %>
+    </section>
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h2 class="text-sm font-semibold text-gray-900 uppercase tracking-wide">เปลี่ยนรหัสผ่าน</h2>
+      <p class="mt-1 text-sm text-gray-500">เว้นว่างทั้งสองช่องหากไม่ต้องการเปลี่ยนรหัสผ่าน</p>
+
+      <div class="mt-4 space-y-4">
+        <div>
+          <%= f.label :password, "รหัสผ่านใหม่", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.password_field :password,
+                autocomplete: "new-password",
+                class: "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30" %>
+          <% if @minimum_password_length %>
+            <p class="mt-1.5 text-xs text-gray-500">อย่างน้อย <%= @minimum_password_length %> ตัวอักษร</p>
+          <% end %>
+        </div>
+
+        <div>
+          <%= f.label :password_confirmation, "ยืนยันรหัสผ่านใหม่", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+          <%= f.password_field :password_confirmation,
+                autocomplete: "new-password",
+                class: "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30" %>
+        </div>
+      </div>
+    </section>
+
+    <section class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h2 class="text-sm font-semibold text-gray-900 uppercase tracking-wide">ยืนยันตัวตน</h2>
+      <p class="mt-1 text-sm text-gray-500">กรอกรหัสผ่านปัจจุบันเพื่อบันทึกการเปลี่ยนแปลง</p>
+
+      <div class="mt-4">
+        <%= f.label :current_password, "รหัสผ่านปัจจุบัน", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
+        <%= f.password_field :current_password,
+              autocomplete: "current-password",
+              class: "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30" %>
+      </div>
+    </section>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <%= f.submit "บันทึกการเปลี่ยนแปลง",
+            class: "inline-flex justify-center rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" %>
+      <%= link_to "ยกเลิก", admin_root_path, class: "text-sm font-medium text-gray-600 hover:text-gray-900" %>
+    </div>
   <% end %>
 
-  <div class="field">
-    <p><%= f.label :password %> <i>(leave blank if you don't want to change it)</i></p>
-    <p><%= f.password_field :password, autocomplete: "new-password" %></p>
-    <% if @minimum_password_length %>
-      <p><em><%= @minimum_password_length %> characters minimum</em></p>
-    <% end %>
-  </div>
-
-  <div class="field">
-    <p><%= f.label :password_confirmation %></p>
-    <p><%= f.password_field :password_confirmation, autocomplete: "new-password" %></p>
-  </div>
-
-  <div class="field">
-    <p><%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i></p>
-    <p><%= f.password_field :current_password, autocomplete: "current-password" %></p>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Update" %>
-  </div>
-<% end %>
-
-<h3>Cancel my account</h3>
-
-<div>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete %></div>
-
-<%= link_to "Back", :back %>
+  <section class="rounded-xl border border-rose-200 bg-rose-50/50 p-6">
+    <h2 class="text-sm font-semibold text-rose-900">โซนอันตราย</h2>
+    <p class="mt-1 text-sm text-rose-800/90">ลบบัญชีถาวร ไม่สามารถกู้คืนได้ ควรใช้เฉพาะเมื่อทดสอบหรือไม่ใช้งานแล้ว</p>
+    <div class="mt-4">
+      <%= button_to "ลบบัญชีผู้ดูแลนี้",
+            registration_path(resource_name),
+            method: :delete,
+            form: { data: { turbo_confirm: "ยืนยันลบบัญชีผู้ดูแล? การกระทำนี้ไม่สามารถย้อนกลับได้" } },
+            class: "inline-flex justify-center rounded-lg border border-rose-300 bg-white px-4 py-2 text-sm font-medium text-rose-700 shadow-sm transition hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2" %>
+    </div>
+  </section>
+</div>
