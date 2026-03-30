@@ -46,6 +46,7 @@ class CheckoutsController < BaseController
         eligible_amount_cents: eligible_amount,
         min_order: c.min_order,
         product_ids: eligible_items.map(&:product_id),
+        product_title: c.products.first.title,
         expires_at: c.expires_at.strftime("%d/%m/%Y")
       }
     end.compact
