@@ -1,11 +1,6 @@
-<% cart_back_href = request.referer.present? ? :back : root_path %>
 <div class="flex min-h-screen w-full max-w-md mx-auto flex-col bg-white">
   <header class="relative flex shrink-0 items-center justify-center px-4 py-3">
-    <%= link_to cart_back_href,
-                class: "absolute left-2 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full p-2 text-gray-800 hover:bg-gray-50",
-                aria: { label: "กลับ" } do %>
-      <%= inline_svg_tag "icons/chevron-left.svg", class: "h-6 w-6" %>
-    <% end %>
+    <%= render "layouts/app_back_button", variant: :minimal, fallback: root_path %>
     <h1 class="text-base font-bold text-gray-900">
       รถเข็นของคุณ<% if @cart_qty_total.positive? %> (<%= @cart_qty_total %>)<% end %>
     </h1>

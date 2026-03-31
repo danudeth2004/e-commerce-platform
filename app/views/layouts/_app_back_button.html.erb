@@ -1,0 +1,19 @@
+<% fallback_path = local_assigns.fetch(:fallback, root_path) %>
+<% variant = local_assigns.fetch(:variant, :header) %>
+<% minimal_btn = "absolute left-2 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full p-2 text-gray-800 hover:bg-gray-50" %>
+<% header_plain_btn = "inline-flex items-center justify-center size-10 shrink-0 rounded-full p-2 text-gray-900 hover:bg-gray-100/90 active:scale-[0.98] transition" %>
+<% if variant == :header %>
+  <% btn_class = header_plain_btn %>
+  <% icon_class = "h-6 w-6" %>
+<% else %>
+  <% btn_class = minimal_btn %>
+  <% icon_class = "h-6 w-6" %>
+<% end %>
+<button type="button"
+        class="<%= btn_class %>"
+        data-controller="back-nav"
+        data-back-nav-fallback-value="<%= fallback_path %>"
+        data-action="click->back-nav#go"
+  aria-label="กลับ">
+  <%= inline_svg_tag "icons/chevron-left.svg", class: icon_class %>
+</button>
