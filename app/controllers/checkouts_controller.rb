@@ -78,7 +78,13 @@ class CheckoutsController < BaseController
     total_cents = @order.total_amount_cents + shipping_cents - discount_cents
 
     @order.update!(total_amount_cents: total_cents, shipping_cents: shipping_cents, discount_cents: discount_cents, platform_fee_cents: (total_cents * 0.1).to_i)
-    OmiseService::CreateCharge.new(order: @order, token: params[:omise_token], amount: total_cents).call
+    if total_cents > 0
+      OmiseService::CreateCharge.new(order: @order, token: params[:omise_token], amount: total_cents).call
+    elsif total_cents == 0
+      @order.update!(status: :paid, paid_at: Time.current)
+    else
+      redirect_to root_path, alert: "ชำระเงินไม่สำเร็จ กรุณาลองใหม่"
+    end
     @order.reload
 
     order_store_payouts = @order.order_store_payouts
