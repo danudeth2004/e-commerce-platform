@@ -28,7 +28,6 @@ class HomeController < BaseController
     end
 
     @product_image       = @product
-    @brand_section       = @product
     @product_description = @product
     @product_bottom_bar  = @product
 
