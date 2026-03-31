@@ -15,6 +15,7 @@ module Admin
     def create
       @campaign = Campaign.new(campaign_params)
       if @campaign.save
+        attach_campaign_banners(@campaign)
         redirect_to admin_campaigns_path, notice: "สร้างแคมเปญแล้ว"
       else
         render :new, status: :unprocessable_entity
@@ -26,6 +27,7 @@ module Admin
 
     def update
       if @campaign.update(campaign_params)
+        attach_campaign_banners(@campaign)
         redirect_to admin_campaigns_path, notice: "อัปเดตแคมเปญแล้ว"
       else
         render :edit, status: :unprocessable_entity
@@ -57,6 +59,15 @@ module Admin
         raw[:product_ids] = Array(raw[:product_ids]).reject(&:blank?).map(&:to_i)
       end
       raw
+    end
+
+    def attach_campaign_banners(campaign)
+      raw = params.dig(:campaign, :banners)
+      return if raw.blank?
+
+      # รองรับทั้งหลายไฟล์ (array) และไฟล์เดียว
+      files = Array(raw).flatten.compact.reject(&:blank?)
+      campaign.banners.attach(files) if files.any?
     end
   end
 end

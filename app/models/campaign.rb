@@ -4,6 +4,8 @@ class Campaign < ApplicationRecord
   has_many :campaign_products, dependent: :destroy
   has_many :products, through: :campaign_products
 
+  has_many_attached :banners
+
   validates :name, :slug, :starts_at, :ends_at, presence: true
   validates :slug, uniqueness: true
   validates :discount_percent, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 100 }

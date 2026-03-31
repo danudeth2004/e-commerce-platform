@@ -1,12 +1,21 @@
 <% if @marketplace_has_products %>
   <div class="w-full min-h-screen bg-white">
     <div class="w-full max-w-screen-xl mx-auto space-y-8 py-6">
-      <%= render "home/partials/banner", banners: @banners %>
-      <%= render "home/partials/skin_concern", skin_concerns: @skin_concerns %>
-      <% if @flash_products.any? %>
-        <%= render "home/partials/flash_sale_frame",
-                    flash_products: @flash_products,
-                    flash_countdown_end_unix: @flash_countdown_end_unix %>
+      <% if @home_has_banners %>
+        <%= render "home/partials/banner", banners: @banners %>
+        <%= render "home/partials/skin_concern", skin_concerns: @skin_concerns %>
+        <% if @flash_products.any? %>
+          <%= render "home/partials/flash_sale_frame",
+                      flash_products: @flash_products,
+                      flash_countdown_end_unix: @flash_countdown_end_unix %>
+        <% end %>
+      <% else %>
+        <% if @flash_products.any? %>
+          <%= render "home/partials/flash_sale_frame",
+                      flash_products: @flash_products,
+                      flash_countdown_end_unix: @flash_countdown_end_unix %>
+        <% end %>
+        <%= render "home/partials/skin_concern", skin_concerns: @skin_concerns %>
       <% end %>
       <% if @bestsellers.any? %>
         <%= render "home/partials/bestseller", bestsellers: @bestsellers, tabs: @bestseller_tabs %>

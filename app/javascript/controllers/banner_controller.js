@@ -1,23 +1,26 @@
 import { Controller } from "@hotwired/stimulus"
 
-export default class extends Controller {
+export default class BannerController extends Controller {
   static values = { index: Number }
 
   connect() {
-    this.banners = window.BANNERS || []
-    this.timer = setInterval(() => this.next(), 3500)
+    this.banners = globalThis.BANNERS || []
+    if (this.banners.length > 1) {
+      this.timer = setInterval(() => this.next(), 3500)
+    }
   }
 
   disconnect() {
-    clearInterval(this.timer)
+    if (this.timer) clearInterval(this.timer)
   }
 
   go(event) {
-    this.indexValue = parseInt(event.currentTarget.dataset.index)
+    this.indexValue = Number.parseInt(event.currentTarget.dataset.index, 10)
     this.render()
   }
 
   next() {
+    if (this.banners.length <= 1) return
     this.indexValue = (this.indexValue + 1) % this.banners.length
     this.render()
   }
@@ -26,10 +29,10 @@ export default class extends Controller {
     const b = this.banners[this.indexValue]
     if (!b) return
 
-    document.getElementById("bannerCard").style.background = b.bg
-    document.getElementById("bannerBrand").textContent = b.brand
-    document.getElementById("bannerSub").textContent = b.sub
-    document.getElementById("bannerEmoji").textContent = b.emoji
+    const img = document.getElementById("bannerImage")
+    if (b.image_url && img) {
+      img.src = b.image_url
+    }
 
     document.querySelectorAll(".dot").forEach((dot, i) => {
       if (i === this.indexValue) {

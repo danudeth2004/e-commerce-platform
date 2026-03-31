@@ -1,7 +1,8 @@
 class HomeController < BaseController
   skip_before_action :destroy_seller_user_session!, only: %i[show]
   def index
-    @banners            = banners
+    @banners            = marketplace_banner_payload
+    @home_has_banners   = @banners.any?
     @skin_concerns      = skin_concerns
     assign_flash_sale!
     @bestsellers        = bestsellers
@@ -57,12 +58,19 @@ class HomeController < BaseController
     @flash_countdown_end_unix = flash_sale_countdown_end_unix(@flash_sale_entries.map(&:first))
   end
 
-  def banners
-    [
-      { brand: "Glad2Glow", sub: "POMEGRANATE NIACINAMIDE", emoji: "🍎", bg: "linear-gradient(135deg, #FFD6E8 0%, #FFF0F5 60%, #FFBDD8 100%)" },
-      { brand: "CeraVe",    sub: "HYDRATING COLLECTION",    emoji: "💙", bg: "linear-gradient(135deg, #D6EAFF 0%, #ECF5FF 60%, #C2D4FF 100%)" },
-      { brand: "Vaseline",  sub: "GLUTA-HYA SERIES",        emoji: "🧴", bg: "linear-gradient(135deg, #FFF3D6 0%, #FFFAEC 60%, #FFE8C2 100%)" }
-    ]
+  # รูปแบนเนอร์จากแคมเปญที่ยังไม่จบ (รวมแคมเปญที่ยังไม่ถึงวันเริ่ม — รูปที่อัปโหลดจะขึ้นตำแหน่งแบนเนอร์ได้)
+  # เรียงแคมเปญที่เริ่มล่าสุดก่อน แล้วต่อด้วยรูปในแต่ละแคมเปญ
+  def marketplace_banner_payload
+    time = Time.current
+    Campaign
+      .where("ends_at >= ?", time)
+      .with_attached_banners
+      .order(starts_at: :desc)
+      .flat_map do |campaign|
+        next [] unless campaign.banners.attached?
+
+        campaign.banners.map { |attachment| { image_url: helpers.url_for(attachment) } }
+      end
   end
 
   def skin_concerns
