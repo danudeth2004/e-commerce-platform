@@ -12,4 +12,28 @@ class OrderStorePayout < ApplicationRecord
   }
 
   default_scope { order(updated_at: :desc) }
+
+  # ยอดที่ต้องโอนร้านรวมต่อวัน (อิงวันที่ชำระเงินของออเดอร์)
+  def self.seller_amounts_by_day_for_paid_orders(since:)
+    rows = connection.select_all(
+      sanitize_sql_array([
+        <<-SQL.squish,
+          SELECT (date_trunc('day', timezone('Asia/Bangkok', o.paid_at)))::date AS day,
+                 COALESCE(SUM(order_store_payouts.amount_cents), 0)::bigint AS seller_cents
+          FROM order_store_payouts
+          INNER JOIN orders o ON o.id = order_store_payouts.order_id
+          WHERE o.paid_at IS NOT NULL
+            AND o.paid_at >= ?
+            AND o.status = ?
+          GROUP BY 1
+          ORDER BY 1
+        SQL
+        since,
+        Order.statuses[:paid]
+      ])
+    )
+    rows.each_with_object({}) do |row, h|
+      h[Date.parse(row["day"].to_s)] = row["seller_cents"].to_i
+    end
+  end
 end

@@ -3,7 +3,6 @@
     <h1 class="text-2xl font-bold text-gray-900">ภาพรวม</h1>
     <p class="text-gray-600 mt-1 text-sm">สรุปข้อมูลสำคัญของระบบและแนวโน้มการใช้งานแอปฝั่งลูกค้า (ไม่รวมหน้า admin / seller)</p>
   </div>
-
   <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
     <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-4">
       <div>
@@ -14,7 +13,6 @@
         </p>
       </div>
     </div>
-
     <%= tag.div class: "h-72 w-full min-w-0", data: {
           controller: "dashboard-chart",
           dashboard_chart_labels_value: @chart_labels,
@@ -24,12 +22,58 @@
         } do %>
       <canvas data-dashboard-chart-target="canvas" class="w-full h-full"></canvas>
     <% end %>
-
     <p class="text-xs text-gray-400 mt-4">
       ข้อมูลการเข้าชมเริ่มสะสมตั้งแต่มีการบันทึกในระบบ — วันก่อนหน้านั้นจะแสดงเป็น 0
     </p>
   </div>
-
+  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div class="mb-4">
+      <h2 class="text-lg font-semibold text-gray-900">ยอดเงิน &amp; รายได้ (ย้อนหลัง <%= @usage_days %> วัน — อิงวันที่ชำระเงิน)</h2>
+      <p class="text-sm text-gray-500 mt-1 max-w-3xl">
+        <strong>ยอดขายชำระแล้ว (GMV)</strong> คือยอดที่ลูกค้าจ่ายรวมในออเดอร์
+        · <strong>ค่าธรรมเนียมแพลตฟอร์ม</strong> ตามที่บันทึกในออเดอร์ (ปัจจุบัน 10% ของยอดหลังปรับสุดท้าย)
+        · <strong>ยอดส่งให้ร้าน</strong> คือผลรวมจาก <code class="text-xs bg-gray-100 px-1 rounded">order_store_payouts</code> ต่อออเดอร์ที่ชำระแล้ว
+      </p>
+      <p class="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2 mt-3">
+        <strong>กำไรขั้นต้น:</strong> ใช้ยอดค่าธรรมเนียมแพลตฟอร์มเป็นตัวแทนรายได้จากค่าคอม — ยังไม่หักต้นทุนธุรกิจจริง (เช่น ค่าธรรมเนียม Omise, โฆษณา, พนักงาน)
+        <% if @revenue_balance_check_cents.abs <= 1 %>
+          · ยอด GMV ≈ ค่าธรรมเนียม + ยอดโอนร้าน (สมดุล)
+        <% else %>
+          · ผลต่างตรวจสอบ: <%= admin_format_thb(@revenue_balance_check_cents) %> (อาจเกิดจากการปรับยอดหลังชำระ เช่น ค่าส่ง/ปรับโอน)
+        <% end %>
+      </p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="rounded-xl border border-blue-100 bg-blue-50/60 p-4">
+        <div class="text-sm text-blue-900/80">ยอดขายชำระแล้ว (GMV)</div>
+        <div class="text-2xl font-bold text-blue-950 mt-1 tabular-nums"><%= admin_format_thb(@total_gmv_cents) %></div>
+      </div>
+      <div class="rounded-xl border border-orange-100 bg-orange-50/60 p-4">
+        <div class="text-sm text-orange-900/80">รายได้ค่าธรรมเนียม (กำไรขั้นต้น)</div>
+        <div class="text-2xl font-bold text-orange-950 mt-1 tabular-nums"><%= admin_format_thb(@total_platform_fee_cents) %></div>
+        <div class="text-xs text-orange-800/80 mt-1">อัตราเทียบ GMV: <%= @revenue_margin_percent %>%</div>
+      </div>
+      <div class="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4">
+        <div class="text-sm text-emerald-900/80">ยอดโอนร้านค้า (รวม)</div>
+        <div class="text-2xl font-bold text-emerald-950 mt-1 tabular-nums"><%= admin_format_thb(@total_seller_payout_cents) %></div>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div class="text-sm text-slate-700">ขาดทุน / กำไรสุทธิ</div>
+        <div class="text-sm text-slate-600 mt-2 leading-relaxed">
+          ระบบยังไม่มีบันทึกต้นทุนจริง — ใช้ค่าธรรมเนียมด้านบนเป็น <strong>กำไรขั้นต้น</strong> เท่านั้น
+        </div>
+      </div>
+    </div>
+    <%= tag.div class: "h-72 w-full min-w-0", data: {
+          controller: "revenue-chart",
+          revenue_chart_labels_value: @chart_labels,
+          revenue_chart_gmv_value: @revenue_gmv_series,
+          revenue_chart_platform_value: @revenue_platform_series,
+          revenue_chart_seller_value: @revenue_seller_series
+        } do %>
+      <canvas data-revenue-chart-target="canvas" class="w-full h-full"></canvas>
+    <% end %>
+  </div>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
     <%= link_to admin_stores_path, class: "block rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:border-blue-200 hover:shadow transition" do %>
       <div class="flex items-center gap-3">
@@ -41,7 +85,6 @@
       </div>
       <p class="text-xs text-blue-600 mt-3 font-medium">จัดการร้าน →</p>
     <% end %>
-
     <%= link_to admin_campaigns_path, class: "block rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:border-blue-200 hover:shadow transition" do %>
       <div class="flex items-center gap-3">
         <span class="iconify text-2xl text-slate-600" data-icon="lucide:percent"></span>
@@ -52,7 +95,6 @@
       </div>
       <p class="text-xs text-blue-600 mt-3 font-medium">แก้ไขแคมเปญ →</p>
     <% end %>
-
     <%= link_to admin_order_store_payouts_path, class: "block rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:border-blue-200 hover:shadow transition" do %>
       <div class="flex items-center gap-3">
         <span class="iconify text-2xl text-amber-600" data-icon="lucide:clock"></span>
@@ -63,7 +105,6 @@
       </div>
       <p class="text-xs text-blue-600 mt-3 font-medium">ดูรายการโอน →</p>
     <% end %>
-
     <%= link_to admin_order_store_payouts_path, class: "block rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:border-blue-200 hover:shadow transition" do %>
       <div class="flex items-center gap-3">
         <span class="iconify text-2xl text-violet-600" data-icon="lucide:loader"></span>
@@ -75,7 +116,6 @@
       <p class="text-xs text-blue-600 mt-3 font-medium">ตรวจสอบสถานะ →</p>
     <% end %>
   </div>
-
   <div class="rounded-xl border border-dashed border-gray-200 bg-gray-50/80 p-6 text-sm text-gray-600">
     <p class="font-medium text-gray-800 mb-2">คำแนะนำ</p>
     <ul class="list-disc list-inside space-y-1">
