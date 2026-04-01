@@ -3,6 +3,8 @@
 class Admin::Users::RegistrationsController < Devise::RegistrationsController
   helper AdminHelper
 
+  before_action :admin_user_login?
+
   layout :admin_registration_layout
 
   def admin_registration_layout
@@ -70,7 +72,14 @@ class Admin::Users::RegistrationsController < Devise::RegistrationsController
 
   protected
 
+  def require_no_authentication
+  end
+
   def after_update_path_for(_resource)
     admin_root_path
+  end
+
+  def admin_user_login?
+    redirect_to admin_user_session_path if current_admin_user.blank?
   end
 end
