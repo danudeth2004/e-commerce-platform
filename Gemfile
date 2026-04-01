@@ -49,6 +49,8 @@ gem "omise"
 
 gem 'cloudinary'
 
+gem "devise", github: "heartcombo/devise", branch: "main"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -64,7 +66,6 @@ group :development, :test do
 
   gem "rspec-rails"
   gem "factory_bot_rails"
-  gem "devise", github: "heartcombo/devise", branch: "main"
 end
 
 group :development do
