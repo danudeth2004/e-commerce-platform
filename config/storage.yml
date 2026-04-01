@@ -3,10 +3,8 @@ test:
   root: <%= Rails.root.join("tmp/storage") %>
 
 development:
-  service: Cloudinary
-  cloud_name: <%= ENV['CLOUDINARY_CLOUD_NAME'] %>
-  api_key: <%= ENV['CLOUDINARY_API_KEY'] %>
-  api_secret: <%= ENV['CLOUDINARY_SECRET_KEY'] %>
+  service: Disk
+  root: <%= Rails.root.join("tmp/storage") %>
 
 production:
   service: Cloudinary
