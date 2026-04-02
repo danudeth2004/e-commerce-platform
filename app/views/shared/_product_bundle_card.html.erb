@@ -22,6 +22,11 @@
 
 <%= link_to link_to_path, class: card_class, style: card_style, data: link_data do %>
   <div class="relative w-full <%= neutral ? "bg-gray-50/80 px-2 pt-2 pb-1" : "bg-gradient-to-b from-pink-50/80 to-gray-50 px-2 pt-2 pb-1" %>">
+    <% if product[:discount_percent].to_i > 0 %>
+      <div class="absolute top-2 left-2 z-10 rounded-md bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white shadow-sm ring-2 ring-white/90">
+        -<%= product[:discount_percent] %>%
+      </div>
+    <% end %>
     <div class="flex gap-1.5">
       <% thumbs.each do |url| %>
         <div class="flex-1 aspect-square rounded-lg overflow-hidden bg-gray-100 min-h-0 max-h-28 <%= neutral ? "ring-1 ring-gray-200/80" : "ring-1 ring-pink-100" %>">
@@ -51,7 +56,8 @@
     <% end %>
   </div>
   <div class="px-3 pt-2 pb-3">
-    <div class="mb-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide <%= neutral ? "bg-gray-100 text-gray-700" : "bg-pink-100 text-pink-800" %>">
+    <div class="mb-1 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide <%= neutral ? "bg-gray-100 text-gray-700" : "bg-pink-100 text-pink-800" %>">
+      <span class="iconify <%= neutral ? "text-gray-500" : "text-pink-600" %>" data-icon="lucide:package" data-width="10"></span>
       เซตสินค้า
     </div>
     <div class="flex items-baseline gap-2 mb-0.5 mt-1">

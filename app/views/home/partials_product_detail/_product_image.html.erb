@@ -4,7 +4,9 @@
 <% discount_percent = p[:discount_percent] %>
 <% gallery_urls = product_detail_gallery_image_urls(product) %>
 <% multi = gallery_urls.size > 1 %>
-<div class="relative bg-gradient-to-br from-pink-50 to-purple-50 px-8 py-6">
+<% bundle = product.bundle? %>
+<% hero_grad = bundle ? "from-rose-50 via-pink-50 to-violet-100" : "from-pink-50 to-purple-50" %>
+<div class="relative bg-gradient-to-br <%= hero_grad %> px-6 sm:px-8 py-6">
   <% if multi %>
     <div class="relative -mx-2 z-0" data-controller="product-gallery">
       <div
@@ -14,7 +16,7 @@
         <% gallery_urls.each_with_index do |url, i| %>
           <div class="min-w-full shrink-0 snap-center flex justify-center px-2 box-border">
             <%= image_tag url,
-                  class: "w-full h-auto max-h-[min(72vh,320px)] object-contain",
+                  class: "w-full h-auto max-h-[min(72vh,320px)] object-contain drop-shadow-sm rounded-lg",
                   alt: "#{product.title} — รูปที่ #{i + 1}" %>
           </div>
         <% end %>
@@ -36,24 +38,44 @@
       <p class="text-center text-[10px] text-gray-400 mt-1">เลื่อนดูรูปได้</p>
     </div>
   <% else %>
-    <%= image_tag gallery_urls.first, class: "w-full h-auto object-contain" %>
+    <%= image_tag gallery_urls.first, class: "w-full h-auto object-contain drop-shadow-sm rounded-lg" %>
   <% end %>
-  <div class="absolute top-4 right-4 z-10 bg-gray-300 text-gray-600 px-3 py-1 rounded-full text-xs">
-    <%= product.bundle? ? "เซตสินค้า" : "สินค้า" %>
+  <div class="absolute top-4 right-4 z-10 flex flex-col items-end gap-1.5">
+    <% if bundle %>
+      <span class="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 px-3 py-1.5 text-xs font-semibold text-white shadow-md ring-2 ring-white/60">
+        <span class="iconify" data-icon="lucide:package" data-width="14"></span>
+        เซตสินค้า
+      </span>
+      <% if product.bundle_items.any? %>
+        <span class="rounded-full bg-white/90 px-2.5 py-0.5 text-[10px] font-medium text-pink-800 shadow-sm ring-1 ring-pink-100">
+          <%= product.bundle_items.size %> ชิ้นในเซต
+        </span>
+      <% end %>
+    <% else %>
+      <span class="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-gray-700 shadow-sm ring-1 ring-gray-200/80">
+        สินค้า
+      </span>
+    <% end %>
   </div>
 </div>
-<div class="px-4 py-3">
-  <h1 class="text-base font-semibold leading-relaxed text-text-primary">
+<div class="px-4 py-4 <%= bundle ? "bg-gradient-to-b from-white to-pink-50/30" : "" %>">
+  <% if bundle %>
+    <% bt = Product::BUNDLE_SET_TYPE_OPTIONS.find { |_, k| k == product.bundle_set_type_key }&.first %>
+    <% if bt.present? %>
+      <p class="text-[11px] font-semibold uppercase tracking-wider text-pink-600 mb-1"><%= bt %></p>
+    <% end %>
+  <% end %>
+  <h1 class="<%= bundle ? "text-xl font-bold tracking-tight" : "text-base font-semibold" %> leading-snug text-text-primary">
     <%= product.title %>
   </h1>
   <% if product.description.present? %>
-    <p class="text-xs text-gray-500 mt-1 line-clamp-2">
+    <p class="text-sm text-gray-600 mt-2 <%= bundle ? "line-clamp-4 leading-relaxed" : "text-xs text-gray-500 line-clamp-2" %>">
       <%= product.description %>
     </p>
   <% end %>
-  <div class="flex items-start justify-between gap-2 mt-2">
-    <div class="flex flex-wrap items-center gap-3 min-w-0">
-      <span class="text-red-500 text-xl font-semibold">
+  <div class="flex items-start justify-between gap-2 mt-3">
+    <div class="flex flex-wrap items-center gap-2 min-w-0">
+      <span class="text-red-500 <%= bundle ? "text-2xl font-bold" : "text-xl font-semibold" %>">
         ฿ <%= number_with_delimiter(price) %>
       </span>
       <% if original_price.present? %>
@@ -62,7 +84,7 @@
         </span>
       <% end %>
       <% if discount_percent.present? %>
-        <span class="text-red-500 text-base">
+        <span class="inline-flex items-center rounded-full bg-red-50 px-2 py-0.5 text-sm font-semibold text-red-600 ring-1 ring-red-100">
           -<%= discount_percent %>%
         </span>
       <% end %>
@@ -81,4 +103,9 @@
       </details>
     <% end %>
   </div>
+  <% if bundle %>
+    <p class="mt-3 text-xs text-gray-500 leading-relaxed border-t border-pink-100/80 pt-3">
+      ราคาเซตนี้รวมสินค้าครบทุกชิ้นตามลำดับด้านล่าง — แตะแต่ละชิ้นเพื่อดูรายละเอียดสินค้าเดิม
+    </p>
+  <% end %>
 </div>

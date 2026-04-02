@@ -29,48 +29,75 @@
   <% if product.bundle? %>
     <% bundle_type_label = Product::BUNDLE_SET_TYPE_OPTIONS.find { |_, k| k == product.bundle_set_type_key }&.first %>
     <% if bundle_type_label.present? %>
-      <p class="mb-3 text-sm text-gray-700">
-        <span class="text-gray-500">ประเภทเซต</span>
-        <span class="ml-1 font-medium text-text-primary"><%= bundle_type_label %></span>
-      </p>
+      <div class="mb-4 flex items-start gap-3 rounded-2xl border border-pink-100 bg-pink-50/60 px-4 py-3">
+        <span class="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-pink-500 text-white shadow-sm">
+          <span class="iconify" data-icon="lucide:layers" data-width="18"></span>
+        </span>
+        <div>
+          <p class="text-xs font-semibold text-pink-700 uppercase tracking-wide">ประเภทเซต</p>
+          <p class="text-sm font-semibold text-text-primary mt-0.5"><%= bundle_type_label %></p>
+        </div>
+      </div>
     <% end %>
   <% end %>
   <% if product.effect.present? %>
     <div class="mb-4 rounded-xl border border-gray-100 bg-gray-50/80 px-4 py-3">
-      <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">ผลลัพธ์</p>
+      <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">ผลลัพธ์ที่คาดหวัง</p>
       <p class="text-sm text-gray-800 leading-relaxed"><%= product.effect %></p>
     </div>
   <% end %>
   <% if product.bundle? && product.bundle_items.any? %>
-    <div class="mb-6 rounded-2xl border border-pink-100 bg-pink-50/50 px-4 py-3">
-      <p class="text-sm font-semibold text-text-primary mb-2">สินค้าในเซตนี้</p>
-      <ol class="space-y-3 list-decimal list-inside text-sm text-gray-800">
-        <% product.bundle_items.each do |item| %>
-          <% comp = item.component_product %>
-          <% h = product_to_card_hash(comp) %>
-          <li class="marker:font-semibold">
-            <span class="font-medium"><%= comp.title %></span>
-            <span class="text-gray-500"> — ฿ <%= number_with_delimiter(h[:price]) %></span>
-            <% if item.usage_instructions.present? %>
-              <p class="mt-1 text-xs text-gray-600 pl-0 list-none">วิธีใช้: <%= item.usage_instructions %></p>
-            <% end %>
-          </li>
-        <% end %>
-      </ol>
+    <div class="mb-6">
+      <div class="mb-4">
+        <p class="text-sm font-bold text-text-primary">สิ่งที่คุณได้ในเซตนี้</p>
+        <p class="text-xs text-gray-500 mt-0.5">เรียงตามลำดับการใช้งานที่ร้านแนะนำ</p>
+      </div>
+      <div class="relative pl-2">
+        <div class="absolute left-[15px] top-3 bottom-3 w-0.5 bg-gradient-to-b from-pink-300 via-pink-200 to-pink-100 rounded-full" aria-hidden="true"></div>
+        <ol class="space-y-0 list-none m-0 p-0">
+          <% product.bundle_items.each_with_index do |item, i| %>
+            <% comp = item.component_product %>
+            <% h = product_to_card_hash(comp) %>
+            <li class="relative flex gap-3 pb-8 last:pb-0">
+              <span class="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-pink-600 ring-2 ring-pink-400 shadow-sm">
+                <%= i + 1 %>
+              </span>
+              <div class="min-w-0 flex-1 pt-0.5 rounded-xl border border-pink-100/80 bg-white px-3 py-2.5 shadow-sm">
+                <p class="font-semibold text-gray-900 leading-snug"><%= comp.title %></p>
+                <p class="text-xs text-pink-600 font-medium mt-1">ราคาชิ้นนี้ (หลังโปร) ฿ <%= number_with_delimiter(h[:price]) %></p>
+                <% if item.usage_instructions.present? %>
+                  <p class="mt-2 text-xs text-gray-600 leading-relaxed border-t border-gray-100 pt-2">
+                    <span class="font-medium text-gray-700">วิธีใช้ในชุด:</span>
+                    <%= item.usage_instructions %>
+                  </p>
+                <% end %>
+              </div>
+            </li>
+          <% end %>
+        </ol>
+      </div>
     </div>
   <% end %>
   <% if product.description.present? %>
-    <p class="text-base leading-relaxed text-gray-700">
-      <%= product.description %>
-    </p>
-  <% else %>
+    <div class="<%= product.bundle? ? "rounded-2xl border border-gray-100 bg-white px-4 py-4 shadow-sm" : "" %>">
+      <% if product.bundle? %>
+        <h3 class="text-sm font-semibold text-text-primary mb-2">เกี่ยวกับเซตนี้</h3>
+      <% end %>
+      <p class="text-base leading-relaxed text-gray-700 whitespace-pre-line">
+        <%= product.description %>
+      </p>
+    </div>
+  <% elsif !product.bundle? %>
     <p class="text-base leading-relaxed text-gray-400">
       ยังไม่มีรายละเอียดสินค้าสำหรับรายการนี้
     </p>
   <% end %>
   <% if product.usage.present? %>
     <div class="mt-6 pt-4 border-t border-gray-100">
-      <h3 class="text-sm font-semibold text-text-primary mb-2">วิธีใช้</h3>
+      <h3 class="text-sm font-semibold text-text-primary mb-2 flex items-center gap-2">
+        <span class="iconify text-pink-500" data-icon="lucide:sparkles" data-width="16"></span>
+        วิธีใช้เซตโดยรวม
+      </h3>
       <p class="text-base leading-relaxed text-gray-700 whitespace-pre-line"><%= product.usage %></p>
     </div>
   <% end %>

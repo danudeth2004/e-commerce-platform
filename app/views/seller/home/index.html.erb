@@ -120,7 +120,11 @@
         <div class="space-y-8 mt-4">
           <% if @bundle_products.any? %>
             <section class="space-y-3">
-              <h2 class="text-base font-semibold text-gray-900">เซตสินค้า</h2>
+              <div class="rounded-2xl border border-pink-100/80 bg-gradient-to-br from-pink-50/90 to-white px-4 py-3">
+                <p class="text-xs font-semibold uppercase tracking-wide text-pink-600">เซตสินค้า</p>
+                <h2 class="text-base font-bold text-gray-900 mt-0.5">ตัวอย่างหน้าลูกค้า — จัดชุดมาให้แล้ว</h2>
+                <p class="text-xs text-gray-500 mt-1">ลูกค้าเห็นราคาเซตและสินค้าในชุดแบบนี้</p>
+              </div>
               <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <% @bundle_products.each do |product| %>
                   <%= render "shared/product_bundle_card",

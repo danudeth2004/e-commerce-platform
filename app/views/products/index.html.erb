@@ -26,9 +26,15 @@
              } %>
       <% if @bundle_products.any? %>
         <section class="mt-4 space-y-3">
-          <div class="flex items-center justify-between gap-2">
-            <div class="text-lg font-semibold text-text-primary">เซตสินค้าที่เราแนะนำ</div>
-            <%= link_to "ดูเพิ่มเติม", products_path((@search_query.present? ? { q: @search_query } : {})), class: "text-sm font-medium text-Primary-color shrink-0" %>
+          <div class="rounded-2xl border border-pink-100/80 bg-gradient-to-br from-pink-50/90 to-white px-4 py-3 -mx-0.5">
+            <p class="text-xs font-semibold uppercase tracking-wide text-pink-600">เซตสินค้า</p>
+            <div class="flex items-start justify-between gap-2 mt-0.5">
+              <div>
+                <p class="text-lg font-bold text-text-primary leading-tight">เซตที่คัดมาให้แล้ว</p>
+                <p class="text-xs text-gray-500 mt-1">ครบชุด ราคาดีกว่าซื้อแยก — แตะดูรายละเอียดแต่ละเซต</p>
+              </div>
+              <%= link_to "ดูทั้งหมด", products_path((@search_query.present? ? { q: @search_query } : {})), class: "text-sm font-medium text-Primary-color shrink-0 mt-0.5" %>
+            </div>
           </div>
           <div class="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -mx-1 px-1">
             <% @bundle_products.each do |product| %>
