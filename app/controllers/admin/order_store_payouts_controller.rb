@@ -24,7 +24,7 @@ module Admin
       TransferToStoreJob.perform_later(payout.id)
 
       redirect_to admin_order_store_payout_path(payout),
-        notice: "ส่งคำสั่งโอนเงินไปยัง Omise แล้ว กรุณารอสักครู่แล้วรีเฟรชหน้านี้"
+        notice: "ส่งคำสั่งโอนเงินไปยังระบบชำระเงินแล้ว กรุณารอสักครู่แล้วรีเฟรชหน้านี้"
     end
   end
 end

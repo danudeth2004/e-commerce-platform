@@ -1,0 +1,63 @@
+# ภาษาไทย — ข้อความระบบ / แบบฟอร์ม / แฟลช
+th:
+  support:
+    array:
+      words_connector: ", "
+      two_words_connector: " และ "
+      last_word_connector: " และ "
+
+  activerecord:
+    models:
+      product: "สินค้า"
+      user: "ผู้ใช้"
+      shipping_address: "ที่อยู่จัดส่ง"
+      product_bundle_item: "รายการในเซต"
+    attributes:
+      product:
+        title: "ชื่อสินค้า"
+        sku: "รหัสสินค้า"
+        description: "รายละเอียด"
+        amount_cents: "ราคา"
+        promotion_cents: "ราคาโปรโมชัน"
+        category_key: "หมวดหมู่"
+        volume: "ปริมาณ"
+        volume_unit: "หน่วยปริมาณ"
+        skin_concern_key: "ปัญหาผิว"
+        bundle_set_type_key: "ประเภทเซต"
+      product_bundle_item:
+        usage_instructions: "วิธีใช้"
+        position: "ลำดับ"
+      user:
+        email: "อีเมล"
+        password: "รหัสผ่าน"
+        first_name: "ชื่อ"
+        last_name: "นามสกุล"
+        phone_number: "เบอร์โทรศัพท์"
+    errors:
+      messages:
+        record_invalid: "ข้อมูลไม่ถูกต้อง: %{errors}"
+        blank: "ต้องไม่เว้นว่าง"
+        empty: "ต้องไม่เว้นว่าง"
+        present: "ต้องเว้นว่าง"
+        taken: "ถูกใช้แล้ว"
+        invalid: "ไม่ถูกต้อง"
+        inclusion: "ไม่อยู่ในรายการที่กำหนด"
+        exclusion: "ถูกสงวนไว้"
+        confirmation: "ไม่ตรงกับการยืนยัน"
+        accepted: "ต้องยอมรับ"
+        not_a_number: "ต้องเป็นตัวเลข"
+        greater_than: "ต้องมากกว่า %{count}"
+        greater_than_or_equal_to: "ต้องมากกว่าหรือเท่ากับ %{count}"
+        less_than: "ต้องน้อยกว่า %{count}"
+        less_than_or_equal_to: "ต้องน้อยกว่าหรือเท่ากับ %{count}"
+        too_short:
+          one: "สั้นเกินไป (อย่างน้อย 1 ตัวอักษร)"
+          other: "สั้นเกินไป (อย่างน้อย %{count} ตัวอักษร)"
+        too_long:
+          one: "ยาวเกินไป (สูงสุด 1 ตัวอักษร)"
+          other: "ยาวเกินไป (สูงสุด %{count} ตัวอักษร)"
+        wrong_length:
+          one: "ความยาวต้องเป็น 1 ตัวอักษร"
+          other: "ความยาวต้องเป็น %{count} ตัวอักษร"
+        required: "จำเป็นต้องมี"
+        model_invalid: "ข้อมูล %{model} ไม่ถูกต้อง"

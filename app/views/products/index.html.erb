@@ -9,21 +9,8 @@
       <div class="text-xl font-semibold text-text-primary">
         สินค้าสำหรับ <%= concern&.dig(:label) || @skin_concern_key %>
       </div>
-    <% else %>
-      <div class="text-xl font-semibold text-text-primary">
-        สินค้าทั้งหมด
-      </div>
     <% end %>
     <%= turbo_frame_tag "products_frame" do %>
-      <%= render "shared/product_category_filter",
-             current_category_key: @category_key,
-             path_proc: lambda { |key|
-               opts = {}
-               opts[:skin_concern] = @skin_concern_key if @skin_concern_key.present?
-               opts[:category] = key if key.present?
-               opts[:q] = @search_query if @search_query.present?
-               products_path(opts)
-             } %>
       <% if @bundle_products.any? %>
         <section class="mt-4 space-y-3">
           <div class="rounded-2xl border border-pink-100/80 bg-gradient-to-br from-pink-50/90 to-white px-4 py-3 -mx-0.5">

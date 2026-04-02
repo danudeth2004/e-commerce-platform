@@ -6,7 +6,12 @@ export default class extends Controller {
 
   connect() {
     const t = this.timeoutValue || 5000
-
+    requestAnimationFrame(() => {
+      this.element.classList.add("transition-all", "duration-300", "ease-out")
+      requestAnimationFrame(() => {
+        this.element.classList.remove("opacity-0", "-translate-y-full")
+      })
+    })
     this.timeout = setTimeout(() => {
       this.dismiss()
     }, t)
@@ -17,9 +22,10 @@ export default class extends Controller {
   }
 
   dismiss() {
-    this.element.classList.add("transition-opacity", "duration-500", "opacity-0")
+    const el = this.element
+    el.classList.add("-translate-y-full", "opacity-0")
     setTimeout(() => {
-      this.element.remove()
-    }, 500)
+      el.remove()
+    }, 320)
   }
 }

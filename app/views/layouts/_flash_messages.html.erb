@@ -1,25 +1,35 @@
-<div id="flash-container" 
+<%# แจ้งเตือน: พื้นขาว — ขอบ/ไอคอนแยกประเภท %>
+<div id="flash-container"
      data-controller="flash"
-     data-flash-timeout-value="5000"
-     class="fixed top-0 left-0 w-full z-50 flex flex-col items-center space-y-2 mt-4">
+     data-flash-timeout-value="5200"
+     class="pointer-events-none fixed inset-x-0 top-0 z-[100] flex flex-col gap-2 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] opacity-0 -translate-y-full max-w-lg mx-auto w-full sm:px-4">
   <% flash.each do |type, message| %>
     <% next if message.blank? %>
-    <% css =
-         case type.to_s
-         when "notice"
-           "border-amber-200 bg-amber-50 text-amber-950"
-         when "alert"
-           "border-rose-200 bg-rose-50 text-rose-900"
-         else
-           "border-gray-200 bg-gray-50 text-gray-900"
-         end %>
-    <div class="relative w-full max-w-xl rounded-xl border px-4 py-3 text-sm <%= css %>" 
-         data-action="flash#dismiss" role="alert">
-      <%= message %>
-      <button type="button" 
-              data-action="click->flash#dismiss" 
-              class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full">
-        <span class="iconify text-lg text-gray-600" data-icon="lucide:x"></span>
+    <% case type.to_s
+       when "notice"
+         icon = "lucide:circle-check"
+         shell = "border-gray-200/90 bg-white text-gray-900 shadow-md shadow-black/5 ring-1 ring-black/[0.04]"
+         icon_wrap = "bg-gray-100 text-emerald-600"
+       when "alert"
+         icon = "lucide:circle-alert"
+         shell = "border-gray-200/90 bg-white text-gray-900 shadow-md shadow-black/5 ring-1 ring-black/[0.04]"
+         icon_wrap = "bg-gray-100 text-rose-600"
+       else
+         icon = "lucide:info"
+         shell = "border-gray-200/90 bg-white text-gray-900 shadow-md shadow-black/5 ring-1 ring-black/[0.04]"
+         icon_wrap = "bg-gray-100 text-gray-600"
+       end %>
+    <div class="pointer-events-auto grid grid-cols-[2.5rem_1fr_2.5rem] items-center gap-2 rounded-2xl border px-2 py-3.5 text-[15px] leading-snug <%= shell %> transition duration-300 ease-out"
+         role="alert">
+      <span class="flex h-10 w-10 items-center justify-center justify-self-center rounded-xl <%= icon_wrap %>" aria-hidden="true">
+        <span class="iconify text-xl" data-icon="<%= icon %>" data-width="22"></span>
+      </span>
+      <p class="min-w-0 text-center font-medium tracking-tight"><%= message %></p>
+      <button type="button"
+              data-action="click->flash#dismiss"
+              class="flex h-11 w-11 items-center justify-center justify-self-center rounded-2xl text-current/60 transition hover:bg-black/5 active:scale-95"
+              aria-label="ปิดการแจ้งเตือน">
+        <span class="iconify text-xl" data-icon="lucide:x" data-width="22"></span>
       </button>
     </div>
   <% end %>
