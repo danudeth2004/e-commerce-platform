@@ -1,12 +1,44 @@
 <div class="px-4 py-4">
   <h2 class="text-xl font-semibold mb-3 text-text-primary">รายละเอียดสินค้า</h2>
-  <% if product.bundle? && product.skin_concern_labels.any? %>
+  <% if product.skin_concern_labels.any? %>
     <div class="flex flex-wrap gap-2 mb-4">
       <% product.skin_concern_labels.each do |label| %>
         <span class="inline-flex rounded-full bg-pink-100 px-3 py-1 text-xs font-medium text-pink-900">
           <%= label %>
         </span>
       <% end %>
+    </div>
+  <% end %>
+  <% category_label = ProductCategory.label_for(product.category_key) %>
+  <% if product.standard? && (category_label.present? || product.volume.present?) %>
+    <dl class="mb-4 grid gap-2 text-sm text-gray-800">
+      <% if category_label.present? %>
+        <div class="flex gap-2">
+          <dt class="shrink-0 text-gray-500">ประเภท</dt>
+          <dd class="font-medium"><%= category_label %></dd>
+        </div>
+      <% end %>
+      <% if product.volume.present? %>
+        <div class="flex gap-2">
+          <dt class="shrink-0 text-gray-500">ปริมาณ</dt>
+          <dd class="font-medium"><%= number_with_delimiter(product.volume) %> <%= product.volume_unit %></dd>
+        </div>
+      <% end %>
+    </dl>
+  <% end %>
+  <% if product.bundle? %>
+    <% bundle_type_label = Product::BUNDLE_SET_TYPE_OPTIONS.find { |_, k| k == product.bundle_set_type_key }&.first %>
+    <% if bundle_type_label.present? %>
+      <p class="mb-3 text-sm text-gray-700">
+        <span class="text-gray-500">ประเภทเซต</span>
+        <span class="ml-1 font-medium text-text-primary"><%= bundle_type_label %></span>
+      </p>
+    <% end %>
+  <% end %>
+  <% if product.effect.present? %>
+    <div class="mb-4 rounded-xl border border-gray-100 bg-gray-50/80 px-4 py-3">
+      <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">ผลลัพธ์</p>
+      <p class="text-sm text-gray-800 leading-relaxed"><%= product.effect %></p>
     </div>
   <% end %>
   <% if product.bundle? && product.bundle_items.any? %>
@@ -35,6 +67,12 @@
     <p class="text-base leading-relaxed text-gray-400">
       ยังไม่มีรายละเอียดสินค้าสำหรับรายการนี้
     </p>
+  <% end %>
+  <% if product.usage.present? %>
+    <div class="mt-6 pt-4 border-t border-gray-100">
+      <h3 class="text-sm font-semibold text-text-primary mb-2">วิธีใช้</h3>
+      <p class="text-base leading-relaxed text-gray-700 whitespace-pre-line"><%= product.usage %></p>
+    </div>
   <% end %>
 </div>
 <br>
