@@ -10,7 +10,7 @@ module Users
         .joins(:order)
         .merge(current_user.orders.pending)
         .sum(:quantity)
-      @coupons = current_user.coupons
+      @coupons = current_user.coupons.active.order(created_at: :desc)
     end
   end
 end

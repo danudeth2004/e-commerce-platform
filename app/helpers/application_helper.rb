@@ -42,7 +42,7 @@ module ApplicationHelper
     (c == "home" && a == "index") || (c == "products" && a == "index")
   end
 
-  # แถบนำทางล่างฝั่งผู้ซื้อ — ปิดได้ด้วย @hide_buyer_bottom_nav (เช่น หน้าชำระเงิน)
+  # แถบนำทางล่างฝั่งผู้ซื้อ — ปิดได้ด้วย @hide_buyer_bottom_nav (เช่น flow พิเศษ)
   def show_buyer_bottom_nav?
     return false if @hide_buyer_bottom_nav
 
