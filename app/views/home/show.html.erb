@@ -1,7 +1,7 @@
 <% unless seller_owns_product?(@product) %>
   <%= render "home/partials_product_detail/floating_cart_button" %>
 <% end %>
-<div class="min-h-screen bg-white max-w-md mx-auto pb-36 <%= seller_owns_product?(@product) ? "pt-[max(0.5rem,env(safe-area-inset-top))]" : "pt-[max(4rem,calc(3.5rem+env(safe-area-inset-top,0px)))]" %>">
+<div class="min-h-screen bg-white max-w-md mx-auto pb-36">
   <%= render "home/partials_product_detail/product_image", product: @product %>
   <%= render "home/partials_product_detail/brand_section", product: @product %>
   <%= render "home/partials_product_detail/product_description", product: @product %>
