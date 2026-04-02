@@ -124,7 +124,7 @@ class CheckoutsController < BaseController
       end
 
       @order.order_store_payouts.each do |payout|
-        payout.update!(amount_cents: payout.amount_cents + (10 * 100))
+        payout.update!(amount_cents: payout.amount_cents + shipping_cents)
         TransferToStoreJob.perform_later(payout.id)
       end
       redirect_to root_path, flash: { payment_success: true }
