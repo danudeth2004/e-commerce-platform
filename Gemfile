@@ -81,5 +81,5 @@ group :test do
   gem "database_cleaner-active_record"
 end
 
-gem "tailwindcss-rails", "~> 2.7"
+gem "tailwindcss-rails", "~> 4.4"
 gem "inline_svg"
