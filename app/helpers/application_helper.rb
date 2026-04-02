@@ -1,5 +1,29 @@
 module ApplicationHelper
   include ProductDisplayHelper
+
+  def app_back_fallback
+    if instance_variable_defined?(:@app_back_fallback) && @app_back_fallback.present?
+      return @app_back_fallback
+    end
+
+    ref = request.referer
+    return root_path if ref.blank?
+
+    begin
+      uri = URI.parse(ref)
+      return root_path unless uri.host == request.host
+      return root_path if uri.path == request.path
+
+      if uri.path.to_s.start_with?("/checkout/") && (request.path == cart_path || request.path == users_profile_path)
+        return root_path
+      end
+
+      ref
+    rescue URI::InvalidURIError
+      root_path
+    end
+  end
+
   def current_cart_item_count
     return 0 unless user_signed_in?
 
@@ -10,6 +34,19 @@ module ApplicationHelper
   end
 
   # 0812345678 → (+66)08******78
+  # หน้าสมัครแบบหลายขั้น: ถ้า error อยู่ที่ที่อยู่ ให้เปิดขั้นที่ 2
+  def signup_wizard_initial_step(resource)
+    return 1 unless resource.respond_to?(:errors) && resource.errors.any?
+
+    names = resource.errors.attribute_names.map(&:to_s)
+    personal = %w[email first_name last_name phone_number password password_confirmation]
+    return 1 if names.any? { |a| personal.include?(a) }
+
+    return 2 if names.any? { |a| a.include?("shipping_address") }
+
+    1
+  end
+
   def masked_thai_mobile(phone)
     return "—" if phone.blank?
 

@@ -2,6 +2,8 @@
 
 @import "tailwindcss";
 
+@import "../stylesheets/tom-select.css";
+
 @layer base {
   html {
     font-family: "Noto Sans Thai", ui-sans-serif, system-ui, sans-serif;
@@ -16,4 +18,88 @@
   select:valid {
     color: #111827; /* gray-900 */
   }
+}
+
+/*
+ * Thailand address + Tom Select — ต้องอยู่นอก @layer
+ * vendor tom-select.css โหลดแบบไม่มี layer จึงทับ @layer components ได้
+ * กรอบเดียวที่ .ts-wrapper; .ts-control ไม่มีขอบซ้อน (ขอบใน)
+ */
+[data-controller~="thailand-address"] .ts-wrapper.single {
+  @apply relative z-0 w-full max-w-full rounded-lg border border-border-neutral bg-white p-0 shadow-none;
+}
+
+[data-controller~="thailand-address"] .ts-wrapper.single.dropdown-active {
+  @apply z-40;
+}
+
+/* โฟกัสให้ตรงกับ input อื่น: focus:border-Primary-color focus:outline-none */
+[data-controller~="thailand-address"] .ts-wrapper.single.focus,
+[data-controller~="thailand-address"] .ts-wrapper.single.dropdown-active {
+  @apply border-Primary-color;
+  box-shadow: none;
+}
+
+[data-controller~="thailand-address"] .ts-wrapper.single .ts-control {
+  /* ความสูงใกล้เคียง px-3 py-2.5 + text-sm เหมือน input อื่น */
+  @apply !min-h-[2.5rem] !rounded-lg !border-0 !border-transparent !bg-transparent !px-3 !py-2.5 !text-sm !leading-normal !text-text-primary !shadow-none transition-colors;
+}
+
+[data-controller~="thailand-address"] .ts-wrapper.single .ts-control > input {
+  @apply text-sm text-text-primary;
+}
+
+[data-controller~="thailand-address"] .ts-wrapper.single .ts-control .item {
+  @apply !m-0 !border-0 !bg-transparent !p-0 !text-sm !text-text-primary !shadow-none;
+}
+
+[data-controller~="thailand-address"] .ts-wrapper.single .ts-control .items-placeholder {
+  @apply !border-0 !bg-transparent !shadow-none !ring-0 placeholder:text-text-placeholder;
+}
+
+[data-controller~="thailand-address"] .ts-wrapper.single.focus .ts-control,
+[data-controller~="thailand-address"] .ts-wrapper.single.dropdown-active .ts-control {
+  @apply border-0 shadow-none ring-0;
+}
+
+[data-controller~="thailand-address"] .plugin-dropdown_input.focus.dropdown-active .ts-control {
+  @apply border-0 shadow-none;
+}
+
+[data-controller~="thailand-address"] .ts-dropdown {
+  @apply left-0 right-0 mt-1 w-full overflow-hidden rounded-lg border border-border-neutral bg-white shadow-sm;
+  top: 100%;
+  z-index: 50;
+}
+
+[data-controller~="thailand-address"] .ts-dropdown-content {
+  max-height: min(50vh, 280px);
+}
+
+[data-controller~="thailand-address"] .ts-dropdown .option {
+  @apply rounded-md px-3 py-2.5 text-sm text-text-primary;
+}
+
+[data-controller~="thailand-address"] .ts-dropdown .option.active {
+  @apply bg-pink-50 text-text-primary;
+}
+
+[data-controller~="thailand-address"] .plugin-dropdown_input .dropdown-input {
+  @apply m-0 rounded-t-lg border-0 border-b border-border-neutral bg-white px-3 py-2.5 text-sm text-text-primary;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+[data-controller~="thailand-address"] .plugin-dropdown_input .dropdown-input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+  @apply ring-0 border-b border-Primary-color;
+}
+
+[data-controller~="thailand-address"] .plugin-dropdown_input .dropdown-input::placeholder {
+  @apply text-text-placeholder;
+}
+
+[data-controller~="thailand-address"] .ts-dropdown .no-results {
+  @apply text-sm text-text-placeholder;
 }

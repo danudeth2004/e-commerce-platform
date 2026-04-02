@@ -1,6 +1,6 @@
 <div class="flex min-h-screen w-full max-w-md mx-auto flex-col bg-white">
   <header class="relative flex shrink-0 items-center justify-center px-4 py-3">
-    <%= render "layouts/app_back_button", variant: :minimal, fallback: root_path %>
+    <%= render "layouts/app_back_button", variant: :minimal, fallback: app_back_fallback %>
     <h1 class="text-base font-bold text-gray-900">
       รถเข็นของคุณ<% if @cart_qty_total.positive? %> (<%= @cart_qty_total %>)<% end %>
     </h1>

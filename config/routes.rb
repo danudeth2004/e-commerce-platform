@@ -53,6 +53,11 @@ Rails.application.routes.draw do
     get "role", to: "role#index"
     get "profile", to: "profiles#show", as: :profile
     resources :orders, only: [ :index, :show ]
+    resources :shipping_addresses, except: [ :show ] do
+      member do
+        patch :select_for_checkout
+      end
+    end
   end
 
   resource :checkout, only: [] do

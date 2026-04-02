@@ -1,136 +1,160 @@
+<% input_class = "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
+<% label_class = "block text-base font-regular text-text-primary mb-2" %>
+<% wizard_step = signup_wizard_initial_step(resource) %>
+
 <div class="w-full max-w-md mx-auto">
-    <div class="mb-6">
-        <h2 class="text-2xl font-semibold text-gray-900 mb-1">
-            สร้างบัญชีของคุณ
-        </h2>
-        <p class="text-sm text-gray-400 font-light">
-            กรอกรายละเอียดเพื่อเริ่มซื้อของกับเราได้เลย
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: {
+        data: {
+          controller: "registration-wizard",
+          registration_wizard_initial_step_value: wizard_step,
+          turbo: false,
+          action: "submit->registration-wizard#handleSubmit"
+        }
+      }) do |f| %>
+    <%= render "users/shared/error_messages", resource: resource %>
+
+    <div>
+      <div class="mb-6">
+        <p
+          class="text-xs font-medium text-Primary-color mb-2"
+          data-registration-wizard-target="progress"
+        >
+          ขั้นตอนที่ <%= wizard_step %> จาก 2
         </p>
-    </div>
-
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), data: { turbo: false }) do |f| %>
-      <%= render "users/shared/error_messages", resource: resource %>
-
-
-      <div class="grid grid-cols-2 gap-3 mb-4">
-
-        <div>
-          <%= f.label :first_name, "ชื่อ ",
-            class: "block text-base font-regular text-text-primary mb-2" do %>
-            ชื่อ <span class="text-red-500">*</span>
-          <% end %>
-
-          <%= f.text_field :first_name,
-            required: true,
-            placeholder: "กรอกชื่อ",
-            class: "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
+        <div data-registration-wizard-target="step1Header" class="<%= wizard_step == 2 ? "hidden" : "" %>">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-1">
+            สร้างบัญชีของคุณ
+          </h2>
+          <p class="text-sm text-gray-400 font-light">
+            กรอกข้อมูลส่วนตัวเพื่อเริ่มซื้อของกับเรา
+          </p>
         </div>
+        <div data-registration-wizard-target="step2Header" class="<%= wizard_step == 1 ? "hidden" : "" %>">
+          <h2 class="text-2xl font-semibold text-gray-900 mb-1">
+            ที่อยู่จัดส่งเริ่มต้น
+          </h2>
+          <p class="text-sm text-gray-400 font-light">
+            ไม่บังคับ — ข้ามได้หรือกรอกครบถ้าต้องการตั้งค่าล่วงหน้า
+          </p>
+        </div>
+      </div>
 
-        <div>
-          <%= f.label :last_name, "นามสกุล ",
-            class: "block text-base font-regular text-text-primary mb-2" do %>
-            นามสกุล <span class="text-red-500">*</span>
-          <% end %>
-
-          <%= f.text_field :last_name,
+      <%# —— ขั้นที่ 1: ข้อมูลส่วนตัว —— %>
+      <div data-registration-wizard-target="step1" class="<%= wizard_step == 2 ? "hidden" : "" %>">
+        <div class="grid grid-cols-2 gap-3 mb-4">
+          <div>
+            <%= f.label :first_name, class: label_class do %>
+              ชื่อ <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.text_field :first_name,
+            required: true,
+            autofocus: wizard_step == 1,
+            placeholder: "กรอกชื่อ",
+            class: input_class %>
+          </div>
+          <div>
+            <%= f.label :last_name, class: label_class do %>
+              นามสกุล <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.text_field :last_name,
             required: true,
             placeholder: "กรอกนามสกุล",
-            class: "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
+            class: input_class %>
+          </div>
         </div>
 
-      </div>
-
-      <div class="mb-4">
-        <%= f.label :location, "ที่อยู่",
-          class: "block text-base font-regular text-text-primary mb-2" %>
-
-        <%= f.text_field :location,
-          placeholder: "กรอกที่อยู่จัดส่งของคุณ",
-          class: "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
-      </div>
-
-      <div class="mb-4">
-        <%= f.label :phone_number, "เบอร์โทรศัพท์",
-          class: "block text-base font-regular text-text-primary mb-2" do %>
-          เบอร์โทรศัพท์ <span class="text-red-500">*</span>
+        <div class="mb-4">
+          <%= f.label :phone_number, class: label_class do %>
+            เบอร์โทรศัพท์ <span class="text-red-500">*</span>
           <% end %>
-
-        <%= f.text_field :phone_number,
+          <%= f.text_field :phone_number,
           required: true,
-           placeholder: "กรอกเบอร์โทรศัพท์ของคุณ",
-          class: "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
-      </div>
+          placeholder: "กรอกเบอร์โทรศัพท์ของคุณ",
+          class: input_class %>
+        </div>
 
-      <div class="mb-4">
-        <%= f.label :email, "ที่อยู่อีเมล",
-          class: "block text-base font-regular text-text-primary mb-2" do %>
-          ที่อยู่อีเมล <span class="text-red-500">*</span>
+        <div class="mb-4">
+          <%= f.label :email, class: label_class do %>
+            ที่อยู่อีเมล <span class="text-red-500">*</span>
           <% end %>
-
-        <%= f.email_field :email,
+          <%= f.email_field :email,
           autocomplete: "email",
           required: true,
           placeholder: "example@domain.com",
-          class: "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
-      </div>
+          class: input_class %>
+        </div>
 
-      <div class="mb-4">
-        <%= f.label :password, "รหัสผ่าน",
-          class: "block text-base font-regular text-text-primary mb-2" do %>
-          รหัสผ่าน <span class="text-red-500">*</span>
-        <% end %>
-
-        <% if @minimum_password_length %>
-          <p class="text-xs text-gray-400 mb-2">
-            อย่างน้อย <%= @minimum_password_length %> ตัวอักษร
-          </p>
-        <% end %>
-
-        <%= f.password_field :password,
+        <div class="mb-4">
+          <%= f.label :password, class: label_class do %>
+            รหัสผ่าน <span class="text-red-500">*</span>
+          <% end %>
+          <% if @minimum_password_length %>
+            <p class="text-xs text-gray-400 mb-2">
+              อย่างน้อย <%= @minimum_password_length %> ตัวอักษร
+            </p>
+          <% end %>
+          <%= f.password_field :password,
           required: true,
           autocomplete: "new-password",
           placeholder: "กรอกรหัสผ่าน",
-          class: "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
-      </div>
+          class: input_class %>
+        </div>
 
-      <div class="mb-6">
-        <%= f.label :password_confirmation, "ยืนยันรหัสผ่าน",
-          class: "block text-base font-regular text-text-primary mb-2" do %>
-          ยืนยันรหัสผ่าน <span class="text-red-500">*</span>
+        <div class="mb-6">
+          <%= f.label :password_confirmation, class: label_class do %>
+            ยืนยันรหัสผ่าน <span class="text-red-500">*</span>
           <% end %>
-
-        <%= f.password_field :password_confirmation,
+          <%= f.password_field :password_confirmation,
           required: true,
           autocomplete: "new-password",
           placeholder: "ยืนยันรหัสผ่าน",
-          class: "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
+          class: input_class %>
+        </div>
+
+        <button
+          type="button"
+          data-action="click->registration-wizard#next"
+          class="w-full py-3.5 text-white text-base font-medium rounded-full bg-gradient-to-r from-pink-500 to-pink-600 shadow-lg shadow-pink-200 hover:opacity-90 active:scale-95 transition duration-200"
+        >
+          ถัดไป
+        </button>
       </div>
 
-      <div class="mt-6">
-        <%= f.submit "สร้างบัญชี",
-          class: "w-full py-3.5 text-white text-base font-medium
-                  rounded-full
-                  bg-gradient-to-r from-pink-500 to-pink-600
-                  shadow-lg shadow-pink-200
-                  hover:opacity-90 active:scale-95
-                  transition duration-200" %>
+      <%# —— ขั้นที่ 2: ที่อยู่ (ไม่บังคับ) + สร้างบัญชี —— %>
+      <div data-registration-wizard-target="step2" class="<%= wizard_step == 1 ? "hidden" : "" %>">
+        <section class="mb-6 rounded-xl border border-dashed border-gray-200 bg-gray-50/60 p-4">
+          <%= f.fields_for :shipping_addresses, resource.shipping_addresses.first || resource.shipping_addresses.build do |af| %>
+            <%= render "users/shipping_addresses/fields", af: af, hide_default: true %>
+          <% end %>
+        </section>
+
+        <div class="flex flex-col gap-3 mt-6">
+          <button
+            type="button"
+            data-action="click->registration-wizard#back"
+            class="w-full py-3 text-sm font-medium rounded-full border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 transition"
+          >
+            ย้อนกลับ
+          </button>
+          <%= f.submit "สร้างบัญชี",
+            class: "w-full py-3.5 text-white text-base font-medium rounded-full bg-gradient-to-r from-pink-500 to-pink-600 shadow-lg shadow-pink-200 hover:opacity-90 active:scale-95 transition duration-200" %>
+        </div>
       </div>
-
-    <% end %>
-
-    <div class="flex flex-col gap-2 mt-6 text-center text-sm text-gray-400 font-light">
-      <div class="mb-4">
-        มีบัญชีอยู่แล้ว ?
-        <%= link_to "เข้าสู่ระบบ", new_session_path(resource_name),
-          class: "text-pink-500 font-medium hover:underline" %>
-      </div>
-
-      <p>
-        ต้องการสร้างบัญชีผู้ใช้ประเภทอื่น ?
-        <%= link_to "เลือกประเภท", users_role_path,
-          class: "text-pink-500 font-medium hover:underline" %>
-      </p>
-
     </div>
 
+  <% end %>
+
+  <div class="flex flex-col gap-2 mt-6 text-center text-sm text-gray-400 font-light">
+    <div class="mb-4">
+      มีบัญชีอยู่แล้ว ?
+      <%= link_to "เข้าสู่ระบบ", new_session_path(resource_name),
+        class: "text-pink-500 font-medium hover:underline" %>
+    </div>
+
+    <p>
+      ต้องการสร้างบัญชีผู้ใช้ประเภทอื่น ?
+      <%= link_to "เลือกประเภท", users_role_path,
+        class: "text-pink-500 font-medium hover:underline" %>
+    </p>
   </div>
+</div>

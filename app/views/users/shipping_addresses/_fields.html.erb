@@ -1,0 +1,88 @@
+<%# locals: af (FormBuilder for ShippingAddress), hide_default: optional %>
+<% input_class = "w-full px-3 py-2.5 text-sm text-text-primary bg-white border border-border-neutral rounded-lg placeholder:text-text-placeholder focus:border-Primary-color focus:outline-none" %>
+<%# Tom Select คัดลอก class ไปที่ .ts-wrapper — ถ้าใช้ input_class จะได้ขอบซ้อนกับ .ts-control %>
+<% tom_select_class = "w-full max-w-full border-0 bg-transparent p-0 shadow-none ring-0 text-sm text-text-primary focus:border-transparent focus:outline-none focus:ring-0" %>
+<% label_class = "block text-base font-regular text-text-primary mb-2" %>
+
+<div
+  class="space-y-3 overflow-visible"
+  data-controller="thailand-address"
+  <% if af.object.province_id.present? %>
+    data-thailand-address-province-id-value="<%= af.object.province_id %>"
+  <% end %>
+  <% if af.object.district_id.present? %>
+    data-thailand-address-district-id-value="<%= af.object.district_id %>"
+  <% end %>
+  <% if af.object.sub_district_id.present? %>
+    data-thailand-address-sub-district-id-value="<%= af.object.sub_district_id %>"
+  <% end %>
+>
+  <div>
+    <%= af.label :label, "ชื่อที่อยู่ (เช่น บ้าน, ที่ทำงาน)", class: label_class %>
+    <%= af.text_field :label, placeholder: "ไม่บังคับ", class: input_class %>
+  </div>
+
+  <div>
+    <%= af.label :recipient_name, "ชื่อผู้รับ", class: label_class %>
+    <%= af.text_field :recipient_name, placeholder: "เว้นว่างเพื่อใช้ชื่อจากบัญชี", class: input_class %>
+  </div>
+
+  <div>
+    <%= af.label :phone_number, "เบอร์โทรผู้รับ", class: label_class %>
+    <%= af.text_field :phone_number, placeholder: "เว้นว่างเพื่อใช้เบอร์จากบัญชี (0812345678)", class: input_class %>
+  </div>
+
+  <div>
+    <%= af.label :address_detail, "ที่อยู่ (บ้านเลขที่, ซอย, ถนน)", class: label_class do %>
+      ที่อยู่ (บ้านเลขที่, ซอย, ถนน) <span class="text-red-500">*</span>
+    <% end %>
+    <%= af.text_area :address_detail, rows: 2, placeholder: "เช่น 123/4 ถนนสุขุมวิท", class: input_class %>
+  </div>
+
+  <div>
+    <label for="province_id" class="<%= label_class %>">จังหวัด <span class="text-red-500">*</span></label>
+    <%= af.select :province_id,
+          [["— เลือกจังหวัด —", ""]],
+          {},
+          class: tom_select_class,
+          data: { thailand_address_target: "province" } %>
+  </div>
+
+  <div>
+    <label for="district_id" class="<%= label_class %>">อำเภอ / เขต <span class="text-red-500">*</span></label>
+    <%= af.select :district_id,
+          [["— เลือกอำเภอ —", ""]],
+          {},
+          class: tom_select_class,
+          data: { thailand_address_target: "district" } %>
+  </div>
+
+  <div>
+    <label for="sub_district_id" class="<%= label_class %>">ตำบล / แขวง <span class="text-red-500">*</span></label>
+    <%= af.select :sub_district_id,
+          [["— เลือกตำบล —", ""]],
+          {},
+          class: tom_select_class,
+          data: { thailand_address_target: "subdistrict" } %>
+  </div>
+
+  <div>
+    <%= af.label :postal_code, "รหัสไปรษณีย์", class: label_class do %>
+      รหัสไปรษณีย์ <span class="text-red-500">*</span>
+    <% end %>
+    <%= af.text_field :postal_code,
+          readonly: true,
+          placeholder: "เลือกตำบลแล้วจะกรอกอัตโนมัติ",
+          class: "#{input_class} bg-gray-50",
+          data: { thailand_address_target: "postal" } %>
+  </div>
+
+  <% if local_assigns[:hide_default] %>
+    <%= af.hidden_field :is_default, value: "1" %>
+  <% else %>
+    <div class="flex items-center gap-2">
+      <%= af.check_box :is_default, class: "rounded border-border-neutral text-Primary-color focus:ring-Primary-color" %>
+      <%= af.label :is_default, "ตั้งเป็นที่อยู่หลักสำหรับจัดส่ง", class: "text-sm text-text-primary" %>
+    </div>
+  <% end %>
+</div>

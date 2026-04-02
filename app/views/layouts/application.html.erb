@@ -33,7 +33,7 @@
         <header class="w-full max-w-screen-xl mx-auto px-4 pt-4 pb-2 bg-white">
           <div class="flex items-center gap-2.5 sm:gap-3">
             <% unless current_page?(root_path) %>
-              <%= render "layouts/app_back_button", variant: :header, fallback: root_path %>
+              <%= render "layouts/app_back_button", variant: :header, fallback: app_back_fallback %>
             <% end %>
             <%= form_with url: products_path, method: :get, local: true, html: { class: "flex-1 min-w-0", id: "header-product-search", role: "search" } do %>
               <%= hidden_field_tag :skin_concern, params[:skin_concern] if params[:skin_concern].present? %>

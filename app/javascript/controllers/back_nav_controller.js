@@ -5,9 +5,7 @@ export default class BackNavController extends Controller {
 
   go(event) {
     event.preventDefault()
-    if (globalThis.history.length > 1) {
-      globalThis.history.back()
-    } else {
+    if (this.fallbackValue) {
       globalThis.location.assign(this.fallbackValue)
     }
   }

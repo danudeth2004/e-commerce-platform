@@ -1,0 +1,69 @@
+<div class="min-h-screen max-w-md mx-auto pb-24 bg-gradient-to-b from-rose-50/70 via-white to-slate-50/90">
+  <header class="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-rose-100/80 bg-white/85 backdrop-blur-md px-4 py-3 shadow-sm">
+    <% back = @order.present? ? payment_checkout_path(order_id: @order.id) : users_profile_path %>
+    <%= link_to back, class: "inline-flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 shrink-0 transition", aria: { label: "กลับ" } do %>
+      <span class="iconify text-2xl" data-icon="lucide:chevron-left" data-width="24"></span>
+    <% end %>
+    <h1 class="text-base font-semibold tracking-tight text-slate-900 truncate px-2">ที่อยู่จัดส่ง</h1>
+    <%= link_to new_users_shipping_address_path(order_id: params[:order_id], return_to: params[:return_to]),
+          class: "text-sm font-medium text-Primary-color shrink-0" do %>
+      + เพิ่ม
+    <% end %>
+  </header>
+
+  <div class="px-4 pt-4">
+    <% if @order.present? %>
+      <p class="mb-4 rounded-xl border border-amber-100 bg-amber-50/80 px-3 py-2 text-xs text-amber-900">
+        เลือกที่อยู่สำหรับคำสั่งซื้อ #<%= @order.id %> แล้วกลับไปชำระเงิน
+      </p>
+    <% end %>
+
+    <% if @shipping_addresses.empty? %>
+      <div class="rounded-2xl border border-rose-100/80 bg-white/90 p-8 text-center shadow-sm">
+        <p class="text-sm text-slate-600">ยังไม่มีที่อยู่จัดส่ง</p>
+        <%= link_to "เพิ่มที่อยู่", new_users_shipping_address_path(order_id: params[:order_id], return_to: params[:return_to]),
+              class: "mt-4 inline-flex rounded-full bg-gradient-to-r from-pink-500 to-pink-600 px-5 py-2.5 text-sm font-medium text-white shadow-md" %>
+      </div>
+    <% else %>
+      <ul class="space-y-3">
+        <% @shipping_addresses.each do |addr| %>
+          <li class="rounded-2xl border border-rose-100/80 bg-white/90 p-4 shadow-sm ring-1 ring-rose-50/40">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <% if addr.is_default? %>
+                  <span class="mb-1 inline-block rounded-full bg-pink-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-pink-700">หลัก</span>
+                <% end %>
+                <% if addr.label.present? %>
+                  <p class="text-sm font-semibold text-slate-900"><%= addr.label %></p>
+                <% end %>
+                <p class="text-sm text-slate-800"><%= addr.display_recipient %></p>
+                <p class="mt-1 text-xs leading-relaxed text-slate-600">
+                  <%= addr.full_address_lines.join(" ") %>
+                </p>
+                <% if addr.display_phone.present? %>
+                  <p class="mt-1 text-xs text-slate-500">โทร <%= addr.display_phone %></p>
+                <% end %>
+              </div>
+              <div class="flex shrink-0 flex-col items-end gap-2">
+                <%= link_to "แก้ไข", edit_users_shipping_address_path(addr, order_id: params[:order_id], return_to: params[:return_to]),
+                      class: "text-xs font-medium text-Primary-color" %>
+                <% if @order.present? %>
+                  <%= button_to "ใช้ที่อยู่นี้",
+                        select_for_checkout_users_shipping_address_path(addr, order_id: @order.id, return_to: @return_to || payment_checkout_path(order_id: @order.id)),
+                        method: :patch,
+                        class: "rounded-full bg-Primary-color px-3 py-1.5 text-xs font-semibold text-white shadow-sm" %>
+                <% end %>
+              </div>
+            </div>
+            <div class="mt-3 flex justify-end border-t border-rose-50 pt-2">
+              <%= button_to "ลบ", users_shipping_address_path(addr, order_id: params[:order_id], return_to: params[:return_to]),
+                    method: :delete,
+                    form: { data: { turbo_confirm: "ลบที่อยู่นี้?" } },
+                    class: "text-xs text-red-600 hover:underline" %>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+</div>

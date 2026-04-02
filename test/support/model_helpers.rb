@@ -5,6 +5,20 @@ module ModelTestHelpers
     User.create!(default_user_attributes.merge(attrs))
   end
 
+  def create_shipping_address!(user, attrs = {})
+    ShippingAddress.create!(
+      {
+        user: user,
+        address_detail: "123 ถนนทดสอบ",
+        province_id: 1,
+        district_id: 1001,
+        sub_district_id: 100_101,
+        postal_code: "10200",
+        is_default: true
+      }.merge(attrs)
+    )
+  end
+
   def default_user_attributes
     {
       email: "user-#{SecureRandom.hex(4)}@example.com",

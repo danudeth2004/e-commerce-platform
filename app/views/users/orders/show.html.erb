@@ -1,6 +1,6 @@
 <div class="mx-auto flex min-h-screen w-full max-w-md flex-col bg-gradient-to-b from-rose-50/70 via-white to-slate-50/90 pb-[100px]">
   <header class="sticky top-0 z-30 flex items-center gap-3 border-b border-rose-100/80 bg-white/85 backdrop-blur-md px-4 py-3 shadow-sm shadow-rose-100/30">
-    <%= link_to users_profile_path, class: "inline-flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 transition", aria: { label: "กลับ" } do %>
+    <%= link_to app_back_fallback, class: "inline-flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 transition", aria: { label: "กลับ" } do %>
       <span class="iconify text-2xl" data-icon="lucide:chevron-left"></span>
     <% end %>
     <h1 class="text-base font-semibold tracking-tight text-slate-900">คำสั่งซื้อ #<%= @order.id %></h1>
@@ -13,19 +13,15 @@
       </span>
 
       <div class="flex-1 text-left">
-        <p class="text-sm font-semibold text-slate-900">
-          <%= [ current_user.first_name, current_user.last_name ].compact_blank.join(" ") %>
-          <span class="font-normal text-slate-500"><%= masked_thai_mobile(current_user.phone_number) %></span>
-        </p>
-        <% if current_user.phone_number.present? %>
-          <p class="mt-1 text-xs leading-relaxed text-slate-600 whitespace-pre-line"><%= current_user.phone_number %></p>
+        <p class="text-xs font-medium uppercase tracking-wide text-slate-400">ที่อยู่จัดส่ง</p>
+        <% if @order.shipping_address_snapshot.present? %>
+          <div class="mt-1 text-xs leading-relaxed text-slate-700 whitespace-pre-line"><%= @order.shipping_address_snapshot %></div>
+        <% elsif @order.shipping_address.present? %>
+          <div class="mt-1 text-xs leading-relaxed text-slate-700 whitespace-pre-line"><%= @order.shipping_address.full_snapshot_text %></div>
+        <% elsif current_user.location.present? %>
+          <p class="mt-1 text-xs leading-relaxed text-slate-700 whitespace-pre-line"><%= current_user.location %></p>
         <% else %>
-          <p class="mt-1 text-xs font-medium text-amber-700">ยังไม่ได้ระบุเบอร์โทรศัพท์ — แก้ไขได้ที่โปรไฟล์</p>
-        <% end %>
-        <% if current_user.location.present? %>
-          <p class="mt-1 text-xs leading-relaxed text-slate-600 whitespace-pre-line"><%= current_user.location %></p>
-        <% else %>
-          <p class="mt-1 text-xs font-medium text-amber-700">ยังไม่ได้ระบุที่อยู่ — แก้ไขได้ที่โปรไฟล์</p>
+          <p class="mt-1 text-xs text-slate-500">—</p>
         <% end %>
       </div>
     </div>

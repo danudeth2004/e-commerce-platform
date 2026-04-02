@@ -47,7 +47,7 @@ gem "money-rails"
 
 gem "omise"
 
-gem 'cloudinary'
+gem "cloudinary"
 
 gem "devise", github: "heartcombo/devise", branch: "main"
 

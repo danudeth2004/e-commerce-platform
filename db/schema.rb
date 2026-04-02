@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_30_132247) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_02_120001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -177,6 +177,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_132247) do
     t.datetime "paid_at"
     t.integer "platform_fee_cents", default: 0, null: false
     t.string "platform_fee_currency", default: "THB", null: false
+    t.bigint "shipping_address_id"
+    t.text "shipping_address_snapshot"
     t.integer "shipping_cents", default: 0, null: false
     t.string "shipping_currency", default: "THB", null: false
     t.string "status", default: "pending", null: false
@@ -185,6 +187,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_132247) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["omise_charge_id"], name: "index_orders_on_omise_charge_id", unique: true
+    t.index ["shipping_address_id"], name: "index_orders_on_shipping_address_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
@@ -261,6 +264,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_132247) do
     t.index ["reset_password_token"], name: "index_seller_users_on_reset_password_token", unique: true
   end
 
+  create_table "shipping_addresses", force: :cascade do |t|
+    t.text "address_detail"
+    t.datetime "created_at", null: false
+    t.integer "district_id"
+    t.boolean "is_default", default: false, null: false
+    t.string "label"
+    t.string "phone_number"
+    t.string "postal_code"
+    t.integer "province_id"
+    t.string "recipient_name"
+    t.integer "sub_district_id"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "is_default"], name: "index_shipping_addresses_on_user_id_and_is_default"
+    t.index ["user_id"], name: "index_shipping_addresses_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email", default: "", null: false
@@ -292,9 +312,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_132247) do
   add_foreign_key "order_items", "products"
   add_foreign_key "order_store_payouts", "orders"
   add_foreign_key "order_store_payouts", "seller_stores"
+  add_foreign_key "orders", "shipping_addresses"
   add_foreign_key "orders", "users"
   add_foreign_key "product_bundle_items", "products", column: "bundle_product_id"
   add_foreign_key "product_bundle_items", "products", column: "component_product_id"
   add_foreign_key "products", "seller_stores"
   add_foreign_key "seller_stores", "seller_users"
+  add_foreign_key "shipping_addresses", "users"
 end

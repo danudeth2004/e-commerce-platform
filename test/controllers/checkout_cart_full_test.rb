@@ -75,6 +75,7 @@ class CheckoutCartFullTest < ActionDispatch::IntegrationTest
   test "pay redirects with alert when charge not paid" do
     OmiseTestStubs.charge_paid = false
     user = create_user!
+    create_shipping_address!(user)
     sign_in user
     store = create_store!
     store.update!(status: :active, omise_recipient_id: "recp_x")
@@ -164,6 +165,7 @@ class CheckoutCartFullTest < ActionDispatch::IntegrationTest
 
   test "pay redirects when payment succeeds" do
     user = create_user!
+    create_shipping_address!(user)
     sign_in user
     store = create_store!
     store.update!(status: :active, omise_recipient_id: "recp_x")

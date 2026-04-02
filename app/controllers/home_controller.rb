@@ -31,6 +31,10 @@ class HomeController < BaseController
     @product_description = @product
     @product_bottom_bar  = @product
 
+    if request.referer.blank?
+      @app_back_fallback = products_path
+    end
+
     if show_seller_product_page?
       render :show_seller, layout: "seller"
       nil

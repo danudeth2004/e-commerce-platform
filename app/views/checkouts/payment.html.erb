@@ -1,4 +1,5 @@
 <% user = current_user %>
+<% addr = @shipping_address %>
 <% delivery_from = Date.current + 3.days %>
 <% delivery_to = Date.current + 7.days %>
 <div
@@ -9,30 +10,39 @@
   data-store-count="<%= @items_by_store.count %>"
 >
   <header class="relative flex shrink-0 items-center justify-center border-b border-gray-100 px-4 py-3">
-    <%= render "layouts/app_back_button", variant: :minimal, fallback: cart_path %>
+    <%= link_to users_profile_path,
+          class: "absolute left-2 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full p-2 text-gray-800 hover:bg-gray-50",
+          aria: { label: "กลับ" } do %>
+      <%= inline_svg_tag "icons/chevron-left.svg", class: "h-6 w-6" %>
+    <% end %>
     <h1 class="text-base font-bold text-gray-900">ชำระเงิน</h1>
   </header>
   <%# ที่อยู่จัดส่ง %>
   <section class="px-4 pt-4 mb-6">
-    <%= link_to edit_user_registration_path,
+    <%= link_to users_shipping_addresses_path(order_id: @order.id, return_to: @checkout_return),
                 class: "flex items-start gap-3 rounded-xl border border-gray-100 bg-white p-3 shadow-sm transition hover:bg-gray-50/80" do %>
       <span class="mt-0.5 shrink-0 text-gray-500" aria-hidden="true">
         <%= inline_svg_tag "icons/map-pin-house.svg", class: "h-5 w-5" %>
       </span>
       <div class="min-w-0 flex-1 text-left">
-        <p class="text-sm font-semibold text-gray-900">
-          <%= [ user.first_name, user.last_name ].compact_blank.join(" ") %>
-          <span class="font-normal text-gray-600"><%= masked_thai_mobile(user.phone_number) %></span>
-        </p>
-        <% if user.phone_number.present? %>
-          <p class="mt-1 text-xs leading-relaxed text-gray-600 whitespace-pre-line"><%= user.phone_number %></p>
+        <p class="text-xs font-medium uppercase tracking-wide text-gray-400">ที่อยู่จัดส่ง</p>
+        <% if addr.present? %>
+          <% if addr.label.present? %>
+            <p class="mt-0.5 text-sm font-semibold text-gray-900"><%= addr.label %></p>
+          <% end %>
+          <p class="mt-1 text-sm font-semibold text-gray-900"><%= addr.display_recipient %></p>
+          <p class="mt-0.5 text-xs text-gray-600"><%= masked_thai_mobile(addr.display_phone) %></p>
+          <p class="mt-1 text-xs leading-relaxed text-gray-600"><%= addr.full_address_lines.join(" ") %></p>
         <% else %>
-          <p class="mt-1 text-xs text-amber-700">ยังไม่ได้ระบุเบอร์โทรศัพท์ — แตะเพื่อเพิ่มเบอร์โทรศัพท์</p>
-        <% end %>
-        <% if user.location.present? %>
-          <p class="mt-1 text-xs leading-relaxed text-gray-600 whitespace-pre-line"><%= user.location %></p>
-        <% else %>
-          <p class="mt-1 text-xs text-amber-700">ยังไม่ได้ระบุที่อยู่ — แตะเพื่อเพิ่มที่จัดส่ง</p>
+          <p class="mt-1 text-sm font-semibold text-gray-900">
+            <%= [ user.first_name, user.last_name ].compact_blank.join(" ") %>
+          </p>
+          <% if user.phone_number.present? %>
+            <p class="mt-0.5 text-xs text-gray-600"><%= masked_thai_mobile(user.phone_number) %></p>
+          <% else %>
+            <p class="mt-1 text-xs text-amber-700">ยังไม่ได้ระบุเบอร์โทรศัพท์</p>
+          <% end %>
+          <p class="mt-2 text-xs text-amber-700">ยังไม่ได้ระบุที่อยู่จัดส่ง — แตะเพื่อเพิ่มหรือเลือกที่อยู่</p>
         <% end %>
       </div>
       <span class="shrink-0 self-center text-gray-400" aria-hidden="true">
@@ -76,7 +86,7 @@
     <div class="mb-4">
       <h2 class="mb-4 text-base font-bold text-gray-900">เลือกวิธีจัดส่งสินค้า</h2>
       <%# จัดส่งปกติ %>
-      <label class="group mb-3 flex cursor-pointer items-center gap-3 rounded-xl border-2  border-gray-200 bg-white px-4 py-3.5 transition-all has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50">
+      <label for="shipping_method_standard" class="group mb-3 flex cursor-pointer items-center gap-3 rounded-xl border-2  border-gray-200 bg-white px-4 py-3.5 transition-all has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50">
         <%= radio_button_tag :shipping_method, "standard", true, data: { action: "change->omise-payment#changeShipping" },
               class: "sr-only peer" %>
         <%# Truck icon %>
@@ -104,7 +114,7 @@
         </div>
       </label>
       <%# จัดส่งด่วน %>
-      <label class="group flex cursor-pointer items-center gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition-all has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50">
+      <label for="shipping_method_express" class="group flex cursor-pointer items-center gap-3 rounded-xl border-2 border-gray-200 bg-white px-4 py-3.5 transition-all has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50">
         <%= radio_button_tag :shipping_method, "express", false, data: { action: "change->omise-payment#changeShipping" },
               class: "sr-only peer" %>
         <%# Fast truck icon %>
@@ -201,7 +211,7 @@
 
       <div class="flex flex-col gap-3 pb-2">
         <% @coupons.first(3).each do |coupon| %>
-          <label class="group relative flex overflow-hidden rounded-xl border-2 border-gray-200 bg-white transition-all duration-200 has-[:checked]:border-pink-400 cursor-pointer">
+          <label for="coupon_id_<%= coupon[:id] %>" class="group relative flex overflow-hidden rounded-xl border-2 border-gray-200 bg-white transition-all duration-200 has-[:checked]:border-pink-400 cursor-pointer">
             <%= radio_button_tag :coupon_id, coupon[:id], false,
               class: "sr-only peer",
               data: {
@@ -258,7 +268,7 @@
 
           <div class="flex flex-col gap-3 pt-3">
             <% @coupons.drop(3).each do |coupon| %>
-              <label class="group relative flex overflow-hidden rounded-xl border-2 border-gray-200 bg-white transition-all duration-200 has-[:checked]:border-pink-400 cursor-pointer">
+              <label for="coupon_id_<%= coupon[:id] %>" class="group relative flex overflow-hidden rounded-xl border-2 border-gray-200 bg-white transition-all duration-200 has-[:checked]:border-pink-400 cursor-pointer">
                 <%= radio_button_tag :coupon_id, coupon[:id], false,
                   class: "sr-only peer",
                   data: {

@@ -24,10 +24,15 @@ class CheckoutsController < BaseController
   def payment
     @public_key = ENV["OMISE_PUBLIC_KEY"]
 
+    ensure_order_shipping_address
+
     @order_items = @order.order_items.includes(product: [ :store, { images_attachments: :blob } ])
     @items_by_store = @order_items.group_by { |oi| oi.product.store }
     @item_qty_total = @order_items.sum(&:quantity)
     @subtotal_cents = @order.total_amount_cents
+
+    @shipping_address = @order.shipping_address
+    @checkout_return = payment_checkout_path(order_id: @order.id)
 
     @coupons = current_user.coupons.active.map do |c|
       eligible_items = @order_items.select do |oi|
@@ -53,6 +58,14 @@ class CheckoutsController < BaseController
   end
 
   def pay
+    ensure_order_shipping_address
+
+    unless @order.shipping_address.present?
+      return redirect_to payment_checkout_path(order_id: @order.id), alert: "กรุณาเลือกหรือเพิ่มที่อยู่จัดส่ง"
+    end
+
+    @order.update!(shipping_address_snapshot: @order.shipping_address.full_snapshot_text)
+
     shipping_cents = calculate_shipping(@order)
 
     coupon = nil
@@ -138,8 +151,15 @@ class CheckoutsController < BaseController
       @hide_app_header = true
     end
 
+    def ensure_order_shipping_address
+      return if @order.shipping_address_id.present?
+
+      addr = current_user.default_shipping_address
+      @order.update!(shipping_address_id: addr.id) if addr
+    end
+
     def set_order
-      @order = current_user.orders.find(params[:order_id])
+      @order = current_user.orders.includes(:shipping_address).find(params[:order_id])
     end
 
     def order_paid?

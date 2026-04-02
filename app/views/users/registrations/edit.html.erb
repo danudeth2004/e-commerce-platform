@@ -3,7 +3,7 @@
 
 <div class="min-h-screen max-w-md mx-auto pb-12 bg-gradient-to-b from-rose-50/70 via-white to-slate-50/90">
   <header class="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-rose-100/80 bg-white/85 backdrop-blur-md px-4 py-3 shadow-sm shadow-rose-100/30">
-    <%= link_to users_profile_path, class: "inline-flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 shrink-0 transition", aria: { label: "กลับ" } do %>
+    <%= link_to app_back_fallback, class: "inline-flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 shrink-0 transition", aria: { label: "กลับ" } do %>
       <span class="iconify text-2xl" data-icon="lucide:chevron-left" data-width="24"></span>
     <% end %>
     <h1 class="text-base font-semibold tracking-tight text-slate-900 truncate px-2">แก้ไขบัญชีของฉัน</h1>
@@ -63,9 +63,11 @@
           </div>
         </div>
 
-        <div class="mb-4">
-          <%= f.label :location, "ที่อยู่จัดส่ง", class: label_class %>
-          <%= f.text_field :location, placeholder: "กรอกที่อยู่จัดส่งของคุณ", class: input_class %>
+        <div class="mb-4 rounded-xl border border-rose-100/80 bg-white p-4">
+          <p class="text-sm font-semibold text-gray-900 mb-1">ที่อยู่จัดส่ง</p>
+          <p class="text-xs text-gray-500 mb-3">จัดการที่อยู่สำหรับจัดส่งสินค้าแยกจากข้อมูลบัญชี</p>
+          <%= link_to "จัดการที่อยู่จัดส่ง", users_shipping_addresses_path,
+                class: "inline-flex w-full items-center justify-center rounded-full border border-Primary-color bg-white py-2.5 text-sm font-medium text-Primary-color hover:bg-rose-50/80 transition" %>
         </div>
 
         <div class="mb-4">

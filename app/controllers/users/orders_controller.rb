@@ -3,6 +3,7 @@
 module Users
   class OrdersController < ApplicationController
     before_action :authenticate_user!
+    before_action :default_buyer_hub_back_fallback, only: [ :index, :show ]
 
     def index
       @hide_app_header = true
@@ -15,7 +16,15 @@ module Users
 
     def show
       @hide_app_header = true
-      @order = current_user.orders.find(params[:id])
+      @order = current_user.orders.includes(:shipping_address).find(params[:id])
+    end
+
+    private
+
+    def default_buyer_hub_back_fallback
+      return if request.referer.present?
+
+      @app_back_fallback = users_profile_path
     end
   end
 end

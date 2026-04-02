@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   before_action :configured_devise_permitted_parameters, if: :devise_controller?
 
   helper_method :seller_owns_product?
+  helper_method :safe_return_path
 
   def seller_owns_product?(product)
     return false unless seller_user_signed_in?
@@ -22,9 +23,24 @@ class ApplicationController < ActionController::Base
 
   protected
     def configured_devise_permitted_parameters
-      keys = %i[first_name last_name phone_number location avatar]
+      shared = %i[first_name last_name phone_number avatar]
 
-      devise_parameter_sanitizer.permit(:sign_up, keys: keys)
-      devise_parameter_sanitizer.permit(:account_update, keys: keys)
+      devise_parameter_sanitizer.permit(:sign_up, keys: shared + [
+        {
+          shipping_addresses_attributes: %i[
+            id label recipient_name phone_number address_detail province_id district_id sub_district_id postal_code is_default _destroy
+          ]
+        }
+      ])
+      devise_parameter_sanitizer.permit(:account_update, keys: shared)
+    end
+
+    def safe_return_path(url)
+      return nil if url.blank?
+
+      path = url.to_s.strip
+      return path if path.start_with?("/") && !path.start_with?("//")
+
+      nil
     end
 end

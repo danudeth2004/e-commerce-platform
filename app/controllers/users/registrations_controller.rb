@@ -5,6 +5,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   before_action :hide_header_on_account_edit, only: [ :edit, :update ]
 
+  def new
+    build_resource({})
+    resource.shipping_addresses.build
+    respond_with resource
+  end
+
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
 
