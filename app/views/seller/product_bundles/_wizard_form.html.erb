@@ -110,7 +110,11 @@
         <% end %>
         <div class="relative">
           <%= f.select :bundle_set_type_key,
-            options_for_select([ [ "เลือกประเภทเซต", "" ] ] + Product::BUNDLE_SET_TYPE_OPTIONS, product&.bundle_set_type_key),
+            grouped_options_for_select(
+              Product::BUNDLE_SET_TYPE_GROUPED_OPTIONS,
+              product&.bundle_set_type_key,
+              prompt: "เลือกประเภทเซต"
+            ),
             {},
             { class: step2_select } %>
           <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true">

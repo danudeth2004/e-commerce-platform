@@ -1,13 +1,29 @@
 class Product < ApplicationRecord
-  BUNDLE_SET_TYPE_KEYS = %w[facial_routine hair_care serum_cream body_care other].freeze
-
-  BUNDLE_SET_TYPE_OPTIONS = [
-    [ "เซตล้างหน้า–บำรุงผิว", "facial_routine" ],
-    [ "เซตเส้นผม", "hair_care" ],
-    [ "เซตเซรั่ม+ครีม", "serum_cream" ],
-    [ "เซตบำรุงผิวกาย", "body_care" ],
-    [ "อื่น ๆ", "other" ]
+  # ประเภทเซต: (1) ตามช่วงเวลาใช้ / กลุ่มเป้าหมาย (2) ตามชนิดสินค้า — ใช้ใน PDP / ฟอร์มผู้ขาย
+  BUNDLE_SET_TYPE_GROUPED_OPTIONS = [
+    [
+      "ตามช่วงเวลา / กลุ่มเป้าหมาย",
+      [
+        [ "เซตบำรุงผิวตอนเช้า", "morning_routine" ],
+        [ "เซตบำรุงผิวตอนเย็น / ก่อนนอน", "evening_routine" ],
+        [ "เซตเช้า–เย็น (ครบวัน)", "day_night_pair" ],
+        [ "เซตเริ่มต้นสำหรับมือใหม่", "starter_set" ]
+      ]
+    ],
+    [
+      "ตามชนิดสินค้า",
+      [
+        [ "เซตล้างหน้า–บำรุงผิว", "facial_routine" ],
+        [ "เซตเส้นผม", "hair_care" ],
+        [ "เซตเซรั่ม+ครีม", "serum_cream" ],
+        [ "เซตบำรุงผิวกาย", "body_care" ],
+        [ "อื่น ๆ", "other" ]
+      ]
+    ]
   ].freeze
+
+  BUNDLE_SET_TYPE_OPTIONS = BUNDLE_SET_TYPE_GROUPED_OPTIONS.flat_map { |(_, opts)| opts }.freeze
+  BUNDLE_SET_TYPE_KEYS = BUNDLE_SET_TYPE_OPTIONS.map(&:last).freeze
 
   belongs_to :store, class_name: "Seller::Store", foreign_key: :seller_store_id
 
