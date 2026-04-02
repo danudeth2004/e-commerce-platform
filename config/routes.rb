@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
     resources :stores do
       member do
-        patch :toggle_status
+        patch :set_status
       end
       resources :payouts do
         member do

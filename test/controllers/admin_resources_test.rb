@@ -78,11 +78,14 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_campaigns_path
   end
 
-  test "stores index show toggle_status" do
+  test "stores index show set_status" do
     store = create_store!
     store.update!(status: :active)
 
     get admin_stores_path
+    assert_response :success
+
+    get admin_stores_path, params: { q: store.owner.email }
     assert_response :success
 
     get admin_store_path(store)
@@ -91,15 +94,28 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
     get admin_store_path(store, status: "pending")
     assert_response :success
 
-    patch toggle_status_admin_store_path(store), headers: { "HTTP_REFERER" => admin_store_url(store) }
+    patch set_status_admin_store_path(store), params: { status: "inactive" },
+      headers: { "HTTP_REFERER" => admin_store_url(store) }
     assert_response :redirect
+    assert store.reload.inactive?
+
+    patch set_status_admin_store_path(store), params: { status: "suspended" },
+      headers: { "HTTP_REFERER" => admin_store_url(store) }
+    assert_response :redirect
+    assert store.reload.suspended?
+
+    patch set_status_admin_store_path(store), params: { status: "active" },
+      headers: { "HTTP_REFERER" => admin_store_url(store) }
+    assert_response :redirect
+    assert store.reload.active?
   end
 
-  test "toggle_status activates inactive store" do
+  test "set_status activates inactive store" do
     store = create_store!
     store.update!(status: :inactive)
 
-    patch toggle_status_admin_store_path(store), headers: { "HTTP_REFERER" => admin_store_url(store) }
+    patch set_status_admin_store_path(store), params: { status: "active" },
+      headers: { "HTTP_REFERER" => admin_store_url(store) }
     assert_response :redirect
     assert store.reload.active?
   end

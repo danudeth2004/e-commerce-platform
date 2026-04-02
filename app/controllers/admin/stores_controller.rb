@@ -1,9 +1,19 @@
 module Admin
   class StoresController < BaseController
-    before_action :set_store, only: [ :show, :toggle_status ]
+    before_action :set_store, only: %i[show set_status]
 
     def index
-      @stores = Seller::Store.all
+      @stores = Seller::Store.includes(:owner).order(id: :asc)
+      if params[:q].present?
+        term = "%#{ActiveRecord::Base.sanitize_sql_like(params[:q].strip)}%"
+        @stores = @stores.left_joins(:owner).where(
+          "seller_stores.name ILIKE :t OR seller_users.email ILIKE :t OR " \
+          "seller_users.first_name ILIKE :t OR seller_users.last_name ILIKE :t OR " \
+          "COALESCE(seller_users.phone_number, '') ILIKE :t",
+          t: term
+        )
+      end
+      @stores = @stores.limit(200)
     end
 
     def show
@@ -17,14 +27,15 @@ module Admin
       end
     end
 
-    def toggle_status
-      if @store.active?
-        @store.inactive!
-      else
-        @store.active!
+    def set_status
+      st = params[:status].to_s
+      unless %w[active inactive suspended].include?(st)
+        redirect_back fallback_location: admin_store_path(@store), alert: "สถานะไม่ถูกต้อง"
+        return
       end
-      @store.save
-      redirect_back fallback_location: admin_store_path(@store), notice: "เปลี่ยนสถานะร้านค้าเรียบร้อยแล้ว"
+
+      @store.update!(status: st)
+      redirect_back fallback_location: admin_store_path(@store), notice: "อัปเดตสถานะร้านแล้ว"
     end
 
     private

@@ -23,13 +23,15 @@
       </div>
     </div>
 
-    <div>
-      <%= form_with url: toggle_status_admin_store_path(@store), method: :patch, class: "inline-block" do %>
-        <label class="relative inline-flex items-center cursor-pointer">
-          <%= check_box_tag :status, "1", @store.active?, class: "sr-only peer", onchange: "this.form.requestSubmit();" %>
-          <div class="w-14 h-7 bg-gray-300 rounded-full peer-checked:bg-green-500 transition-colors"></div>
-          <div class="absolute left-0.5 top-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-7"></div>
-        </label>
+    <div class="flex flex-col items-end gap-2">
+      <p class="text-sm text-gray-600 text-right">
+        สถานะปัจจุบัน: <strong><%= admin_store_status_label(@store) %></strong>
+      </p>
+      <%= form_with url: set_status_admin_store_path(@store), method: :patch, class: "inline-block" do %>
+        <%= select_tag :status,
+              options_for_select(admin_store_status_options, @store.status),
+              class: "rounded-lg border border-gray-300 text-sm py-2 pl-3 pr-10 min-w-[12rem]" %>
+        <%= submit_tag "บันทึก", class: "ml-2 rounded-lg bg-slate-700 text-white px-3 py-2 text-sm font-medium hover:bg-slate-800 cursor-pointer" %>
       <% end %>
     </div>
   </div>

@@ -108,4 +108,12 @@ class Seller::OrdersControllerTest < ActionDispatch::IntegrationTest
     get seller_order_path(order)
     assert_response :not_found
   end
+
+  test "index redirects when store is suspended" do
+    store = create_store!
+    store.update!(status: :suspended)
+    sign_in store.owner, scope: :seller_user
+    get seller_orders_path
+    assert_redirected_to seller_root_path
+  end
 end

@@ -8,6 +8,23 @@ module AdminHelper
     number_to_currency(c / 100.0, unit: "฿", precision: 2, separator: ".", delimiter: ",")
   end
 
+  def admin_store_status_options
+    [
+      [ "ใช้งาน", "active" ],
+      [ "ไม่แสดงหน้าลูกค้า", "inactive" ],
+      [ "ระงับร้าน", "suspended" ]
+    ]
+  end
+
+  def admin_store_status_label(store)
+    case store.status
+    when "active" then "ใช้งาน"
+    when "inactive" then "ไม่แสดงหน้าลูกค้า"
+    when "suspended" then "ระงับ"
+    else store.status.to_s
+    end
+  end
+
   def admin_nav_item_classes(active)
     base = "flex items-center gap-3 px-4 py-3 rounded-lg transition"
     if active
