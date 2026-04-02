@@ -1,15 +1,26 @@
-<% flash.each do |type, message| %>
-  <% next if message.blank? %>
-  <% css =
-       case type.to_s
-       when "notice"
-         "border-amber-200 bg-amber-50 text-amber-950"
-       when "alert"
-         "border-rose-200 bg-rose-50 text-rose-900"
-       else
-         "border-gray-200 bg-gray-50 text-gray-900"
-       end %>
-  <div class="mb-4 rounded-xl border px-4 py-3 text-sm <%= css %>" role="alert">
-    <%= message %>
-  </div>
-<% end %>
+<div id="flash-container" 
+     data-controller="flash"
+     data-flash-timeout-value="5000"
+     class="fixed top-0 left-0 w-full z-50 flex flex-col items-center space-y-2 mt-4">
+  <% flash.each do |type, message| %>
+    <% next if message.blank? %>
+    <% css =
+         case type.to_s
+         when "notice"
+           "border-amber-200 bg-amber-50 text-amber-950"
+         when "alert"
+           "border-rose-200 bg-rose-50 text-rose-900"
+         else
+           "border-gray-200 bg-gray-50 text-gray-900"
+         end %>
+    <div class="relative w-full max-w-xl rounded-xl border px-4 py-3 text-sm <%= css %>" 
+         data-action="flash#dismiss" role="alert">
+      <%= message %>
+      <button type="button" 
+              data-action="click->flash#dismiss" 
+              class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full">
+        <span class="iconify text-lg text-gray-600" data-icon="lucide:x"></span>
+      </button>
+    </div>
+  <% end %>
+</div>
