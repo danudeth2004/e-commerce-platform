@@ -194,54 +194,123 @@
       </div>
     </div>
   </section>
+  <section class="mx-4 mt-8 overflow-hidden rounded-2xl border border-pink-100 bg-white shadow-sm">
   <% if @coupons.present? %>
-    <div class="mx-4 mt-8">
-      <h2 class="mb-4 text-xl font-bold text-gray-900">ส่วนลดพิเศษสำหรับคุณ</h2>
-      <%# Horizontal scrollable coupon list %>
-      <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-        <% @coupons.each do |coupon| %>
-          <label class="group relative flex w-44 shrink-0 flex-col rounded-2xl border-2 p-4 transition-all duration-200
-          <%= 'cursor-pointer border-gray-200 bg-white has-[:checked]:border-pink-400 has-[:checked]:bg-pink-50' %>">
+    <div class="mx-4 mt-4 mb-4">
+      <h2 class="mb-4 text-base font-bold text-gray-900">ส่วนลดพิเศษสำหรับคุณ</h2>
+
+      <div class="flex flex-col gap-3 pb-2">
+        <% @coupons.first(3).each do |coupon| %>
+          <label class="group relative flex overflow-hidden rounded-xl border-2 border-gray-200 bg-white transition-all duration-200 has-[:checked]:border-pink-400 cursor-pointer">
             <%= radio_button_tag :coupon_id, coupon[:id], false,
-            class: "sr-only peer",
-            data: {
-              action: "click->omise-payment#toggleCoupon",
-              discount: coupon[:discount],
-              eligible: coupon[:eligible_amount_cents],
-              products: coupon[:product_ids].join(",")
-            } %>
-            <%# Checkmark circle — top right (default: empty gray circle) %>
-            <div class="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-300 bg-white transition-all duration-200
-            group-has-[:checked]:border-pink-400 group-has-[:checked]:bg-pink-400">
-              <svg class="h-3.5 w-3.5 text-white opacity-0 transition-opacity duration-200 group-has-[:checked]:opacity-100"
-                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-              </svg>
+              class: "sr-only peer",
+              data: {
+                action: "click->omise-payment#toggleCoupon",
+                discount: coupon[:discount],
+                eligible: coupon[:eligible_amount_cents],
+                products: coupon[:product_ids].join(",")
+              } %>
+
+            <div class="relative flex w-20 shrink-0 flex-col items-center justify-center bg-pink-50 py-4
+              border-r border-dashed border-pink-200
+              before:absolute before:-right-[7px] before:-top-[7px] before:h-3.5 before:w-3.5 before:rounded-full before:bg-gray-100
+              after:absolute after:-right-[7px] after:-bottom-[7px] after:h-3.5 after:w-3.5 after:rounded-full after:bg-gray-100">
+              <p class="text-3xl font-medium leading-none text-Primary-color"><%= coupon[:discount] %>%</p>
+              <p class="mt-0.5 text-xs text-Primary-color">ส่วนลด</p>
             </div>
-            <%# Discount amount %>
-            <p class="pr-7 text-lg font-bold text-gray-900">ส่วนลด <%= coupon[:discount] %>%</p>
-            <p class="mt-1 text-sm text-green-500">สำหรับสินค้า <%= coupon[:product_title] %> เท่านั้น</p>
-            <%# Min order %>
-            <p class="mt-2 text-sm text-gray-500">
-              <% if coupon[:min_order].to_i > 0 %>
 
-                ขั้นต่ำ <%= number_with_delimiter(coupon[:min_order]) %> ฿
+            <div class="flex flex-1 flex-col justify-center px-4 py-3">
+              <p class="text-sm font-medium text-gray-800"><%= coupon[:product_title] %></p>
+              <p class="mt-1 text-xs text-gray-500">
+                <% if coupon[:min_order].to_i > 0 %>
+                  ขั้นต่ำ <%= number_with_delimiter(coupon[:min_order]) %> ฿
+                <% else %>
+                  ไม่มีขั้นต่ำ
+                <% end %>
+              </p>
+              <p class="mt-2 text-[10px] text-gray-400">
+                หมดอายุ <%= coupon[:expires_at]&.to_date&.strftime("%d/%m/%Y") || "-" %>
+              </p>
+            </div>
 
-              <% else %>
-                ไม่มีขั้นต่ำ
-              <% end %>
-            </p>
-            <%# Expiry %>
-            <p class="mt-3 text-xs text-gray-400">หมดอายุ</p>
-            <p class="text-xs text-gray-400"><%= coupon[:expires_at]&.to_date&.strftime("%d/%m/%Y %H:%M") || "-" %></p>
+            <div class="flex items-center pr-4">
+              <div class="flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-gray-300 transition-all duration-200
+                group-has-[:checked]:border-pink-400 group-has-[:checked]:bg-pink-400">
+                <svg class="h-3 w-3 text-white opacity-0 transition-opacity duration-200 group-has-[:checked]:opacity-100"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                </svg>
+              </div>
+            </div>
           </label>
         <% end %>
       </div>
+      <% if @coupons.size > 3 %>
+        <details class="group">
+          <summary class="mt-2 flex cursor-pointer list-none items-center justify-center gap-1 text-xs text-pink-500 hover:text-pink-600 transition-colors">
+            <span class="group-open:hidden">ดูคูปองเพิ่มเติม (<%= @coupons.size - 3 %> อัน)</span>
+            <span class="hidden group-open:inline">ย่อคูปอง</span>
+            <svg class="h-3.5 w-3.5 transition-transform duration-200 group-open:rotate-180"
+              fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </summary>
+
+          <div class="flex flex-col gap-3 pt-3">
+            <% @coupons.drop(3).each do |coupon| %>
+              <label class="group relative flex overflow-hidden rounded-xl border-2 border-gray-200 bg-white transition-all duration-200 has-[:checked]:border-pink-400 cursor-pointer">
+                <%= radio_button_tag :coupon_id, coupon[:id], false,
+                  class: "sr-only peer",
+                  data: {
+                    action: "click->omise-payment#toggleCoupon",
+                    discount: coupon[:discount],
+                    eligible: coupon[:eligible_amount_cents],
+                    products: coupon[:product_ids].join(",")
+                  } %>
+
+                <div class="relative flex w-20 shrink-0 flex-col items-center justify-center bg-pink-50 py-4
+                  border-r border-dashed border-pink-200
+                  before:absolute before:-right-[7px] before:-top-[7px] before:h-3.5 before:w-3.5 before:rounded-full before:bg-gray-100
+                  after:absolute after:-right-[7px] after:-bottom-[7px] after:h-3.5 after:w-3.5 after:rounded-full after:bg-gray-100">
+                  <p class="text-3xl font-medium leading-none text-Primary-color"><%= coupon[:discount] %>%</p>
+                  <p class="mt-0.5 text-xs text-Primary-color">ส่วนลด</p>
+                </div>
+
+                <div class="flex flex-1 flex-col justify-center px-4 py-3">
+                  <p class="text-sm font-medium text-gray-800"><%= coupon[:product_title] %></p>
+                  <p class="mt-1 text-xs text-gray-500">
+                    <% if coupon[:min_order].to_i > 0 %>
+                      ขั้นต่ำ <%= number_with_delimiter(coupon[:min_order]) %> ฿
+                    <% else %>
+                      ไม่มีขั้นต่ำ
+                    <% end %>
+                  </p>
+                  <p class="mt-2 text-[10px] text-gray-400">
+                    หมดอายุ <%= coupon[:expires_at]&.to_date&.strftime("%d/%m/%Y") || "-" %>
+                  </p>
+                </div>
+
+                <div class="flex items-center pr-4">
+                  <div class="flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-gray-300 transition-all duration-200
+                    group-has-[:checked]:border-pink-400 group-has-[:checked]:bg-pink-400">
+                    <svg class="h-3 w-3 text-white opacity-0 transition-opacity duration-200 group-has-[:checked]:opacity-100"
+                      fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                </div>
+              </label>
+            <% end %>
+          </div>
+        </details>
+      <% end %>
+
     </div>
   <% end %>
+</section>
   <%# สรุปคำสั่งซื้อ %>
   <section class="mx-4 mt-6 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
-    <h3 class="text-sm font-bold text-text-primary">สรุปคำสั่งซื้อ</h3>
+    <h3 class="text-base font-bold text-text-primary">สรุปคำสั่งซื้อ</h3>
     <dl class="mt-3 space-y-2 text-sm">
       <div class="flex justify-between gap-3 text-gray-700">
         <dt>ยอดรวมค่าสินค้า</dt>

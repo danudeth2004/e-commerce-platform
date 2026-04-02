@@ -11,6 +11,7 @@ module Users
         .joins(:order)
         .merge(current_user.orders.pending)
         .sum(:quantity)
+      @coupons = current_user.coupons
     end
   end
 end

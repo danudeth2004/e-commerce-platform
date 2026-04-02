@@ -91,6 +91,79 @@
         <% end %>
       </div>
     </section>
+    <h2 class="text-base font-semibold text-slate-900 mt-8">คูปองของฉัน</h2>
+    <section class="mt-3 overflow-hidden rounded-2xl border border-pink-100 bg-white shadow-sm">
+      <% if @coupons.present? %>
+        <div class="mx-4 mt-4 flex flex-col gap-3">
+          <% @coupons.first(3).each do |coupon| %>
+            <div class="relative flex overflow-hidden rounded-xl border-2 border-rose-100/80 bg-white">
+              <div class="relative flex w-20 shrink-0 flex-col items-center justify-center bg-pink-50 py-4
+                border-r border-dashed border-pink-200
+                before:absolute before:-right-[7px] before:-top-[7px] before:h-3.5 before:w-3.5 before:rounded-full before:bg-gray-100
+                after:absolute after:-right-[7px] after:-bottom-[7px] after:h-3.5 after:w-3.5 after:rounded-full after:bg-gray-100">
+                <p class="text-3xl font-medium leading-none text-Primary-color"><%= coupon[:discount] %>%</p>
+                <p class="mt-0.5 text-xs text-Primary-color">ส่วนลด</p>
+              </div>
+              <div class="flex flex-1 flex-col justify-center px-4 py-3">
+                <p class="text-sm font-medium text-gray-800"><%= coupon[:product_title] %></p>
+                <p class="mt-1 text-xs text-gray-500">
+                  <% if coupon[:min_order].to_i > 0 %>
+                    ขั้นต่ำ <%= number_with_delimiter(coupon[:min_order]) %> ฿
+                  <% else %>
+                    ไม่มีขั้นต่ำ
+                  <% end %>
+                </p>
+                <p class="mt-2 text-[10px] text-gray-400">
+                  หมดอายุ <%= coupon[:expires_at]&.to_date&.strftime("%d/%m/%Y") || "-" %>
+                </p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <% if @coupons.size > 3 %>
+          <details class="group">
+            <summary class="mt-3 mb-3 flex cursor-pointer list-none items-center justify-center gap-1 text-xs text-rose-500 hover:text-rose-600 transition-colors">
+              <span class="group-open:hidden">ดูคูปองเพิ่มเติม (<%= @coupons.size - 3 %> อัน)</span>
+              <span class="hidden group-open:inline">ย่อคูปอง</span>
+              <svg class="h-3.5 w-3.5 transition-transform duration-200 group-open:rotate-180"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </summary>
+            <div class="flex flex-col gap-3 mb-4">
+              <% @coupons.drop(3).each do |coupon| %>
+                <div class="relative flex overflow-hidden rounded-xl border-2 border-rose-100/80 bg-white mx-4">
+                  <div class="relative flex w-20 shrink-0 flex-col items-center justify-center bg-pink-50 py-4
+                    border-r border-dashed border-pink-200
+                    before:absolute before:-right-[7px] before:-top-[7px] before:h-3.5 before:w-3.5 before:rounded-full before:bg-gray-100
+                    after:absolute after:-right-[7px] after:-bottom-[7px] after:h-3.5 after:w-3.5 after:rounded-full after:bg-gray-100">
+                    <p class="text-3xl font-medium leading-none text-Primary-color"><%= coupon[:discount] %>%</p>
+                    <p class="mt-0.5 text-xs text-Primary-color">ส่วนลด</p>
+                  </div>
+                  <div class="flex flex-1 flex-col justify-center px-4 py-3">
+                    <p class="text-sm font-medium text-gray-800"><%= coupon[:product_title] %></p>
+                    <p class="mt-1 text-xs text-gray-500">
+                      <% if coupon[:min_order].to_i > 0 %>
+                        ขั้นต่ำ <%= number_with_delimiter(coupon[:min_order]) %> ฿
+                      <% else %>
+                        ไม่มีขั้นต่ำ
+                      <% end %>
+                    </p>
+                    <p class="mt-2 text-[10px] text-gray-400">
+                      หมดอายุ <%= coupon[:expires_at]&.to_date&.strftime("%d/%m/%Y") || "-" %>
+                    </p>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </details>
+        <% end %>
+
+      <% else %>
+        <p class="mt-3 text-sm text-slate-400">ยังไม่มีคูปองในขณะนี้</p>
+      <% end %>
+    </section>
 
     <section class="mt-8">
       <h2 class="text-base font-semibold text-slate-900">บัญชีของฉัน</h2>
