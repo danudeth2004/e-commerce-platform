@@ -1,8 +1,5 @@
 <div class="mx-auto flex min-h-screen w-full max-w-md flex-col bg-gradient-to-b from-rose-50/70 via-white to-slate-50/90 pb-[100px]">
-  <header class="sticky top-0 z-30 flex items-center gap-3 border-b border-rose-100/80 bg-white/85 backdrop-blur-md px-4 py-3 shadow-sm shadow-rose-100/30">
-    <%= link_to app_back_fallback, class: "inline-flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 transition", aria: { label: "กลับ" } do %>
-      <span class="iconify text-2xl" data-icon="lucide:chevron-left"></span>
-    <% end %>
+  <header class="sticky top-0 z-30 flex items-center justify-center border-b border-rose-100/80 bg-white/85 px-4 py-3 shadow-sm shadow-rose-100/30 backdrop-blur-md">
     <h1 class="text-base font-semibold tracking-tight text-slate-900">คำสั่งซื้อ #<%= @order.id %></h1>
   </header>
 
@@ -154,7 +151,7 @@
 
   </div>
 
-  <div class="fixed bottom-0 left-0 right-0 z-20 border-t border-rose-100/80 bg-white/90 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_30px_rgba(244,114,182,0.12)] backdrop-blur-md">
+  <div class="fixed left-0 right-0 z-30 border-t border-rose-100/80 bg-white/90 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-8px_30px_rgba(244,114,182,0.12)] backdrop-blur-md bottom-[calc(4.25rem+env(safe-area-inset-bottom,0px))]">
     <div class="mx-auto w-full max-w-md">
       <%= button_to "สั่งซื้ออีกครั้ง",
           create_order_checkout_path(order_id: @order.id),

@@ -1,35 +1,41 @@
-<div data-controller="quantity" class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white shadow-pinkGlow border-t border-gray-100 px-4 py-6">
-  <div class="grid grid-cols-2 gap-4 items-center">
-    <!-- ฝั่งซ้าย (ปุ่มจำนวน) -->
-    <div class="flex items-center justify-center">
-      <div class="grid grid-cols-3 items-center gap-4">
-        <button
-          data-action="click->quantity#decrease"
-          class="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-3xl text-white">
-          −
-        </button>
-        <span
-          data-quantity-target="count"
-          class="text-3xl font-medium text-text-primary text-center">
-          0
-        </span>
-        <button
-          data-action="click->quantity#increase"
-          class="w-12 h-12 rounded-full bg-Primary-color flex items-center justify-center text-3xl text-white">
-          +
-        </button>
+<%# แถบจำนวน + เพิ่มตะกร้า — อยู่เหนือแถบนำทางล่างทั่วแอป (layouts/buyer_bottom_nav) %>
+<div
+  data-controller="quantity"
+  class="pointer-events-none fixed left-0 right-0 z-30 mx-auto max-w-md px-4 bottom-[calc(4.25rem+env(safe-area-inset-bottom,0px))]">
+  <div class="pointer-events-auto rounded-2xl border border-gray-100 bg-white/95 px-3 py-3 shadow-lg shadow-pink-100/40 ring-1 ring-black/5 backdrop-blur-sm">
+    <div class="grid grid-cols-2 items-center gap-3">
+      <div class="flex items-center justify-center">
+        <div class="grid grid-cols-3 items-center gap-3">
+          <button
+            type="button"
+            data-action="click->quantity#decrease"
+            class="flex h-11 w-11 items-center justify-center rounded-full bg-gray-200 text-2xl font-light text-white transition active:scale-95">
+            −
+          </button>
+          <span
+            data-quantity-target="count"
+            class="min-w-[2rem] text-center text-2xl font-medium text-text-primary tabular-nums">
+            0
+          </span>
+          <button
+            type="button"
+            data-action="click->quantity#increase"
+            class="flex h-11 w-11 items-center justify-center rounded-full bg-Primary-color text-2xl font-light text-white transition active:scale-95">
+            +
+          </button>
+        </div>
       </div>
+      <%= form_with url: add_item_cart_path, method: :post, local: true, class: "w-full" do %>
+        <%= hidden_field_tag :product_id, product.id %>
+        <%= hidden_field_tag :quantity, 0, data: { quantity_target: "input" } %>
+        <button
+          type="submit"
+          data-quantity-target="submit"
+          class="w-full rounded-xl bg-Primary-color px-4 py-3 text-sm font-medium text-white opacity-50 shadow-sm transition hover:opacity-95 disabled:cursor-not-allowed"
+          disabled>
+          เพิ่มสินค้าใส่ตะกร้า
+        </button>
+      <% end %>
     </div>
-    <!-- ปุ่มเพิ่มสินค้า -->
-    <%= form_with url: add_item_cart_path, method: :post, local: true, class: "w-full" do |f| %>
-      <%= hidden_field_tag :product_id, product.id %>
-      <%= hidden_field_tag :quantity, 0, data: { quantity_target: "input" } %>
-      <button
-        data-quantity-target="submit"
-        class="w-full bg-Primary-color text-white px-4 py-3 rounded-xl text-sm flex items-center justify-center opacity-50 cursor-not-allowed"
-        disabled>
-        เพิ่มสินค้าใส่ตะกร้า
-      </button>
-    <% end %>
   </div>
 </div>

@@ -1,6 +1,6 @@
 <% total_cents = total_cents.to_i %>
 
-<div class="fixed bottom-0 left-0 right-0 z-10 border-t border-gray-100 bg-white px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3">
+<div class="fixed left-0 right-0 z-30 border-t border-gray-100 bg-white px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 bottom-[calc(4.25rem+env(safe-area-inset-bottom,0px))]">
   <div class="mx-auto w-full max-w-md">
     <%= button_to create_order_checkout_path,
                   method: :post,

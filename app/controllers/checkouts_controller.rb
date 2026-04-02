@@ -2,7 +2,7 @@ class CheckoutsController < BaseController
   before_action :authenticate_user!
   before_action :set_order, only: [ :payment, :pay ]
   before_action :order_paid?, only: [ :payment, :pay ]
-  before_action :hide_app_header, only: :payment
+  before_action :hide_buyer_bottom_nav, only: :payment
 
   def create_order
     if params[:order_id]
@@ -147,8 +147,8 @@ class CheckoutsController < BaseController
 
   private
 
-    def hide_app_header
-      @hide_app_header = true
+    def hide_buyer_bottom_nav
+      @hide_buyer_bottom_nav = true
     end
 
     def ensure_order_shipping_address

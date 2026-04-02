@@ -21,20 +21,17 @@
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   </head>
   <body class="font-sans antialiased">
-    <main class="min-h-screen bg-white">
+    <main class="min-h-screen bg-white<%= ' pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))]' if show_buyer_bottom_nav? %>">
       <% if flash.any? %>
         <div class="w-full max-w-screen-xl mx-auto px-4 pt-3">
           <%= render "layouts/flash_messages" %>
         </div>
       <% end %>
-      <% unless @hide_app_header %>
+      <% if show_app_header? %>
         <%# Linear gradient (Figma): 0% #FF1493 → 50% #FF69B4 → 100% #F6DBD8 %>
         <% header_icon_btn = "inline-flex items-center justify-center size-11 shrink-0 rounded-2xl bg-gradient-to-r from-[#FF1493] via-[#FF69B4] to-[#F6DBD8] text-white shadow-sm transition hover:opacity-95 active:scale-[0.98] [&_svg]:drop-shadow-[0_1px_1px_rgba(0,0,0,0.18)]" %>
         <header class="w-full max-w-screen-xl mx-auto px-4 pt-10 bg-white">
           <div class="flex items-center gap-2.5 sm:gap-3">
-            <% unless current_page?(root_path) %>
-              <%= render "layouts/app_back_button", variant: :header, fallback: app_back_fallback %>
-            <% end %>
             <%= form_with url: products_path, method: :get, local: true, html: { class: "flex-1 min-w-0", id: "header-product-search", role: "search" } do %>
               <%= hidden_field_tag :skin_concern, params[:skin_concern] if params[:skin_concern].present? %>
               <%= hidden_field_tag :category, params[:category] if params[:category].present? %>
@@ -64,20 +61,14 @@
                   <% end %>
                 <% end %>
               <% end %>
-              <% if user_signed_in? %>
-                <%= link_to users_profile_path, class: header_icon_btn, aria: { label: "โปรไฟล์ของฉัน" } do %>
-                  <%= inline_svg_tag "icons/user-icon.svg", class: "w-[22px] h-[22px] text-white" %>
-                <% end %>
-              <% else %>
-                <%= link_to new_user_session_path, class: header_icon_btn, aria: { label: "เข้าสู่ระบบ" } do %>
-                  <%= inline_svg_tag "icons/user-icon.svg", class: "w-[22px] h-[22px] text-white" %>
-                <% end %>
-              <% end %>
             </div>
           </div>
         </header>
       <% end %>
       <%= yield %>
+      <% if show_buyer_bottom_nav? %>
+        <%= render "layouts/buyer_bottom_nav" %>
+      <% end %>
     </main>
   </body>
 </html>

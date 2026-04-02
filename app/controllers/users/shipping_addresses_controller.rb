@@ -4,7 +4,6 @@ module Users
   class ShippingAddressesController < BaseController
     before_action :authenticate_user!
     before_action :set_shipping_address, only: [ :edit, :update, :destroy, :select_for_checkout ]
-    before_action :hide_app_header
 
     def index
       @shipping_addresses = current_user.shipping_addresses.default_first
@@ -66,10 +65,6 @@ module Users
       def assign_checkout_context
         @checkout_order_id = params[:order_id].presence
         @checkout_return_to = params[:return_to].presence
-      end
-
-      def hide_app_header
-        @hide_app_header = true
       end
 
       def set_shipping_address

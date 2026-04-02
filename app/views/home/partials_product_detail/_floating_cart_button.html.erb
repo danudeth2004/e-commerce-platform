@@ -1,0 +1,17 @@
+<%# ปุ่มรถเข็นลอย — หน้ารายละเอียดสินค้า (ไม่มีช่องค้นหา) %>
+<% fab = "inline-flex items-center justify-center size-12 shrink-0 rounded-2xl bg-gradient-to-r from-[#FF1493] via-[#FF69B4] to-[#F6DBD8] text-white shadow-lg shadow-pink-500/25 transition hover:opacity-95 active:scale-[0.98] [&_svg]:drop-shadow-[0_1px_1px_rgba(0,0,0,0.18)]" %>
+<div class="pointer-events-none fixed inset-x-0 top-0 z-30 mx-auto flex max-w-md justify-end px-4 pt-[max(0.75rem,env(safe-area-inset-top))]">
+  <%= link_to(user_signed_in? ? cart_path : new_user_session_path,
+              class: "#{fab} pointer-events-auto relative",
+              aria: { label: user_signed_in? ? "ตะกร้าสินค้า" : "เข้าสู่ระบบเพื่อดูตะกร้า" }) do %>
+    <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-[22px] h-[22px] text-white" %>
+    <% if user_signed_in? %>
+      <% count = current_cart_item_count %>
+      <% if count.positive? %>
+        <span class="absolute -right-1 -top-1 min-w-[1.125rem] rounded-full bg-red-500 px-1 py-0.5 text-center text-[10px] font-semibold leading-none text-white">
+          <%= count %>
+        </span>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

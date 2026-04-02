@@ -1,0 +1,29 @@
+<%# แถบนำทางล่างฝั่งผู้ซื้อ — หน้าแรก / สินค้า / โปรไฟล์ (ตะกร้าอยู่ที่ header) %>
+<nav
+  class="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-100 bg-white/95 shadow-[0_-4px_24px_rgba(0,0,0,0.06)] backdrop-blur-md"
+  style="padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));"
+  aria-label="เมนูหลัก">
+  <div class="mx-auto flex max-w-screen-xl items-end justify-around px-1 pt-1">
+    <% active = ->(key) { buyer_nav_active?(key) } %>
+    <% tab = "flex flex-1 flex-col items-center gap-0.5 rounded-xl px-1 py-2 text-[10px] font-medium transition sm:text-[11px]" %>
+    <% inactive = "text-gray-500 hover:text-pink-600 active:scale-[0.98]" %>
+    <% on = "text-pink-600" %>
+
+    <%= link_to root_path, class: "#{tab} #{active.call(:home) ? on : inactive}", aria: { current: (active.call(:home) ? "page" : nil) } do %>
+      <span class="iconify text-[22px] sm:text-2xl" data-icon="lucide:home" data-width="24" aria-hidden="true"></span>
+      <span>หน้าแรก</span>
+    <% end %>
+
+    <%= link_to products_path, class: "#{tab} #{active.call(:products) ? on : inactive}", aria: { current: (active.call(:products) ? "page" : nil) } do %>
+      <span class="iconify text-[22px] sm:text-2xl" data-icon="lucide:layout-grid" data-width="24" aria-hidden="true"></span>
+      <span>สินค้า</span>
+    <% end %>
+
+    <% prof_dest = user_signed_in? ? users_profile_path : new_user_session_path %>
+    <% prof_label = user_signed_in? ? "โปรไฟล์" : "เข้าสู่ระบบ" %>
+    <%= link_to prof_dest, class: "#{tab} #{active.call(:profile) ? on : inactive}", aria: { current: (active.call(:profile) ? "page" : nil), label: prof_label } do %>
+      <span class="iconify text-[22px] sm:text-2xl" data-icon="lucide:user" data-width="24" aria-hidden="true"></span>
+      <span><%= prof_label %></span>
+    <% end %>
+  </div>
+</nav>

@@ -10,11 +10,6 @@
   data-store-count="<%= @items_by_store.count %>"
 >
   <header class="relative flex shrink-0 items-center justify-center border-b border-gray-100 px-4 py-3">
-    <%= link_to users_profile_path,
-          class: "absolute left-2 top-1/2 flex -translate-y-1/2 items-center justify-center rounded-full p-2 text-gray-800 hover:bg-gray-50",
-          aria: { label: "กลับ" } do %>
-      <%= inline_svg_tag "icons/chevron-left.svg", class: "h-6 w-6" %>
-    <% end %>
     <h1 class="text-base font-bold text-gray-900">ชำระเงิน</h1>
   </header>
   <%# ที่อยู่จัดส่ง %>

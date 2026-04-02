@@ -1,7 +1,6 @@
 class CartsController < BaseController
   before_action :authenticate_user!
   before_action :set_cart
-  before_action :hide_app_header, only: :show
 
   def show
     @cart_items = @cart.cart_items.includes(:product)
@@ -48,10 +47,6 @@ class CartsController < BaseController
   end
 
   private
-
-  def hide_app_header
-    @hide_app_header = true
-  end
 
   def set_cart
     @cart = current_user.cart || current_user.create_cart!

@@ -33,6 +33,42 @@ module ApplicationHelper
     cart.cart_items.sum(:quantity)
   end
 
+  # แถบค้นหา + รถเข็นด้านบน — เฉพาะหน้าแรกกับรายการสินค้า (ยกเว้นถ้า @hide_app_header เช่น flow พิเศษ)
+  def show_app_header?
+    return false if @hide_app_header
+
+    c = controller.controller_name
+    a = controller.action_name
+    (c == "home" && a == "index") || (c == "products" && a == "index")
+  end
+
+  # แถบนำทางล่างฝั่งผู้ซื้อ — ปิดได้ด้วย @hide_buyer_bottom_nav (เช่น หน้าชำระเงิน)
+  def show_buyer_bottom_nav?
+    return false if @hide_buyer_bottom_nav
+
+    true
+  end
+
+  def buyer_nav_active?(key)
+    c = controller.controller_name
+    a = controller.action_name
+    case key
+    when :home
+      c == "home" && a == "index"
+    when :products
+      (c == "products" && a == "index") ||
+        (c == "home" && a == "show") ||
+        (c == "stores" && a == "show")
+    when :profile
+      cp = controller.controller_path
+      (cp == "users/profiles" && a == "show") ||
+        (cp == "users/sessions" && a == "new") ||
+        (cp == "users/registrations" && %w[edit update].include?(a))
+    else
+      false
+    end
+  end
+
   # 0812345678 → (+66)08******78
   # หน้าสมัครแบบหลายขั้น: ถ้า error อยู่ที่ที่อยู่ ให้เปิดขั้นที่ 2
   def signup_wizard_initial_step(resource)

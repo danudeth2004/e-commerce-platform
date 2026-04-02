@@ -3,8 +3,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   layout :buyer_registration_layout
 
-  before_action :hide_header_on_account_edit, only: [ :edit, :update ]
-
   def new
     build_resource({})
     resource.shipping_addresses.build
@@ -52,10 +50,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def buyer_registration_layout
     %w[edit update].include?(action_name) ? "application" : "devise"
-  end
-
-  def hide_header_on_account_edit
-    @hide_app_header = true
   end
 
   # If you have extra params to permit, append them to the sanitizer.

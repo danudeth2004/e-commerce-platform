@@ -1,11 +1,10 @@
 <div class="flex min-h-screen w-full max-w-md mx-auto flex-col bg-white">
-  <header class="relative flex shrink-0 items-center justify-center px-4 py-3">
-    <%= render "layouts/app_back_button", variant: :minimal, fallback: app_back_fallback %>
-    <h1 class="text-base font-bold text-gray-900">
+  <div class="shrink-0 px-4 pb-2 pt-10">
+    <h1 class="text-center text-base font-bold text-gray-900">
       รถเข็นของคุณ<% if @cart_qty_total.positive? %> (<%= @cart_qty_total %>)<% end %>
     </h1>
-  </header>
-  <div class="flex flex-1 flex-col px-4 <%= @cart_items.any? ? "pb-36" : "pb-10" %>">
+  </div>
+  <div class="flex flex-1 flex-col px-4 <%= @cart_items.any? ? "pb-48" : "pb-10" %>">
     <% if @cart_items.any? %>
       <div class="flex flex-col gap-3">
         <% @cart_items.each do |item| %>

@@ -1,12 +1,8 @@
 <div class="min-h-screen max-w-md mx-auto pb-24 bg-gradient-to-b from-rose-50/70 via-white to-slate-50/90">
-  <header class="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-rose-100/80 bg-white/85 backdrop-blur-md px-4 py-3 shadow-sm">
-    <% back = @order.present? ? payment_checkout_path(order_id: @order.id) : users_profile_path %>
-    <%= link_to back, class: "inline-flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 shrink-0 transition", aria: { label: "กลับ" } do %>
-      <span class="iconify text-2xl" data-icon="lucide:chevron-left" data-width="24"></span>
-    <% end %>
-    <h1 class="text-base font-semibold tracking-tight text-slate-900 truncate px-2">ที่อยู่จัดส่ง</h1>
+  <header class="relative sticky top-0 z-30 flex items-center justify-center border-b border-rose-100/80 bg-white/85 px-4 py-3 shadow-sm backdrop-blur-md">
+    <h1 class="text-base font-semibold tracking-tight text-slate-900">ที่อยู่จัดส่ง</h1>
     <%= link_to new_users_shipping_address_path(order_id: params[:order_id], return_to: params[:return_to]),
-          class: "text-sm font-medium text-Primary-color shrink-0" do %>
+          class: "absolute right-4 top-1/2 -translate-y-1/2 text-sm font-medium text-Primary-color" do %>
       + เพิ่ม
     <% end %>
   </header>

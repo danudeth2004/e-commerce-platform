@@ -1,9 +1,5 @@
 <div class="min-h-screen max-w-md mx-auto pb-24 bg-gradient-to-b from-rose-50/70 via-white to-slate-50/90">
-  <header class="sticky top-0 z-30 flex items-center gap-2 border-b border-rose-100/80 bg-white/85 backdrop-blur-md px-4 py-3 shadow-sm">
-    <%= link_to users_shipping_addresses_path(order_id: @checkout_order_id, return_to: @checkout_return_to),
-          class: "inline-flex size-10 items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 shrink-0 transition", aria: { label: "กลับ" } do %>
-      <span class="iconify text-2xl" data-icon="lucide:chevron-left" data-width="24"></span>
-    <% end %>
+  <header class="sticky top-0 z-30 flex items-center justify-center border-b border-rose-100/80 bg-white/85 px-4 py-3 shadow-sm backdrop-blur-md">
     <h1 class="text-base font-semibold tracking-tight text-slate-900">เพิ่มที่อยู่</h1>
   </header>
 

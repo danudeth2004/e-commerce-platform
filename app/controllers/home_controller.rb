@@ -9,7 +9,6 @@ class HomeController < BaseController
     @bestseller_tabs    = bestseller_tabs
     @essential_products = essential_products
     @marketplace_has_products = base_products.exists?
-    @hide_app_header = !@marketplace_has_products
 
     @show_payment_success_modal = flash[:payment_success] == true
     flash.delete(:payment_success)
@@ -34,6 +33,8 @@ class HomeController < BaseController
     if request.referer.blank?
       @app_back_fallback = products_path
     end
+
+    @hide_app_header = true unless show_seller_product_page?
 
     if show_seller_product_page?
       render :show_seller, layout: "seller"
