@@ -82,7 +82,8 @@ export default class extends Controller {
     }
 
     if (this.hasCouponDiscountTextTarget) {
-      this.couponDiscountTextTarget.innerText = `- ${discount.toLocaleString()} ฿`
+      const discountBht = discount;
+      this.couponDiscountTextTarget.innerText = `- ${discountBht.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ฿`;
     }
 
     if (this.hasTotalTextTarget) {

@@ -20,7 +20,7 @@ class CartsController < BaseController
     item.quantity = base_qty + quantity_to_add
     item.save!
 
-    redirect_back fallback_location: cart_path, notice: "เพิ่มสินค้าในตะกร้าแล้ว"
+    redirect_back fallback_location: cart_path
   end
 
   def remove_item

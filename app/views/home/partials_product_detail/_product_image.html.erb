@@ -76,11 +76,11 @@
   <div class="flex items-start justify-between gap-2 mt-3">
     <div class="flex flex-wrap items-center gap-2 min-w-0">
       <span class="text-red-500 <%= bundle ? "text-2xl font-bold" : "text-xl font-semibold" %>">
-        ฿ <%= number_with_delimiter(price) %>
+        <%= number_with_delimiter(price) %> ฿
       </span>
       <% if original_price.present? %>
         <span class="text-gray-400 text-base line-through">
-          ฿ <%= number_with_delimiter(original_price) %>
+          <%= number_with_delimiter(original_price) %> ฿
         </span>
       <% end %>
       <% if discount_percent.present? %>
