@@ -65,4 +65,24 @@ class DeviseWiringTest < ActionDispatch::IntegrationTest
     }
     assert_redirected_to admin_root_path
   end
+
+  test "buyer suspended cannot sign in" do
+    user = create_user!
+    user.suspended!
+    post user_session_path, params: {
+      user: { email: user.email, password: "password123" }
+    }
+    assert_redirected_to new_user_session_path
+  end
+
+  test "signed in buyer is signed out when account becomes suspended" do
+    user = create_user!
+    sign_in user, scope: :user
+    user.suspended!
+    get root_path
+    assert_redirected_to root_path
+    follow_redirect!
+    assert_response :success
+    assert_not user_signed_in?
+  end
 end

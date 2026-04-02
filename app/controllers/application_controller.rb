@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   before_action :configured_devise_permitted_parameters, if: :devise_controller?
+  before_action :enforce_buyer_not_suspended, if: :user_signed_in?
 
   helper_method :seller_owns_product?
   helper_method :safe_return_path
@@ -20,6 +21,15 @@ class ApplicationController < ActionController::Base
 
     product.seller_store_id == store.id
   end
+
+  private
+
+    def enforce_buyer_not_suspended
+      return unless current_user.suspended?
+
+      sign_out(:user)
+      redirect_to root_path, alert: I18n.t("devise.failure.suspended")
+    end
 
   protected
     def configured_devise_permitted_parameters

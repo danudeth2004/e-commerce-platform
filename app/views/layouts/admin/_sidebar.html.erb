@@ -16,6 +16,12 @@
         <span>บัญชีผู้ดูแล</span>
         <% end %>
 
+        <%= link_to admin_buyers_path,
+      class: admin_nav_item_classes(controller.controller_name == "buyers") do %>
+        <span class="iconify" data-icon="lucide:users"></span>
+        <span>ลูกค้า</span>
+        <% end %>
+
         <%= link_to admin_stores_path,
       class: admin_nav_item_classes(controller.controller_name == "stores") do %>
         <span class="iconify" data-icon="lucide:store"></span>

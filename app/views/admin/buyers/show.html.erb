@@ -1,0 +1,76 @@
+<div class="space-y-6">
+  <div>
+    <%= link_to "← กลับไปรายการลูกค้า", admin_buyers_path, class: "text-sm font-medium text-blue-600 hover:text-blue-800" %>
+  </div>
+
+  <div class="bg-white shadow rounded-lg p-6">
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900">ลูกค้า #<%= @buyer.id %></h1>
+        <p class="text-gray-600 mt-1"><%= @buyer.first_name %> <%= @buyer.last_name %></p>
+      </div>
+      <div class="flex items-center gap-3">
+        <% if @buyer.suspended? %>
+          <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-sm font-medium text-red-800">ระงับบัญชี</span>
+        <% else %>
+          <span class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-800">ใช้งาน</span>
+        <% end %>
+        <%= form_with url: toggle_suspend_admin_buyer_path(@buyer), method: :patch, local: true, class: "inline" do %>
+          <% if @buyer.suspended? %>
+            <%= submit_tag "เปิดใช้งานบัญชี", class: "rounded-lg bg-emerald-600 text-white px-4 py-2 text-sm font-medium hover:bg-emerald-700 cursor-pointer" %>
+          <% else %>
+            <%= submit_tag "ระงับบัญชี", class: "rounded-lg bg-red-600 text-white px-4 py-2 text-sm font-medium hover:bg-red-700 cursor-pointer", data: { turbo_confirm: "ระงับบัญชีลูกค้านี้? ลูกค้าจะไม่สามารถเข้าสู่ระบบได้" } %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <dl class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+      <div>
+        <dt class="text-gray-500">อีเมล</dt>
+        <dd class="font-medium text-gray-900 mt-0.5"><%= @buyer.email %></dd>
+      </div>
+      <div>
+        <dt class="text-gray-500">โทรศัพท์</dt>
+        <dd class="font-medium text-gray-900 mt-0.5"><%= @buyer.phone_number %></dd>
+      </div>
+      <div>
+        <dt class="text-gray-500">สมัครเมื่อ</dt>
+        <dd class="font-medium text-gray-900 mt-0.5"><%= @buyer.created_at.strftime("%d/%m/%Y %H:%M") %></dd>
+      </div>
+      <div>
+        <dt class="text-gray-500">ที่อยู่ (โปรไฟล์)</dt>
+        <dd class="font-medium text-gray-900 mt-0.5"><%= @buyer.location.presence || "—" %></dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="bg-white shadow rounded-lg p-6">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">คำสั่งซื้อล่าสุด (สูงสุด 50 รายการ)</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 border">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">ออเดอร์</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">สถานะ</th>
+            <th class="px-4 py-2 text-right text-sm font-semibold text-gray-700">ยอดรวม</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">สร้างเมื่อ</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+          <% @orders.each do |order| %>
+            <tr>
+              <td class="px-4 py-2 text-sm font-mono text-gray-900">#<%= order.id %></td>
+              <td class="px-4 py-2 text-sm text-gray-800"><%= order.status %></td>
+              <td class="px-4 py-2 text-sm text-right tabular-nums"><%= admin_format_thb(order.total_amount_cents) %></td>
+              <td class="px-4 py-2 text-sm text-gray-800"><%= order.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if @orders.empty? %>
+      <p class="text-gray-500 mt-4">ยังไม่มีคำสั่งซื้อ</p>
+    <% end %>
+  </div>
+</div>

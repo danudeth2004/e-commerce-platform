@@ -4,6 +4,14 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  # Explicit type required by Rails 8.1 enum until the DB column exists (run db:migrate).
+  attribute :account_status, :string, default: "active"
+
+  enum :account_status, {
+    active: "active",
+    suspended: "suspended"
+  }, default: :active
+
   has_one_attached :avatar
   has_one :cart, dependent: :destroy
   has_many :orders, dependent: :destroy
@@ -19,6 +27,14 @@ class User < ApplicationRecord
 
   def default_shipping_address
     shipping_addresses.find_by(is_default: true) || shipping_addresses.first
+  end
+
+  def active_for_authentication?
+    super && !suspended?
+  end
+
+  def inactive_message
+    suspended? ? :suspended : super
   end
 
   private

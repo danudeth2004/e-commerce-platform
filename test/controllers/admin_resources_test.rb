@@ -155,6 +155,28 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
     assert payout.reload.transferred?
   end
 
+  test "buyers index show and toggle_suspend" do
+    buyer = create_user!
+
+    get admin_buyers_path
+    assert_response :success
+
+    get admin_buyers_path, params: { q: buyer.email }
+    assert_response :success
+
+    get admin_buyer_path(buyer)
+    assert_response :success
+
+    assert buyer.active?
+    patch toggle_suspend_admin_buyer_path(buyer)
+    assert_redirected_to admin_buyer_path(buyer)
+    assert buyer.reload.suspended?
+
+    patch toggle_suspend_admin_buyer_path(buyer)
+    assert_redirected_to admin_buyer_path(buyer)
+    assert buyer.reload.active?
+  end
+
   test "payouts omise_transfer rejects when not processing" do
     user = create_user!
     order = Order.create!(user: user)

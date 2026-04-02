@@ -1,0 +1,51 @@
+<div class="bg-white shadow rounded-lg p-6">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">ลูกค้า (Buyer)</h1>
+      <p class="text-sm text-gray-500 mt-1">รายชื่อผู้ใช้ฝั่งลูกค้า — ค้นหาจากอีเมล ชื่อ หรือเบอร์โทร</p>
+    </div>
+    <%= form_with url: admin_buyers_path, method: :get, local: true, class: "flex flex-wrap items-center gap-2" do %>
+      <%= text_field_tag :q, params[:q], placeholder: "ค้นหา…", class: "rounded-lg border border-gray-300 px-3 py-2 text-sm min-w-[12rem]" %>
+      <%= submit_tag "ค้นหา", class: "rounded-lg bg-slate-700 text-white px-4 py-2 text-sm font-medium hover:bg-slate-800" %>
+      <% if params[:q].present? %>
+        <%= link_to "ล้าง", admin_buyers_path, class: "text-sm text-blue-600 hover:underline" %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <table class="min-w-full divide-y divide-gray-200 border">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">ID</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">ชื่อ</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">อีเมล</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">โทรศัพท์</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">สถานะ</th>
+        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">สมัครเมื่อ</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-100">
+      <% @buyers.each do |buyer| %>
+        <tr class="hover:bg-gray-50 transition cursor-pointer"
+            onclick="window.location='<%= admin_buyer_path(buyer) %>'">
+          <td class="px-4 py-2 text-sm text-gray-800"><%= buyer.id %></td>
+          <td class="px-4 py-2 text-sm text-gray-800"><%= buyer.first_name %> <%= buyer.last_name %></td>
+          <td class="px-4 py-2 text-sm text-gray-800"><%= buyer.email %></td>
+          <td class="px-4 py-2 text-sm text-gray-800"><%= buyer.phone_number %></td>
+          <td class="px-4 py-2 text-sm">
+            <% if buyer.suspended? %>
+              <span class="inline-flex rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">ระงับ</span>
+            <% else %>
+              <span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800">ใช้งาน</span>
+            <% end %>
+          </td>
+          <td class="px-4 py-2 text-sm text-gray-800"><%= buyer.created_at.strftime("%d/%m/%Y %H:%M") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @buyers.empty? %>
+    <p class="text-gray-500 mt-4">ไม่พบลูกค้า</p>
+  <% end %>
+</div>

@@ -24,6 +24,12 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :buyers, only: %i[index show] do
+      member do
+        patch :toggle_suspend
+      end
+    end
+
     root "home#index"
   end
 
