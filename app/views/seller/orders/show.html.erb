@@ -1,0 +1,72 @@
+<div class="w-full min-h-screen bg-white">
+  <div class="w-full max-w-screen-xl mx-auto px-4 pb-10 space-y-6">
+    <header class="flex items-center gap-3 pt-4">
+      <%= link_to seller_orders_path, class: "inline-flex size-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 transition", aria: { label: "กลับ" } do %>
+        <span class="iconify text-xl" data-icon="lucide:chevron-left"></span>
+      <% end %>
+      <div>
+        <h1 class="text-lg font-semibold text-gray-900">คำสั่งซื้อ #<%= @order.id %></h1>
+        <p class="text-sm text-gray-500">เฉพาะสินค้าและยอดของร้านคุณ</p>
+      </div>
+    </header>
+
+    <div class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm ring-1 ring-gray-50">
+      <p class="text-xs font-medium uppercase tracking-wide text-gray-400">สถานะออเดอร์</p>
+      <p class="mt-2 text-sm font-semibold text-gray-900"><%= seller_order_status_label(@order) %></p>
+      <% if @order.paid? && @order.paid_at.present? %>
+        <p class="mt-1 text-xs text-gray-500">ชำระเมื่อ <%= @order.paid_at.strftime("%d/%m/%Y %H:%M") %></p>
+      <% end %>
+    </div>
+
+    <div class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm ring-1 ring-gray-50">
+      <p class="text-xs font-medium uppercase tracking-wide text-gray-400">ยอดที่ร้านคุณได้รับ (หักค่าธรรมเนียมแล้ว)</p>
+      <p class="mt-2 text-2xl font-semibold tabular-nums text-gray-900">
+        <%= number_with_delimiter(@payout.amount) %> ฿
+      </p>
+      <p class="mt-1 text-xs text-gray-500">สถานะการโอน: <%= seller_payout_status_label(@payout) %></p>
+    </div>
+
+    <div class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm ring-1 ring-gray-50">
+      <p class="text-xs font-medium uppercase tracking-wide text-gray-400">ที่อยู่จัดส่ง (ลูกค้า)</p>
+      <div class="mt-2 text-sm leading-relaxed text-gray-700 whitespace-pre-line">
+        <% if @order.shipping_address_snapshot.present? %>
+          <%= @order.shipping_address_snapshot %>
+        <% elsif @order.shipping_address.present? %>
+          <%= @order.shipping_address.full_snapshot_text %>
+        <% else %>
+          <span class="text-gray-400">—</span>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm ring-1 ring-gray-50">
+      <p class="text-sm font-semibold text-gray-900 mb-3">สินค้าจากร้านคุณในออเดอร์นี้</p>
+      <% if @items.any? %>
+        <ul class="space-y-4">
+          <% @items.each do |item| %>
+            <li class="flex items-center gap-3">
+              <div class="size-14 shrink-0 overflow-hidden rounded-xl bg-gray-100 ring-1 ring-gray-200/60">
+                <% if item.product&.images&.attached? %>
+                  <%= image_tag rails_blob_path(item.product.images.first, only_path: true),
+                    class: "h-full w-full object-cover",
+                    alt: item.title %>
+                <% else %>
+                  <div class="flex h-full w-full items-center justify-center text-[10px] font-medium text-gray-400">ไม่มีรูป</div>
+                <% end %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-gray-900 line-clamp-2"><%= item.title %></p>
+                <p class="text-xs text-gray-500">จำนวน <%= item.quantity %> ชิ้น</p>
+              </div>
+              <p class="shrink-0 text-sm font-semibold tabular-nums text-gray-900">
+                <%= number_with_delimiter((item.amount_cents * item.quantity) / 100.0) %> ฿
+              </p>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="text-sm text-gray-500">ไม่มีรายการสินค้าของร้านคุณ (ข้อมูลอาจถูกปรับเปลี่ยนหลังสร้างออเดอร์)</p>
+      <% end %>
+    </div>
+  </div>
+</div>

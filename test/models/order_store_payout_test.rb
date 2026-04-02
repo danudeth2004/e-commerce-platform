@@ -17,4 +17,36 @@ class OrderStorePayoutTest < ActiveSupport::TestCase
     assert_equal store, payout.store
     assert payout.pending?
   end
+
+  test "seller_amounts_by_day_for_store sums paid orders for one store" do
+    user = create_user!
+    store = create_store!
+    product = create_standard_product!(store: store)
+    paid_at = Time.zone.parse("2026-04-01 14:00:00")
+    order = Order.create!(
+      user: user,
+      status: :paid,
+      paid_at: paid_at,
+      total_amount_cents: 1000
+    )
+    OrderItem.create!(
+      order: order,
+      product: product,
+      quantity: 1,
+      sku: product.sku,
+      title: product.title,
+      amount_cents: 1000,
+      amount_currency: "THB"
+    )
+    OrderStorePayout.create!(
+      order: order,
+      store: store,
+      amount_cents: 500,
+      amount_currency: "THB"
+    )
+
+    since = 7.days.ago.beginning_of_day
+    by_day = OrderStorePayout.seller_amounts_by_day_for_store(store_id: store.id, since: since)
+    assert_equal 500, by_day.values.sum
+  end
 end

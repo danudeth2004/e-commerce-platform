@@ -84,6 +84,14 @@
                   class: "block px-4 py-2.5 text-gray-800 hover:bg-gray-50" do %>
                   แก้ไขโปรไฟล์ร้านค้า
                 <% end %>
+                <%= link_to seller_orders_path,
+                  class: "block px-4 py-2.5 text-gray-800 hover:bg-gray-50" do %>
+                  คำสั่งซื้อจากลูกค้า
+                <% end %>
+                <%= link_to seller_sales_path,
+                  class: "block px-4 py-2.5 text-gray-800 hover:bg-gray-50" do %>
+                  รายรับและประวัติการขาย
+                <% end %>
                 <%= link_to choose_seller_products_path,
                   class: "block px-4 py-2.5 text-gray-800 hover:bg-gray-50" do %>
                   เพิ่มสินค้า / จัดเซต

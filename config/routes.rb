@@ -40,6 +40,8 @@ Rails.application.routes.draw do
     end
     resources :product_bundles, only: [ :new, :create, :edit, :update ]
     resources :stores, only: [ :new, :create, :edit, :update ]
+    resources :orders, only: [ :index, :show ]
+    get "sales", to: "sales#index", as: :sales
 
     root "home#index"
   end

@@ -1,0 +1,72 @@
+<div class="w-full min-h-screen bg-white">
+  <div class="w-full max-w-screen-xl mx-auto px-4 pb-10 space-y-8">
+    <header class="flex items-center gap-3 pt-4">
+      <%= link_to seller_root_path, class: "inline-flex size-10 items-center justify-center rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 transition", aria: { label: "กลับหน้าร้าน" } do %>
+        <span class="iconify text-xl" data-icon="lucide:chevron-left"></span>
+      <% end %>
+      <div>
+        <h1 class="text-lg font-semibold text-gray-900">รายรับและประวัติการขาย</h1>
+        <p class="text-sm text-gray-500">ยอดจากออเดอร์ที่ชำระแล้วเท่านั้น</p>
+      </div>
+    </header>
+
+    <section class="rounded-2xl border border-gray-100 bg-gradient-to-br from-pink-50/80 to-white p-6 shadow-sm ring-1 ring-pink-100/50">
+      <p class="text-xs font-medium uppercase tracking-wide text-gray-500">ยอดรับสะสม (ออเดอร์ชำระแล้ว)</p>
+      <p class="mt-2 text-3xl font-semibold tabular-nums text-gray-900">
+        <%= number_with_delimiter(@total_paid_seller_cents / 100.0) %> ฿
+      </p>
+    </section>
+
+    <section class="space-y-3">
+      <h2 class="text-base font-semibold text-gray-900">ยอดรับรายวัน (<%= @sales_chart_days %> วันย้อนหลัง)</h2>
+      <p class="text-xs text-gray-500">คิดตามวันที่ชำระเงิน (โซนเวลา Asia/Bangkok)</p>
+      <div class="overflow-x-auto rounded-xl border border-gray-100 bg-white">
+        <div class="flex items-end gap-0.5 min-h-[140px] p-3 pt-6">
+          <% @chart_rows.each do |day, cents| %>
+            <% h_pct = cents.zero? ? 0 : [(cents.to_f / @chart_max_cents * 100).round(1), 2].max %>
+            <div class="flex-1 min-w-[6px] flex flex-col items-center gap-1 group" title="<%= day.strftime("%d/%m/%Y") %>: <%= number_with_delimiter(cents / 100.0) %> ฿">
+              <div class="w-full flex flex-col justify-end h-24 bg-gray-100/80 rounded-t overflow-hidden">
+                <div class="w-full bg-pink-400/90 group-hover:bg-pink-500 transition rounded-t" style="height: <%= h_pct %>%"></div>
+              </div>
+              <span class="text-[9px] text-gray-400 rotate-45 origin-top-left whitespace-nowrap"><%= day.strftime("%d/%m") %></span>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </section>
+
+    <section class="space-y-3">
+      <h2 class="text-base font-semibold text-gray-900">ประวัติการโอน (ล่าสุด 200 รายการ)</h2>
+      <% if @payouts.any? %>
+        <div class="overflow-x-auto rounded-xl border border-gray-100">
+          <table class="min-w-full divide-y divide-gray-100 text-sm">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-3 py-2 text-left font-medium text-gray-600">คำสั่งซื้อ</th>
+                <th class="px-3 py-2 text-right font-medium text-gray-600">จำนวนเงิน</th>
+                <th class="px-3 py-2 text-left font-medium text-gray-600">สถานะโอน</th>
+                <th class="px-3 py-2 text-left font-medium text-gray-600">อัปเดต</th>
+                <th class="px-3 py-2"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 bg-white">
+              <% @payouts.each do |p| %>
+                <tr class="hover:bg-gray-50/80">
+                  <td class="px-3 py-2 tabular-nums text-gray-900">#<%= p.order_id %></td>
+                  <td class="px-3 py-2 text-right tabular-nums font-medium text-gray-900"><%= number_with_delimiter(p.amount) %> ฿</td>
+                  <td class="px-3 py-2 text-gray-700"><%= seller_payout_status_label(p) %></td>
+                  <td class="px-3 py-2 text-xs text-gray-500"><%= p.updated_at.strftime("%d/%m/%Y %H:%M") %></td>
+                  <td class="px-3 py-2 text-right">
+                    <%= link_to "ดูออเดอร์", seller_order_path(p.order), class: "text-pink-600 hover:text-pink-700 text-xs font-medium" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <p class="rounded-xl border border-dashed border-gray-200 bg-gray-50/50 py-12 text-center text-sm text-gray-500">ยังไม่มีประวัติการขาย</p>
+      <% end %>
+    </section>
+  </div>
+</div>

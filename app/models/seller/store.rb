@@ -7,6 +7,7 @@ class Seller::Store < ApplicationRecord
   has_one_attached :logo
   has_many :products, foreign_key: :seller_store_id, dependent: :destroy
   has_many :order_store_payouts, foreign_key: :seller_store_id, dependent: :destroy
+  has_many :orders, through: :order_store_payouts
 
   validates :name, uniqueness: true
   validates :name, :location, :seller_user_id, presence: true
