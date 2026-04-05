@@ -182,6 +182,81 @@ class CheckoutsExtendedCoverageTest < ActionDispatch::IntegrationTest
     assert_redirected_to payment_checkout_path(order_id: order.id)
   end
 
+  test "pay with unknown coupon_id redirects back to payment" do
+    user = create_user!
+    create_shipping_address!(user)
+    sign_in user
+    store = create_store!
+    store.update!(status: :active, omise_recipient_id: "recp_x")
+    product = create_standard_product!(store: store)
+    order = Order.create!(user: user, status: :pending, total_amount_cents: 1000, platform_fee_cents: 0)
+    order.order_items.create!(
+      product: product,
+      title: product.title,
+      sku: product.sku,
+      quantity: 1,
+      amount_cents: 1000,
+      amount_currency: "THB"
+    )
+    OrderStorePayout.create!(
+      order: order,
+      store: store,
+      amount_cents: 900,
+      status: :pending
+    )
+
+    post pay_checkout_path, params: {
+      order_id: order.id,
+      omise_token: "tok_test",
+      shipping_method: "standard",
+      coupon_id: 9_999_999_999,
+      coupon_product_ids: product.id.to_s
+    }
+    assert_redirected_to payment_checkout_path(order_id: order.id)
+  end
+
+  test "pay with excessive coupon discount redirects with alert when total negative" do
+    user = create_user!
+    create_shipping_address!(user)
+    sign_in user
+    store = create_store!
+    store.update!(status: :active, omise_recipient_id: "recp_x")
+    product = create_standard_product!(store: store)
+    order = Order.create!(user: user, status: :pending, total_amount_cents: 1000, platform_fee_cents: 0)
+    order.order_items.create!(
+      product: product,
+      title: product.title,
+      sku: product.sku,
+      quantity: 1,
+      amount_cents: 1000,
+      amount_currency: "THB"
+    )
+    OrderStorePayout.create!(
+      order: order,
+      store: store,
+      amount_cents: 900,
+      status: :pending
+    )
+    coupon = Coupon.create!(
+      user: user,
+      discount: 150,
+      min_order: 0,
+      started_at: 1.day.ago,
+      expires_at: 1.day.from_now,
+      used: false
+    )
+    coupon.coupon_products.create!(product: product)
+
+    post pay_checkout_path, params: {
+      order_id: order.id,
+      omise_token: "tok_test",
+      shipping_method: "standard",
+      coupon_id: coupon.id,
+      coupon_product_ids: product.id.to_s
+    }
+    assert_redirected_to root_path
+  end
+
   test "pay with full discount results in zero total marks paid without charge" do
     user = create_user!
     create_shipping_address!(user)

@@ -39,10 +39,12 @@ class OmiseServiceTest < ActiveSupport::TestCase
     assert store.reload.omise_recipient_id.present?
   end
 
-  test "UpdateRecipient returns early without recipient id" do
+  test "UpdateRecipient creates recipient when missing then updates" do
     store = create_store!
     assert_nil store.omise_recipient_id
-    assert_nil OmiseService::UpdateRecipient.new(store: store).call
+    result = OmiseService::UpdateRecipient.new(store: store).call
+    assert result
+    assert store.reload.omise_recipient_id.present?
   end
 
   test "UpdateRecipient updates when recipient exists" do

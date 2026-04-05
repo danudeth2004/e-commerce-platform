@@ -64,7 +64,7 @@ class CouponTest < ActiveSupport::TestCase
 
     c.coupon_products.create!(product: p2)
     c.reload
-    assert_equal "Alpha และอีก 1 รายการ", c.product_title_for_display
+    assert_equal "Beta และอีก 1 รายการ", c.product_title_for_display
   end
 
   test "expires_after_started validation" do

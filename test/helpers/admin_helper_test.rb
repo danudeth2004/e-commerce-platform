@@ -10,6 +10,10 @@ class AdminHelperTest < ActionView::TestCase
     assert_equal "฿0.00", admin_format_thb(0)
   end
 
+  test "admin_format_thb non-zero uses number_to_currency" do
+    assert_equal "฿123.45", admin_format_thb(12_345)
+  end
+
   test "admin_store_status_label covers variants" do
     s = Seller::Store.new(status: :active)
     assert_equal "ใช้งาน", admin_store_status_label(s)

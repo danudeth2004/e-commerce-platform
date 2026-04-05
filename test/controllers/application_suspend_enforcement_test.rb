@@ -2,23 +2,7 @@
 
 require "test_helper"
 
-# Isolated controller to exercise ApplicationController#enforce_buyer_not_suspended (suspended? path).
-class ApplicationSuspendEnforcementController < ApplicationController
-  def index
-    render plain: "ok"
-  end
-
-  private
-
-  def current_user
-    @__test_user
-  end
-
-  def user_signed_in?
-    @__test_user.present?
-  end
-end
-
+# ใช้ ApplicationSuspendEnforcementController ใน app/controllers + route (เฉพาะ test)
 class ApplicationSuspendEnforcementTest < ActionController::TestCase
   include Devise::Test::ControllerHelpers
 
@@ -35,5 +19,14 @@ class ApplicationSuspendEnforcementTest < ActionController::TestCase
     get :index
     assert_redirected_to root_path
     assert_equal I18n.t("devise.failure.suspended"), flash[:alert].to_s
+  end
+
+  test "renders ok when buyer is not suspended" do
+    u = create_user!
+    u.active!
+    @controller.instance_variable_set(:@__test_user, u)
+    get :index
+    assert_response :success
+    assert_equal "ok", @response.body
   end
 end

@@ -99,7 +99,7 @@ class CheckoutsController < BaseController
     elsif total_cents == 0
       @order.update!(status: :paid, paid_at: Time.current)
     else
-      redirect_to root_path, alert: "ชำระเงินไม่สำเร็จ กรุณาลองใหม่"
+      return redirect_to root_path, alert: "ชำระเงินไม่สำเร็จ กรุณาลองใหม่"
     end
     @order.reload
 

@@ -98,6 +98,10 @@ Rails.application.routes.draw do
 
   get "home/flash_sale", to: "home#flash_sale", as: :home_flash_sale
 
+  if Rails.env.test?
+    get "application_suspend_enforcement", to: "application_suspend_enforcement#index"
+  end
+
   # Do not send /.well-known/* to "/": Chrome DevTools requests that URL and following GET / would run
   # HomeController#index, which calls sign_out(:seller_user) (see BaseController).
   match "*path", to: redirect("/"), via: :all, constraints: ->(req) {

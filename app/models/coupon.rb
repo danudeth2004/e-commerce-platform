@@ -23,7 +23,7 @@ class Coupon < ApplicationRecord
   end
 
   def product_title_for_display
-    titles = products.map(&:title).compact_blank
+    titles = products.order(:id).pluck(:title).compact_blank
     return "—" if titles.empty?
     return titles.first if titles.size == 1
 

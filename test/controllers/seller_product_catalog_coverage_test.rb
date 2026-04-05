@@ -560,6 +560,63 @@ class SellerProductCatalogCoverageTest < ActionDispatch::IntegrationTest
     assert product.reload.images.attached?
   end
 
+  test "products update removing all images returns unprocessable when had images" do
+    setup_seller_with_store
+    product = create_standard_product!(store: @store, sku: "SKU-IMG-#{SecureRandom.hex(4)}")
+    png_path = Rails.root.join("test/fixtures/files/1x1.png")
+    png_path.open { |io| product.images.attach(io: io, filename: "1x1.png") }
+    signed_id = product.images.blobs.first.signed_id
+
+    patch seller_product_path(product), params: {
+      product: {
+        title: product.title,
+        sku: product.sku,
+        category_key: "serum",
+        volume: 30,
+        volume_unit: "ml",
+        amount: "10",
+        promotion: "0",
+        description: "x",
+        remove_image_signed_ids: [ signed_id ]
+      }
+    }
+    assert_response :unprocessable_entity
+    refute product.reload.images.attached?
+  end
+
+  test "bundles edit redirects when fewer than two standard candidates" do
+    setup_seller_with_store
+    p1 = create_standard_product!(store: @store, sku: "SKU-ED1-#{SecureRandom.hex(4)}")
+    p2 = create_standard_product!(store: @store, sku: "SKU-ED2-#{SecureRandom.hex(4)}")
+    png = fixture_file_upload("1x1.png", "image/png")
+
+    post seller_product_bundles_path, params: {
+      product_bundle: {
+        title: "Bundle For Edit Gate",
+        bundle_set_type_key: "facial_routine",
+        category_key: "bundle",
+        skin_concern_keys: [ "acne_skin" ],
+        bundle_ordered_ids: [ p1.id, p2.id ],
+        bundle_usages: { p1.id.to_s => "a", p2.id.to_s => "b" },
+        pricing_mode: "sum",
+        images: [ png ]
+      }
+    }
+    bundle = @store.products.bundle.last
+
+    orig = Seller::ProductBundlesController.instance_method(:standard_bundle_candidates)
+    Seller::ProductBundlesController.define_method(:standard_bundle_candidates) { Product.none }
+    begin
+      get edit_seller_product_bundle_path(bundle)
+      assert_redirected_to choose_seller_products_path
+    ensure
+      Seller::ProductBundlesController.define_method(:standard_bundle_candidates) do |*args|
+        orig.bind(self).call(*args)
+      end
+      Seller::ProductBundlesController.class_eval { private :standard_bundle_candidates }
+    end
+  end
+
   test "products update clears promotion when blank string" do
     setup_seller_with_store
     product = create_standard_product!(

@@ -114,4 +114,35 @@ class Users::ShippingAddressesControllerTest < ActionDispatch::IntegrationTest
     get new_users_shipping_address_path(order_id: 1, return_to: "/checkout")
     assert_response :success
   end
+
+  test "edit loads form with checkout context" do
+    user = create_user!
+    addr = create_shipping_address!(user)
+    sign_in user
+    get edit_users_shipping_address_path(addr, order_id: 1, return_to: "/checkout")
+    assert_response :success
+  end
+
+  test "update redirects to return_to when no order_id" do
+    user = create_user!
+    addr = create_shipping_address!(user)
+    sign_in user
+    patch users_shipping_address_path(addr),
+      params: {
+        return_to: "/products",
+        shipping_address: valid_attrs.merge(address_detail: "แก้ไขแล้ว")
+      }
+    assert_redirected_to "/products"
+  end
+
+  test "destroy promotes another address when deleting default" do
+    user = create_user!
+    first = create_shipping_address!(user, label: "บ้าน", is_default: true)
+    second = create_shipping_address!(user, label: "ออฟฟิศ", is_default: false)
+    sign_in user
+
+    delete users_shipping_address_path(first)
+    assert_response :redirect
+    assert second.reload.is_default?
+  end
 end

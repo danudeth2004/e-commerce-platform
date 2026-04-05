@@ -5,7 +5,7 @@ module Seller
     before_action :set_bundle_product, only: [ :edit, :update ]
 
     def new
-      @candidates = @store.products.standard.order(:title)
+      @candidates = standard_bundle_candidates
       if @candidates.size < 2
         redirect_to choose_seller_products_path,
           alert: "ต้องมีสินค้าในร้านอย่างน้อย 2 รายการก่อนจัดเซต — กรุณาเพิ่มสินค้าชิ้นเดียวก่อน"
@@ -16,7 +16,7 @@ module Seller
     end
 
     def create
-      @candidates = @store.products.standard.order(:title)
+      @candidates = standard_bundle_candidates
       if @candidates.size < 2
         redirect_to choose_seller_products_path, alert: "สินค้าในร้านไม่เพียงพอสำหรับการจัดเซต"
         return
@@ -118,20 +118,18 @@ module Seller
     end
 
     def edit
-      @candidates = @store.products.standard.order(:title)
-      # :nocov:
+      @candidates = standard_bundle_candidates
       if @candidates.size < 2
         redirect_to choose_seller_products_path,
           alert: "ต้องมีสินค้าในร้านอย่างน้อย 2 รายการก่อนจัดเซต — กรุณาเพิ่มสินค้าชิ้นเดียวก่อน"
         return
       end
-      # :nocov:
       set_candidate_prices
       setup_bundle_form_defaults
     end
 
     def update
-      @candidates = @store.products.standard.order(:title)
+      @candidates = standard_bundle_candidates
       set_candidate_prices
 
       ordered_ids = parse_ordered_ids
@@ -190,12 +188,11 @@ module Seller
         return
       end
 
-      had_images = @product.images.attachments.exists?
       purge_product_attached_images_by_signed_ids(@product, p[:remove_image_signed_ids])
       attach_new_images_if_any(@product)
       @product.images.reload
 
-      if !@product.images.attached? && had_images
+      if !@product.images.attached?
         flash.now[:alert] = "กรุณามีรูปเซตอย่างน้อย 1 รูป (อัปโหลดเพิ่มหรือใช้รูปเดิม)"
         assign_bundle_edit_form_state!
         render :edit, status: :unprocessable_entity
@@ -247,6 +244,10 @@ module Seller
 
     def set_store
       @store = Seller::Store.find(current_seller_user.store.id)
+    end
+
+    def standard_bundle_candidates
+      @store.products.standard.order(:title)
     end
 
     def setup_bundle_form_defaults
