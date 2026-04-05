@@ -173,7 +173,7 @@
                 <span class="hidden absolute inset-0 flex items-center justify-center rounded-full bg-[#FF1493] text-xs font-bold text-white" data-bundle-role="badge"></span>
                 <span class="text-lg leading-none text-[#FF1493]/50" data-bundle-role="empty">○</span>
               </button>
-              <div class="min-w-0 flex-1">
+              <div class="flex-1">
                 <div class="flex gap-2 items-start">
                   <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100">
                     <% if card[:image_url].present? %>
@@ -262,7 +262,7 @@
           <div class="mt-3 hidden rounded-xl border border-pink-200 bg-pink-50/50 p-3" data-bundle-product-pick-target="customBlock">
             <p class="mb-2 text-xs font-medium text-gray-700">ราคาขายสำหรับเซตนี้ (บาท)</p>
             <div class="flex items-stretch gap-2">
-              <%= f.number_field :bundle_amount, value: (editing ? bundle_amount_baht : nil), step: 1, min: 1, placeholder: "ใส่ราคาสำหรับเซตสินค้านี้", class: "min-w-0 flex-1 rounded-lg border border-pink-200 bg-white px-3 py-2.5 text-sm focus:border-[#FF1493] focus:outline-none focus:ring-1 focus:ring-pink-300" %>
+              <%= f.number_field :bundle_amount, value: (editing ? bundle_amount_baht : nil), step: 1, min: 1, placeholder: "ใส่ราคาสำหรับเซตสินค้านี้", class: "flex-1 rounded-lg border border-pink-200 bg-white px-3 py-2.5 text-sm focus:border-[#FF1493] focus:outline-none focus:ring-1 focus:ring-pink-300" %>
               <span class="inline-flex items-center rounded-lg border border-gray-200 bg-gray-50 px-3 text-sm text-gray-600 shrink-0">บาท</span>
             </div>
           </div>

@@ -50,7 +50,7 @@
       ปริมาณ <span class="text-text-accents-red">*</span>
     <% end %>
     <div class="flex items-stretch gap-2">
-      <%= form.number_field :volume, step: 1, min: 0, placeholder: "ระบุปริมาณสินค้า", class: "min-w-0 flex-1 #{step2_input}", autocomplete: "off" %>
+      <%= form.number_field :volume, step: 1, min: 0, placeholder: "ระบุปริมาณสินค้า", class: "flex-1 #{step2_input}", autocomplete: "off" %>
       <div class="relative shrink-0 min-w-[4.5rem]">
         <%= form.select :volume_unit,
                         [ [ "ml", "ml" ], [ "g", "g" ] ],

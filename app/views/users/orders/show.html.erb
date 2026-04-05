@@ -39,13 +39,15 @@
         </span>
       <% end %>
 
-      <% if @order.paid_at.present? %>
-        <p class="mt-2 text-xs text-slate-500">
+      <p class="mt-2 text-xs text-slate-500">
+        <% if @order.paid_at.present? %>
+
           <%= @order.paid_at.strftime("%d/%m/%Y %H:%M") %>
-        </p>
-      <% else %>
-        <p class="mt-2 text-xs text-slate-500">ยังไม่มีการชำระเงิน</p>
-      <% end %>
+
+        <% else %>
+          ยังไม่มีการชำระเงิน
+        <% end %>
+      </p>
 
       <% if @order.paid? && @order.paid_at.present? %>
         <% delivered =
@@ -78,58 +80,58 @@
     <div class="rounded-2xl border border-rose-100/80 bg-white/90 p-4 shadow-md shadow-rose-100/20 ring-1 ring-rose-50/40">
       <p class="text-sm font-semibold text-slate-900 mb-3">รายการสินค้า</p>
 
-        <% @total_price = 0 %>
-        <% @store_discount_price = 0 %>
+      <% @total_price = 0 %>
+      <% @store_discount_price = 0 %>
 
-        <% @order.order_items.group_by { |item| item.product&.store }.each do |store, items| %>
+      <% @order.order_items.group_by { |item| item.product&.store }.each do |store, items| %>
         <div class="mb-4 overflow-hidden rounded-xl border border-rose-100/70 last:mb-0">
-            <div class="flex items-center gap-2 border-b border-rose-100/60 bg-gradient-to-r from-rose-50/90 to-white px-3 py-2.5 text-sm font-semibold text-slate-800">
+          <div class="flex items-center gap-2 border-b border-rose-100/60 bg-gradient-to-r from-rose-50/90 to-white px-3 py-2.5 text-sm font-semibold text-slate-800">
             <span class="iconify text-rose-500" data-icon="lucide:store"></span>
             <%= store&.name || "ร้านค้า" %>
-            </div>
+          </div>
 
-            <ul class="space-y-3 p-3">
+          <ul class="space-y-3 p-3">
             <% items.each do |item| %>
-                <% p = product_detail_price_parts(item.product) %>
-                <% @price = p[:price].to_i * item.quantity %>
-                <% @original_price = p[:original].to_i * item.quantity %>
-                <% @discount_percent = p[:discount_percent] %>
-                <% @total_price += @original_price %>
+              <% p = product_detail_price_parts(item.product) %>
+              <% @price = p[:price].to_i * item.quantity %>
+              <% @original_price = p[:original].to_i * item.quantity %>
+              <% @discount_percent = p[:discount_percent] %>
+              <% @total_price += @original_price %>
 
-                <li class="flex items-center gap-3">
+              <li class="flex items-center gap-3">
                 <div class="size-14 shrink-0 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200/60">
-                    <% if item.product&.images&.attached? %>
+                  <% if item.product&.images&.attached? %>
                     <%= image_tag rails_blob_path(item.product.images.first, only_path: true),
                             class: "h-full w-full object-cover",
                             alt: item.title %>
-                    <% else %>
+                  <% else %>
                     <div class="flex h-full w-full items-center justify-center text-[10px] font-medium text-slate-400">
-                        ไม่มีรูป
+                      ไม่มีรูป
                     </div>
-                    <% end %>
+                  <% end %>
                 </div>
 
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-medium text-slate-900 line-clamp-1">
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-slate-900 line-clamp-1">
                     <%= item.title %>
-                    </p>
-                    <p class="text-xs text-slate-500">
+                  </p>
+                  <p class="text-xs text-slate-500">
                     x<%= item.quantity %>
-                    </p>
+                  </p>
                 </div>
 
                 <div class="shrink-0 text-sm font-semibold tabular-nums text-slate-900 text-right">
-                    <span><%= number_with_delimiter(@price) %> ฿</span>
-                    <% if @original_price.present? && @original_price > @price %>
-                        <% @store_discount_price += @price.to_i %>
-                        <span class="block text-gray-400 line-through text-xs"><%= number_with_delimiter(@original_price) %> ฿</span>
-                    <% end %>
+                  <span><%= number_with_delimiter(@price) %> ฿</span>
+                  <% if @original_price.present? && @original_price > @price %>
+                    <% @store_discount_price += @price.to_i %>
+                    <span class="block text-gray-400 line-through text-xs"><%= number_with_delimiter(@original_price) %> ฿</span>
+                  <% end %>
                 </div>
-                </li>
+              </li>
             <% end %>
-            </ul>
+          </ul>
         </div>
-        <% end %>
+      <% end %>
     </div>
 
     <div class="space-y-2 rounded-2xl border border-rose-100/80 bg-white/90 p-4 shadow-md shadow-rose-100/20 ring-1 ring-rose-50/40">
@@ -140,15 +142,15 @@
 
       <% if @store_discount_price.positive? %>
         <div class="flex justify-between text-sm text-red-600">
-            <span>ส่วนลดจากร้านค้า</span>
-            <span class="tabular-nums">- <%= number_with_precision(@store_discount_price, precision: 2, delimiter: ",") %> ฿</span>
+          <span>ส่วนลดจากร้านค้า</span>
+          <span class="tabular-nums">- <%= number_with_precision(@store_discount_price, precision: 2, delimiter: ",") %> ฿</span>
         </div>
       <% end %>
 
       <% if @order.discount.positive? %>
         <div class="flex justify-between text-sm text-green-500">
-            <span>คูปองส่วนลด</span>
-            <span class="tabular-nums">- <%= number_with_delimiter(@order.discount) %> ฿</span>
+          <span>คูปองส่วนลด</span>
+          <span class="tabular-nums">- <%= number_with_delimiter(@order.discount) %> ฿</span>
         </div>
       <% end %>
 

@@ -65,7 +65,7 @@
                   class: "hidden w-full h-full object-cover rounded-full",
                   data: { store_image_upload_target: "preview" } %>
         </label>
-        <div class="flex min-w-0 flex-1 flex-col gap-3">
+        <div class="flex flex-1 flex-col gap-3">
             <p data-store-image-upload-target="nameLabel" class="text-sm text-text-primary truncate">
                 <%= store.logo.attached? ? store.logo.filename.to_s : "ยังไม่ได้เลือกไฟล์" %>
             </p>

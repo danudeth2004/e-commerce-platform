@@ -62,7 +62,7 @@
               <span class="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-pink-600 ring-2 ring-pink-400 shadow-sm">
                 <%= i + 1 %>
               </span>
-              <div class="min-w-0 flex-1 pt-0.5 rounded-xl border border-pink-100/80 bg-white px-3 py-2.5 shadow-sm">
+              <div class="flex-1 pt-0.5 rounded-xl border border-pink-100/80 bg-white px-3 py-2.5 shadow-sm">
                 <p class="font-semibold text-gray-900 leading-snug"><%= comp.title %></p>
                 <p class="text-xs text-pink-600 font-medium mt-1">ราคาชิ้นนี้ (หลังโปร) ฿ <%= number_with_delimiter(h[:price]) %></p>
                 <% if item.usage_instructions.present? %>

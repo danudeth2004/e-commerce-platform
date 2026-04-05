@@ -13,7 +13,7 @@
         </p>
       </div>
     </div>
-    <%= tag.div class: "h-72 w-full min-w-0", data: {
+    <%= tag.div class: "h-72 w-full", data: {
           controller: "dashboard-chart",
           dashboard_chart_labels_value: @chart_labels,
           dashboard_chart_visits_value: @visit_series,
@@ -64,7 +64,7 @@
         </div>
       </div>
     </div>
-    <%= tag.div class: "h-72 w-full min-w-0", data: {
+    <%= tag.div class: "h-72 w-full", data: {
           controller: "revenue-chart",
           revenue_chart_labels_value: @chart_labels,
           revenue_chart_gmv_value: @revenue_gmv_series,
