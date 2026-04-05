@@ -110,6 +110,7 @@
           <% end %>
           <%= f.password_field :password_confirmation,
           required: true,
+          minlength: 6,
           autocomplete: "new-password",
           placeholder: "ยืนยันรหัสผ่าน",
           class: input_class %>

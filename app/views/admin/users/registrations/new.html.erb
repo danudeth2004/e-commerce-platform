@@ -38,6 +38,7 @@
         <%= f.label :password_confirmation, "ยืนยันรหัสผ่าน", class: "block text-sm font-medium text-gray-700 mb-1" %>
         <%= f.password_field :password_confirmation,
           placeholder: "ยืนยันรหัสผ่าน",
+          minlength: 6,
           autocomplete: "new-password",
           required: true,
           class: "w-full rounded-lg border-gray-300 border border-gray-500 px-2 py-2" %>

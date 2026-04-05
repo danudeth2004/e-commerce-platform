@@ -95,12 +95,12 @@
 
         <div class="mb-4">
           <%= f.label :password, "รหัสผ่านใหม่", class: label_class %>
-          <%= f.password_field :password, autocomplete: "new-password", placeholder: "รหัสผ่านใหม่", class: input_class %>
+          <%= f.password_field :password, minlength: 6, autocomplete: "new-password", placeholder: "รหัสผ่านใหม่", class: input_class %>
         </div>
 
         <div class="mb-0">
           <%= f.label :password_confirmation, "ยืนยันรหัสผ่านใหม่", class: label_class %>
-          <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "ยืนยันรหัสผ่านใหม่", class: input_class %>
+          <%= f.password_field :password_confirmation, minlength: 6, autocomplete: "new-password", placeholder: "ยืนยันรหัสผ่านใหม่", class: input_class %>
         </div>
       </section>
 

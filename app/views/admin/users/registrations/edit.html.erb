@@ -38,6 +38,7 @@
         <div>
           <%= f.label :password, "รหัสผ่านใหม่", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
           <%= f.password_field :password,
+                minlength: 6,
                 autocomplete: "new-password",
                 
                 class: "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30" %>
@@ -50,6 +51,7 @@
           <%= f.label :password_confirmation, "ยืนยันรหัสผ่านใหม่", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
           <%= f.password_field :password_confirmation,
                 autocomplete: "new-password",
+                minlength: 6,
                 class: "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30" %>
         </div>
       </div>
