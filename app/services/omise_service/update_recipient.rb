@@ -5,7 +5,7 @@ module OmiseService
     end
 
     def call
-      return unless @store.omise_recipient_id.present?
+      OmiseService::CreateRecipient.new(store: @store).call if @store.omise_recipient_id.blank?
 
       Omise.api_key = ENV.fetch("OMISE_SECRET_KEY")
 
@@ -19,6 +19,10 @@ module OmiseService
           name: @store.bank_name
         }
       )
+
+      @store.update!(omise_recipient_id: recipient.id)
+
+      recipient
     end
   end
 end
