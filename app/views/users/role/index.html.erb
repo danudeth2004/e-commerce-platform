@@ -2,44 +2,38 @@
   <div class="w-full max-w-md">
 
     <h1 class="text-xl font-semibold text-gray-800 mb-6">
-      เลือกประเภทบัญชีที่คุณต้องการสร้าง
+      เลือกประเภทบัญชีที่คุณต้องการเข้าสู่ระบบ
     </h1>
 
-    <%= link_to new_user_registration_path,
+    <%= link_to new_user_session_path,
       class: "flex items-center gap-4 bg-white rounded-2xl p-4 mb-4
               shadow-md hover:shadow-lg transition" do %>
 
-      <div class="w-12 h-12 flex items-center justify-center
-                  bg-pink-100 text-pink-500 rounded-full text-xl">
-        👤
-      </div>
+      <%= inline_svg_tag "icons/user-login-select.svg", class: "w-[40px] h-[40px]" %>
 
       <div>
         <p class="text-base font-semibold text-gray-800">
-          สร้างบัญชีผู้ใช้งาน
+          เข้าสู่ระบบบัญชีผู้ใช้งาน
         </p>
         <p class="text-sm text-gray-400">
-          สร้างบัญชีสำหรับซื้อของกับเรา
+          เข้าสู่ระบบสำหรับซื้อของกับเรา
         </p>
       </div>
 
     <% end %>
 
-    <%= link_to new_seller_user_registration_path,
+    <%= link_to new_seller_user_session_path,
       class: "flex items-center gap-4 bg-white rounded-2xl p-4
               shadow-md hover:shadow-lg transition" do %>
 
-      <div class="w-12 h-12 flex items-center justify-center
-                  bg-pink-100 text-pink-500 rounded-full text-xl">
-        🏪
-      </div>
+      <%= inline_svg_tag "icons/seller-login-select.svg", class: "w-[40px] h-[40px]" %>
 
       <div>
         <p class="text-base font-semibold text-gray-800">
-          สร้างบัญชีร้านค้า
+          เข้าสู่ระบบบัญชีร้านค้า
         </p>
         <p class="text-sm text-gray-400">
-          สร้างบัญชีสำหรับเริ่มการขายของกับเรา
+          เข้าสู่ระบบสำหรับเริ่มการขายของกับเรา
         </p>
       </div>
 

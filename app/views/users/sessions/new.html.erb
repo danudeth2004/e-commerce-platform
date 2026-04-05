@@ -2,7 +2,7 @@
   <div class=" gap-3 mb-4">
     <div class="mb-6">
       <h2 class="text-2xl font-semibold text-text-primary mb-1">
-        เข้าสู่ระบบ
+        เข้าสู่ระบบบัญชีผู้ใช้งาน
       </h2>
       <p class="text-sm text-text-neutral-300 font-light">
         กรอกรายละเอียดเพื่อเข้าสู่ระบบและเริ่มใช้งาน
@@ -64,5 +64,11 @@
       <%= link_to "สร้างบัญชี", new_registration_path(resource_name),
         class: "text-pink-500 font-medium hover:underline" %>
     </div>
+
+    <p class="mt-6 text-center text-sm text-gray-400 font-light">
+      ต้องการสร้างบัญชีผู้ใช้ประเภทอื่น ?
+      <%= link_to "เลือกประเภท", users_role_path,
+        class: "text-pink-500 font-medium hover:underline" %>
+    </p>
   </div>
 </div>

@@ -71,5 +71,11 @@
       <%= link_to "สร้างบัญชี", new_registration_path(resource_name),
         class: "text-pink-500 font-medium hover:underline" %>
     </div>
+
+    <p class="mt-6 text-center text-sm text-gray-400 font-light">
+      ต้องการสร้างบัญชีผู้ใช้ประเภทอื่น ?
+      <%= link_to "เลือกประเภท", users_role_path,
+        class: "text-pink-500 font-medium hover:underline" %>
+    </p>
   </div>
 </div>
