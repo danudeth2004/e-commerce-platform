@@ -21,10 +21,10 @@
     <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
   </head>
   <body class="font-sans antialiased">
+    <% if flash.any? %>
+      <%= render "layouts/flash_messages" %>
+    <% end %>
     <main class="min-h-screen bg-white<%= ' pb-[calc(4.25rem+env(safe-area-inset-bottom,0px))]' if show_buyer_bottom_nav? %>">
-      <% if flash.any? %>
-        <%= render "layouts/flash_messages" %>
-      <% end %>
       <% if show_app_header? %>
         <%# Linear gradient (Figma): 0% #FF1493 → 50% #FF69B4 → 100% #F6DBD8 %>
         <% header_icon_btn = "inline-flex items-center justify-center size-11 shrink-0 rounded-2xl bg-gradient-to-r from-[#FF1493] via-[#FF69B4] to-[#F6DBD8] text-white shadow-sm transition hover:opacity-95 active:scale-[0.98] [&_svg]:drop-shadow-[0_1px_1px_rgba(0,0,0,0.18)]" %>

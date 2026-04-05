@@ -9,7 +9,9 @@
       </p>
     </div>
 
-    <%= render "layouts/flash_messages" %>
+    <% if flash.any? %>
+        <%= render "layouts/flash_messages" %>
+    <% end %>
 
     <%= form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }) do |f| %>
       <div class="mb-4">

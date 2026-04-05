@@ -19,10 +19,10 @@
   </head>
 
   <body class="font-sans antialiased">
+    <% if flash.any? %>
+      <%= render "layouts/flash_messages" %>
+    <% end %>
     <main class="min-h-screen bg-white">
-      <div class="w-full max-w-screen-xl mx-auto px-4 pt-3">
-        <%= render "layouts/flash_messages" %>
-      </div>
       <%= yield %>
     </main>
   </body>

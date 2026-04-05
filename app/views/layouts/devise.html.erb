@@ -23,11 +23,11 @@
 </head>
 
 <body class="bg-white text-gray-800 font-sans antialiased">
+    <% if flash.any? %>
+        <%= render "layouts/flash_messages" %>
+    <% end %>
     <main class="min-h-screen flex items-top justify-center pt-10">
         <div class="w-[80dvh] px-6 py-10 bg-white">
-            <% unless %w[users/sessions seller/users/sessions].include?(controller_path) %>
-              <%= render "layouts/flash_messages" %>
-            <% end %>
             <%= yield %>
         </div>
     </main>
