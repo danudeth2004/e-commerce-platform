@@ -129,7 +129,9 @@
                 <% @bundle_products.each do |product| %>
                   <%= render "shared/product_bundle_card",
                      product: product_to_card_hash(product),
+                     clickable: true,
                      show_cart: false,
+                     show_cart_icon: false,
                      full_width: true,
                      link_to_path: product_path(product, seller_preview: 1) %>
                 <% end %>
