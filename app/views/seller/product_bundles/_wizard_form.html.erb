@@ -219,7 +219,9 @@
                 <p class="text-xs text-gray-600">฿ <%= number_with_delimiter(card[:price]) %></p>
               </div>
             </div>
-            <%= label_tag "usage_area_#{p.id}", "วิธีการใช้งาน *", class: "block text-xs font-medium text-gray-700 mb-1" %>
+            <%= label_tag "usage_area_#{p.id}", class: "text-sm font-semibold text-gray-900" do %>
+              วิธีการใช้งาน <span class="text-text-accents-red">*</span>
+            <% end %>
             <%= text_area_tag "product_bundle[bundle_usages][#{p.id}]",
               usage_val,
               rows: 3,
