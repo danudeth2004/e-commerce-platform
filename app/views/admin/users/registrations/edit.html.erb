@@ -34,13 +34,14 @@
       <h2 class="text-sm font-semibold text-gray-900 uppercase tracking-wide">เปลี่ยนรหัสผ่าน</h2>
       <p class="mt-1 text-sm text-gray-500">เว้นว่างทั้งสองช่องหากไม่ต้องการเปลี่ยนรหัสผ่าน</p>
 
+      <div data-controller="password-validation">
       <div class="mt-4 space-y-4">
         <div>
           <%= f.label :password, "รหัสผ่านใหม่", class: "block text-sm font-medium text-gray-700 mb-1.5" %>
           <%= f.password_field :password,
                 minlength: 6,
                 autocomplete: "new-password",
-                
+                data: { password_validation_target: "password" },
                 class: "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30" %>
           <% if @minimum_password_length %>
             <p class="mt-1.5 text-xs text-gray-500">อย่างน้อย <%= @minimum_password_length %> ตัวอักษร</p>
@@ -52,7 +53,9 @@
           <%= f.password_field :password_confirmation,
                 autocomplete: "new-password",
                 minlength: 6,
+                data: { password_validation_target: "confirmation" },
                 class: "w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/30" %>
+        </div>
         </div>
       </div>
     </section>

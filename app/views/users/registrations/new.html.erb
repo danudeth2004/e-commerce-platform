@@ -87,33 +87,39 @@
           class: input_class %>
         </div>
 
-        <div class="mb-4">
-          <%= f.label :password, class: label_class do %>
-            รหัสผ่าน <span class="text-red-500">*</span>
-          <% end %>
-          <% if @minimum_password_length %>
-            <p class="text-xs text-gray-400 mb-2">
-              อย่างน้อย <%= @minimum_password_length %> ตัวอักษร
-            </p>
-          <% end %>
-          <%= f.password_field :password,
-          required: true,
-          minlength: 6,
-          autocomplete: "new-password",
-          placeholder: "กรอกรหัสผ่าน",
-          class: input_class %>
-        </div>
+        <div data-controller="password-validation">
+          <div class="mb-4">
+            <%= f.label :password, class: label_class do %>
+              รหัสผ่าน <span class="text-red-500">*</span>
+            <% end %>
+            <% if @minimum_password_length %>
+              <p class="text-xs text-gray-400 mb-2">
+                อย่างน้อย <%= @minimum_password_length %> ตัวอักษร
+              </p>
+            <% end %>
+            <%= f.password_field :password,
+                  required: true,
+                  minlength: 6,
+                  autocomplete: "new-password",
+                  placeholder: "กรอกรหัสผ่าน",
+                  id: "password", 
+                  data: { password_validation_target: "password" },
+                  class: input_class %>
+          </div>
 
-        <div class="mb-6">
-          <%= f.label :password_confirmation, class: label_class do %>
-            ยืนยันรหัสผ่าน <span class="text-red-500">*</span>
-          <% end %>
-          <%= f.password_field :password_confirmation,
-          required: true,
-          minlength: 6,
-          autocomplete: "new-password",
-          placeholder: "ยืนยันรหัสผ่าน",
-          class: input_class %>
+          <div class="mb-6">
+            <%= f.label :password_confirmation, class: label_class do %>
+              ยืนยันรหัสผ่าน <span class="text-red-500">*</span>
+            <% end %>
+            <%= f.password_field :password_confirmation,
+                  required: true,
+                  minlength: 6,
+                  autocomplete: "new-password",
+                  placeholder: "ยืนยันรหัสผ่าน",
+                  id: "password_confirmation",
+                  data: { password_validation_target: "confirmation" },
+                  class: input_class %>
+          </div>
         </div>
 
         <button

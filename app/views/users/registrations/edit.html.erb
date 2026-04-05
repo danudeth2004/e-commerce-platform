@@ -93,14 +93,16 @@
           <p class="text-xs text-gray-400 mb-2">อย่างน้อย <%= @minimum_password_length %> ตัวอักษร</p>
         <% end %>
 
-        <div class="mb-4">
-          <%= f.label :password, "รหัสผ่านใหม่", class: label_class %>
-          <%= f.password_field :password, minlength: 6, autocomplete: "new-password", placeholder: "รหัสผ่านใหม่", class: input_class %>
-        </div>
+        <div data-controller="password-validation">
+          <div class="mb-4">
+            <%= f.label :password, "รหัสผ่านใหม่", class: label_class %>
+            <%= f.password_field :password, minlength: 6, autocomplete: "new-password", placeholder: "รหัสผ่านใหม่", data: { password_validation_target: "password" }, class: input_class %>
+          </div>
 
-        <div class="mb-0">
-          <%= f.label :password_confirmation, "ยืนยันรหัสผ่านใหม่", class: label_class %>
-          <%= f.password_field :password_confirmation, minlength: 6, autocomplete: "new-password", placeholder: "ยืนยันรหัสผ่านใหม่", class: input_class %>
+          <div class="mb-0">
+            <%= f.label :password_confirmation, "ยืนยันรหัสผ่านใหม่", class: label_class %>
+            <%= f.password_field :password_confirmation, minlength: 6, autocomplete: "new-password", placeholder: "ยืนยันรหัสผ่านใหม่", data: { password_validation_target: "confirmation" }, class: input_class %>
+          </div>
         </div>
       </section>
 

@@ -78,46 +78,49 @@
                 focus:border-Primary-color focus:outline-none" %>
     </div>
 
+    <div data-controller="password-validation">
+      <div class="mb-4">
+        <%= f.label :password, "รหัสผ่าน",
+          class: "block text-base font-regular text-text-primary mb-2" do%>
+          รหัสผ่าน <span class="text-red-500">*</span>
+          <% end %>
 
-    <div class="mb-4">
-      <%= f.label :password, "รหัสผ่าน",
-        class: "block text-base font-regular text-text-primary mb-2" do%>
-        รหัสผ่าน <span class="text-red-500">*</span>
+
+        <% if @minimum_password_length %>
+          <p class="text-xs text-gray-400 mb-2">
+            อย่างน้อย <%= @minimum_password_length %> ตัวอักษร
+          </p>
         <% end %>
 
+        <%= f.password_field :password,
+          required: true,
+          minlength: 6,
+          autocomplete: "new-password",
+          placeholder: "กรอกรหัสผ่าน",
+          class: "w-full px-3 py-2.5 text-sm text-text-primary
+                  bg-white border border-border-neutral rounded-lg
+                  placeholder:text-text-placeholder
+                  focus:border-Primary-color focus:outline-none",
+          data: { password_validation_target: "password" } %>
+      </div>
 
-      <% if @minimum_password_length %>
-        <p class="text-xs text-gray-400 mb-2">
-          อย่างน้อย <%= @minimum_password_length %> ตัวอักษร
-        </p>
+      <div class="mb-6">
+        <%= f.label :password_confirmation, "ยืนยันรหัสผ่าน",
+      class: "block text-base font-regular text-text-primary mb-2" do%>
+      ยืนยันรหัสผ่าน <span class="text-red-500">*</span>
       <% end %>
 
-      <%= f.password_field :password,
-        required: true,
-        minlength: 6,
-        autocomplete: "new-password",
-        placeholder: "กรอกรหัสผ่าน",
-        class: "w-full px-3 py-2.5 text-sm text-text-primary
-                bg-white border border-border-neutral rounded-lg
-                placeholder:text-text-placeholder
-                focus:border-Primary-color focus:outline-none" %>
-    </div>
-
-    <div class="mb-6">
-      <%= f.label :password_confirmation, "ยืนยันรหัสผ่าน",
-    class: "block text-base font-regular text-text-primary mb-2" do%>
-    ยืนยันรหัสผ่าน <span class="text-red-500">*</span>
-    <% end %>
-
-    <%= f.password_field :password_confirmation,
-    required: true,
-    minlength: 6,
-    autocomplete: "new-password",
-    placeholder: "ยืนยันรหัสผ่าน",
-    class: "w-full px-3 py-2.5 text-sm text-text-primary
-            bg-white border border-border-neutral rounded-lg
-            placeholder:text-text-placeholder
-            focus:border-Primary-color focus:outline-none" %>
+      <%= f.password_field :password_confirmation,
+      required: true,
+      minlength: 6,
+      autocomplete: "new-password",
+      placeholder: "ยืนยันรหัสผ่าน",
+      class: "w-full px-3 py-2.5 text-sm text-text-primary
+              bg-white border border-border-neutral rounded-lg
+              placeholder:text-text-placeholder
+              focus:border-Primary-color focus:outline-none",
+      data: { password_validation_target: "confirmation" } %>
+      </div>
     </div>
 
     <div class="mt-6">
