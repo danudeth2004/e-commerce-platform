@@ -10,6 +10,11 @@ class HomeController < BaseController
     @essential_products = essential_products
     @marketplace_has_products = base_products.exists?
 
+    unless @marketplace_has_products
+      @hide_app_header = true
+      @hide_buyer_bottom_nav = true
+    end
+
     @show_payment_success_modal = flash[:payment_success] == true
     flash.delete(:payment_success)
   end
