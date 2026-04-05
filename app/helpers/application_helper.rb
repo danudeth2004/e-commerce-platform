@@ -1,6 +1,15 @@
 module ApplicationHelper
   include ProductDisplayHelper
 
+  # นับถอยหลังใช้ Unix วินาทีเท่านั้น (ไม่ขึ้นกับ timezone ของเซิร์ฟเวอร์)
+  # ถ้าได้ค่า ~13 หลัก ให้ถือว่าเป็นมิลลิวินาทีแล้วหาร 1000 (กันพลาดจากข้อมูล/สคริปต์)
+  def countdown_end_unix_seconds(value)
+    return 0 if value.nil?
+
+    s = Integer(value)
+    s >= 1_000_000_000_000 ? s / 1000 : s
+  end
+
   def app_back_fallback
     if instance_variable_defined?(:@app_back_fallback) && @app_back_fallback.present?
       return @app_back_fallback

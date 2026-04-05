@@ -159,7 +159,8 @@ class HomeController < BaseController
     end
 
     earliest = candidates.compact.min
-    earliest ? earliest.to_i : time.end_of_day.to_i
+    raw = earliest ? earliest.to_i : time.end_of_day.to_i
+    helpers.countdown_end_unix_seconds(raw)
   end
 
   def bestsellers

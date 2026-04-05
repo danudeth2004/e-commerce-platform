@@ -15,8 +15,13 @@ export default class extends Controller {
   }
 
   tick() {
-    const now       = Math.floor(Date.now() / 1000)
-    const remaining = Math.max(this.endValue - now, 0)
+    let endSec = Number(this.endValue)
+    if (Number.isNaN(endSec)) endSec = 0
+    // วินาทีปกติ ~1.7e9 (10 หลัก); มิลลิวินาที ~1.7e12 (13 หลัก) — ถ้าเข้าใจผิดหน่วยจะได้ชั่วโมงเป็นหลายล้าน
+    if (endSec > 1_000_000_000_000) endSec = Math.floor(endSec / 1000)
+
+    const now = Math.floor(Date.now() / 1000)
+    const remaining = Math.max(endSec - now, 0)
 
     const h = Math.floor(remaining / 3600)
     const m = Math.floor((remaining % 3600) / 60)

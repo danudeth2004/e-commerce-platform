@@ -3,7 +3,7 @@
 <section class="rounded-l-2xl">
   <div class="rounded-l-2xl p-4 bg-Secondary-color bg-opacity-20 mt-4">
     <h2 class="text-xl font-semibold text-text-primary text-center mb-3">สินค้าราคาพิเศษสำหรับวันนี้</h2>
-    <% end_ts = flash_countdown_end_unix %>
+    <% end_ts = countdown_end_unix_seconds(flash_countdown_end_unix) %>
     <% rem = [ end_ts - Time.current.to_i, 0 ].max %>
     <% h0, m0, s0 = rem / 3600, (rem % 3600) / 60, rem % 60 %>
     <p class="text-center text-xs text-text-neutral-300 mb-2">

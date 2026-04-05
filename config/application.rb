@@ -23,6 +23,8 @@ module ECommercePlatform
     #
     # เวลาโปรสินค้า / แคมเปญ ใช้ Time.current — ตั้งโซนให้ตรงกับผู้ใช้ไทย
     config.time_zone = "Bangkok"
+    # เก็บ datetime ใน DB เป็น UTC (ค่าเริ่มของ Rails); คู่กับ time_zone ด้านบน
+    config.active_record.default_timezone = :utc
 
     config.i18n.default_locale = :th
     config.i18n.fallbacks = [ :en ]

@@ -6,6 +6,19 @@ class ApplicationHelperTest < ActionView::TestCase
   tests ApplicationHelper
   include Rails.application.routes.url_helpers
 
+  test "countdown_end_unix_seconds treats millisecond epoch as seconds" do
+    ms = 1_735_689_600_000
+    assert_equal 1_735_689_600, countdown_end_unix_seconds(ms)
+  end
+
+  test "countdown_end_unix_seconds leaves normal unix seconds" do
+    assert_equal 1_735_689_600, countdown_end_unix_seconds(1_735_689_600)
+  end
+
+  test "countdown_end_unix_seconds nil is zero" do
+    assert_equal 0, countdown_end_unix_seconds(nil)
+  end
+
   test "masked_thai_mobile blank" do
     assert_equal "—", masked_thai_mobile(nil)
   end
