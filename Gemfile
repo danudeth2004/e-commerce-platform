@@ -83,3 +83,5 @@ end
 
 gem "tailwindcss-rails", "~> 2.7"
 gem "inline_svg"
+
+gem "rails-erd"
