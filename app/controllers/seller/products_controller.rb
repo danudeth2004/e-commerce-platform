@@ -35,9 +35,17 @@ module Seller
         return
       end
 
-      attrs = product_params.except(:images)
+      attrs = product_params.except(:images, :remove_image_signed_ids)
       if @product.update(attrs)
+        had_images = @product.images.attachments.exists?
+        purge_product_attached_images_by_signed_ids(@product, product_params[:remove_image_signed_ids])
         attach_new_images_if_any(@product)
+        @product.reload
+        if !@product.images.attached? && had_images
+          flash.now[:alert] = "กรุณามีรูปสินค้าอย่างน้อย 1 รูป"
+          render :edit, status: :unprocessable_entity
+          return
+        end
         redirect_to product_path(@product, seller_preview: 1), notice: "อัปเดตสินค้าแล้ว"
       else
         flash.now[:alert] = @product.errors.full_messages.to_sentence
@@ -93,7 +101,8 @@ module Seller
         :volume,
         :volume_unit,
         :usage,
-        images: []
+        images: [],
+        remove_image_signed_ids: []
       )
 
       permitted[:promotion_starts_at] = permitted[:promotion_starts_at].presence

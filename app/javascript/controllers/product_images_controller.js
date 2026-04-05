@@ -3,12 +3,14 @@ import { Controller } from "@hotwired/stimulus"
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png"])
 
 export default class ProductImagesController extends Controller {
-  static targets = ["dropZone", "fileInput", "previewRow", "error"]
+  static targets = ["dropZone", "fileInput", "previewRow", "error", "removedIdsContainer"]
   static values = {
     max: { type: Number, default: 5 },
     maxBytes: { type: Number, default: 10485760 },
     // [{ url, signed_id }] — รูปที่มีอยู่แล้ว (เช่น ตอนแก้ไข) แสดงในแถวพรีวิว ไม่ใส่ใน file input
     initialUrls: { type: Array, default: [] },
+    // ชื่อฟิลด์ hidden สำหรับ signed_id ที่ผู้ใช้ลบ (ส่งไป purge ฝั่งเซิร์ฟเวอร์)
+    removedParamName: { type: String, default: "product[remove_image_signed_ids][]" },
   }
 
   connect() {
@@ -174,6 +176,13 @@ export default class ProductImagesController extends Controller {
     if (idx === -1) return
     const [removed] = this.items.splice(idx, 1)
     if (removed.url?.startsWith("blob:")) URL.revokeObjectURL(removed.url)
+    if (removed.existing && removed.signedId && this.hasRemovedIdsContainerTarget) {
+      const input = document.createElement("input")
+      input.type = "hidden"
+      input.name = this.removedParamNameValue
+      input.value = removed.signedId
+      this.removedIdsContainerTarget.appendChild(input)
+    }
     this.clearError()
     this.syncInput()
     this.render()
@@ -209,6 +218,7 @@ export default class ProductImagesController extends Controller {
         wrap.innerHTML = `
           <img src="${item.url}" alt="" class="w-full h-full object-cover" />
           <span class="pointer-events-none absolute bottom-0 left-0 right-0 bg-black/55 py-0.5 text-center text-[9px] font-medium text-white">รูปเดิม</span>
+          <button type="button" class="absolute top-0.5 right-0.5 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-black/55 text-white text-xs leading-none hover:bg-black/70" data-product-images-remove data-id="${item.id}" aria-label="ลบรูป">×</button>
         `
       } else {
         wrap.innerHTML = `

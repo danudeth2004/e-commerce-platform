@@ -206,9 +206,11 @@ module Seller
         promotion_currency: "THB"
       )
 
+      had_images = @product.images.attachments.exists?
+      purge_product_attached_images_by_signed_ids(@product, p[:remove_image_signed_ids])
       attach_new_images_if_any(@product)
 
-      unless @product.images.attached?
+      if !@product.reload.images.attached? && had_images
         flash.now[:alert] = "กรุณามีรูปเซตอย่างน้อย 1 รูป (อัปโหลดเพิ่มหรือใช้รูปเดิม)"
         assign_bundle_edit_form_state!
         render :edit, status: :unprocessable_entity
@@ -289,7 +291,8 @@ module Seller
         :bundle_amount,
         bundle_ordered_ids: [],
         skin_concern_keys: [],
-        images: []
+        images: [],
+        remove_image_signed_ids: []
       )
     end
 
