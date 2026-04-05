@@ -11,7 +11,7 @@ module AdminHelper
   def admin_store_status_options
     [
       [ "ใช้งาน", "active" ],
-      [ "ไม่แสดงหน้าลูกค้า", "inactive" ],
+      [ "ไม่แสดงในหน้าลูกค้า", "inactive" ],
       [ "ระงับร้าน", "suspended" ]
     ]
   end
