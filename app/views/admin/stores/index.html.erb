@@ -35,7 +35,7 @@
           <td class="px-4 py-2 text-sm text-gray-800"><%= store.owner.email %></td>
           <td class="px-4 py-2 text-sm text-gray-800"><%= store.omise_recipient_id.presence || "—" %></td>
           <td class="px-4 py-2 text-sm text-gray-800"><%= store.created_at.strftime("%d/%m/%Y %H:%M") %></td>
-          <td class="px-4 py-2 text-sm text-gray-800" onclick="event.stopPropagation();">
+          <td class="px-4 py-2 text-sm text-gray-800" onClick="event.stopPropagation();">
             <%= form_with url: set_status_admin_store_path(store), method: :patch, class: "inline" do %>
               <%= select_tag :status,
                     options_for_select(admin_store_status_options, store.status),

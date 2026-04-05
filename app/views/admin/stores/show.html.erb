@@ -27,7 +27,7 @@
       <p class="text-sm text-gray-600 text-right">
         สถานะปัจจุบัน: <strong><%= admin_store_status_label(@store) %></strong>
       </p>
-      <%= form_with url: set_status_admin_store_path(@store), method: :patch, class: "inline-block" do %>
+      <%= form_with url: set_status_admin_store_path(@store), method: :patch, class: "flex" do %>
         <%= select_tag :status,
               options_for_select(admin_store_status_options, @store.status),
               class: "rounded-lg border border-gray-300 text-sm py-2 pl-3 pr-10 min-w-[12rem]" %>
