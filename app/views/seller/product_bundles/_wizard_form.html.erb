@@ -63,7 +63,7 @@
         data-controller="product-images"
         data-action="click->product-images#delegateClick"
         data-product-images-max-value="5"
-        data-product-images-max-bytes-value="<%= 1.megabyte %>"
+        data-product-images-max-bytes-value="10485760"
         data-product-images-initial-urls-value="<%= h(
           (editing && product&.images&.attached? ? product.images.map { |img| { url: rails_blob_path(img, only_path: true), signed_id: img.signed_id } } : []).to_json
         ) %>"

@@ -5,7 +5,7 @@ const ALLOWED_TYPES = new Set(["image/jpeg", "image/png"])
 export default class StoreImageUploadController extends Controller {
   static targets = ["input", "preview", "empty", "nameLabel", "error"]
   static values = {
-    maxBytes: { type: Number, default: 1048576 },
+    maxBytes: { type: Number, default: 10485760 },
     existingUrl: { type: String, default: "" },
   }
 
@@ -62,7 +62,7 @@ export default class StoreImageUploadController extends Controller {
       return "รองรับเฉพาะ JPG, JPEG, PNG"
     }
     if (file.size > this.maxBytesValue) {
-      return "ขนาดไฟล์ต้องไม่เกิน 1MB"
+      return "ขนาดไฟล์ต้องไม่เกิน 10MB"
     }
     return null
   }

@@ -15,7 +15,7 @@
     data-controller="product-images"
     data-action="click->product-images#delegateClick"
     data-product-images-max-value="<%= images_max_new %>"
-    data-product-images-max-bytes-value="<%= 1.megabyte %>"
+    data-product-images-max-bytes-value="10485760"
   >
     <label for="product_images_input" class="block text-base font-regular text-text-primary mb-2">
       รูปสินค้า <span class="text-text-accents-red">*</span>
@@ -36,7 +36,7 @@
       </div>
       <p class="text-xs text-text-blue font-semibold">คลิกเพื่ออัปโหลดรูปสินค้า</p>
       <p class="text-xs text-text-neutral-300 leading-relaxed">
-        รองรับไฟล์ JPG, JPEG, PNG ขนาดไม่เกิน 1MB (สูงสุด 5 รูป)
+        รองรับไฟล์ JPG, JPEG, PNG ขนาดไม่เกิน 10MB (สูงสุด 5 รูป)
       </p>
     </div>
     <div class="mt-3 flex gap-2 overflow-x-auto" data-product-images-target="previewRow"></div>

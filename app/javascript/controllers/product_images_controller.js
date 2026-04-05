@@ -6,7 +6,7 @@ export default class ProductImagesController extends Controller {
   static targets = ["dropZone", "fileInput", "previewRow", "error"]
   static values = {
     max: { type: Number, default: 5 },
-    maxBytes: { type: Number, default: 1048576 },
+    maxBytes: { type: Number, default: 10485760 },
     // [{ url, signed_id }] — รูปที่มีอยู่แล้ว (เช่น ตอนแก้ไข) แสดงในแถวพรีวิว ไม่ใส่ใน file input
     initialUrls: { type: Array, default: [] },
   }
@@ -110,7 +110,7 @@ export default class ProductImagesController extends Controller {
       return "รองรับเฉพาะ JPG, JPEG, PNG"
     }
     if (file.size > this.maxBytesValue) {
-      return "แต่ละไฟล์ต้องไม่เกิน 1MB"
+      return "แต่ละไฟล์ต้องไม่เกิน 10MB"
     }
     return null
   }
