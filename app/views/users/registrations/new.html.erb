@@ -69,7 +69,10 @@
           <% end %>
           <%= f.text_field :phone_number,
           required: true,
-          placeholder: "กรอกเบอร์โทรศัพท์ของคุณ",
+          placeholder: "กรอกเบอร์โทรศัพท์",
+          pattern: "0[0-9]{9}",
+          maxlength: 10,
+          inputmode: "numeric",
           class: input_class %>
         </div>
 

@@ -53,6 +53,9 @@
         <%= f.text_field :phone_number,
         required: true,
         placeholder: "กรอกเบอร์โทรศัพท์",
+        pattern: "0[0-9]{9}",
+        maxlength: 10,
+        inputmode: "numeric",
         class: "w-full px-3 py-2.5 text-sm text-text-primary
                 bg-white border border-border-neutral rounded-lg
                 placeholder:text-text-placeholder
