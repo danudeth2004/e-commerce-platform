@@ -9,6 +9,22 @@ class Seller::OrdersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_seller_store_path
   end
 
+  test "index with no payouts shows empty payouts map" do
+    seller = create_seller_user!
+    create_store!(owner: seller)
+    sign_in seller, scope: :seller_user
+    get seller_orders_path
+    assert_response :success
+  end
+
+  test "index filters by status when valid" do
+    seller = create_seller_user!
+    create_store!(owner: seller)
+    sign_in seller, scope: :seller_user
+    get seller_orders_path, params: { status: "paid" }
+    assert_response :success
+  end
+
   test "index lists orders that include store payout" do
     seller = create_seller_user!
     store = create_store!(owner: seller)

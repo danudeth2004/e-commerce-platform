@@ -193,6 +193,43 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
     assert buyer.reload.active?
   end
 
+  test "order_store_payouts index filters by status" do
+    get admin_order_store_payouts_path, params: { status: "pending" }
+    assert_response :success
+  end
+
+  test "campaign create attaches banners when files present" do
+    assert_difference -> { Campaign.count }, 1 do
+      post admin_campaigns_path, params: {
+        campaign: {
+          name: "With banner #{SecureRandom.hex(2)}",
+          slug: "wb-#{SecureRandom.hex(4)}",
+          starts_at: 1.day.ago,
+          ends_at: 1.day.from_now,
+          discount_percent: 5,
+          banners: [ fixture_file_upload("1x1.png", "image/png") ]
+        }
+      }
+    end
+    assert_redirected_to admin_campaigns_path
+    assert Campaign.last.banners.attached?
+  end
+
+  test "set_status rejects invalid status" do
+    store = create_store!
+    store.update!(status: :active)
+
+    patch set_status_admin_store_path(store), params: { status: "not_a_status" },
+      headers: { "HTTP_REFERER" => admin_store_url(store) }
+    assert_response :redirect
+    assert store.reload.active?
+  end
+
+  test "admin registration edit uses admin layout branch" do
+    get edit_admin_user_registration_path
+    assert_response :success
+  end
+
   test "payouts omise_transfer rejects when not processing" do
     user = create_user!
     order = Order.create!(user: user)

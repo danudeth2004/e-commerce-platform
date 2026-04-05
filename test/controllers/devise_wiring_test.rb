@@ -18,9 +18,9 @@ class DeviseWiringTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "admin registration new" do
+  test "admin registration new redirects when not signed in as admin" do
     get new_admin_user_registration_path
-    assert_response :success
+    assert_redirected_to new_admin_user_session_path
   end
 
   test "seller session new" do
@@ -80,9 +80,10 @@ class DeviseWiringTest < ActionDispatch::IntegrationTest
     sign_in user, scope: :user
     user.suspended!
     get root_path
-    assert_redirected_to root_path
+    assert_redirected_to new_user_session_path
     follow_redirect!
     assert_response :success
-    assert_not user_signed_in?
+    get cart_path
+    assert_redirected_to new_user_session_path
   end
 end

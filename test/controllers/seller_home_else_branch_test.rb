@@ -17,7 +17,13 @@ class SellerHomeElseBranchController < Seller::HomeController
 end
 
 class SellerHomeElseBranchTest < ActionController::TestCase
+  include Devise::Test::ControllerHelpers
+
   tests SellerHomeElseBranchController
+
+  setup do
+    @request.env["devise.mapping"] = Devise.mappings[:seller_user]
+  end
 
   test "index uses empty collections when store is not persisted" do
     get :index

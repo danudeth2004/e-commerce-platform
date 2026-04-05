@@ -126,7 +126,6 @@ module Seller
         return
       end
       # :nocov:
-
       set_candidate_prices
       setup_bundle_form_defaults
     end

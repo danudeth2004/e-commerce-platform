@@ -17,7 +17,7 @@ class Seller::StoreTest < ActiveSupport::TestCase
   test "rejects invalid bank_code" do
     store = build_store(bank_code: "xxx")
     assert_not store.valid?
-    assert_includes store.errors[:bank_code], "is not included in the list"
+    assert_includes store.errors[:bank_code], "ไม่อยู่ในรายการที่กำหนด"
   end
 
   test "rejects bank_number with wrong length" do

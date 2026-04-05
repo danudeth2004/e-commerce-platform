@@ -16,4 +16,14 @@ class Seller::HomeControllerTest < ActionDispatch::IntegrationTest
     get seller_root_path
     assert_response :success
   end
+
+  test "index search applies store query" do
+    seller = create_seller_user!
+    store = create_store!(owner: seller)
+    store.update!(status: :active)
+    create_standard_product!(store: store, title: "UniqueSearchSerum", sku: "SKU-SRCH-#{SecureRandom.hex(4)}")
+    sign_in seller, scope: :seller_user
+    get seller_root_path, params: { q: "UniqueSearch" }
+    assert_response :success
+  end
 end

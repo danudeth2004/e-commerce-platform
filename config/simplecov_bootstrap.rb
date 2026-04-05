@@ -27,5 +27,9 @@ SimpleCov.start "rails" do
   add_group "Services", "app/services" if Dir.exist?("#{root}/app/services")
   add_group "Policies", "app/policies" if Dir.exist?("#{root}/app/policies")
 
-  minimum_coverage line: 100 if ENV["COVERAGE"] != "false"
+  if ENV["COVERAGE_MINIMUM_LINE"].to_s.match?(/\A\d+\z/)
+    minimum_coverage line: ENV["COVERAGE_MINIMUM_LINE"].to_i
+  elsif ENV["COVERAGE"] != "false"
+    minimum_coverage line: 100
+  end
 end

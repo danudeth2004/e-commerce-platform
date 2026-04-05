@@ -71,9 +71,14 @@ class CheckoutsController < BaseController
 
     if params[:coupon_id].present?
       coupon = current_user.coupons.find_by(id: params[:coupon_id])
+      unless coupon
+        return redirect_to payment_checkout_path(order_id: @order.id), alert: "ไม่พบคูปอง"
+      end
 
       product_ids = params[:coupon_product_ids].to_s.split(",").map(&:to_i)
-      return 0 unless product_ids.all? { |id| coupon.coupon_products.exists?(product_id: id) }
+      unless product_ids.all? { |id| coupon.coupon_products.exists?(product_id: id) }
+        return redirect_to payment_checkout_path(order_id: @order.id), alert: "คูปองไม่ครอบคลุมสินค้าที่เลือก"
+      end
 
       discount_cents = calculate_coupon_discount(@order, coupon, product_ids)
 
