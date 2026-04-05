@@ -58,18 +58,20 @@
           <% product.bundle_items.each_with_index do |item, i| %>
             <% comp = item.component_product %>
             <% h = product_to_card_hash(comp) %>
-            <li class="relative flex gap-3 pb-8 last:pb-0">
+            <li class="relative flex gap-2.5 sm:gap-3 pb-8 last:pb-0">
               <span class="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-bold text-pink-600 ring-2 ring-pink-400 shadow-sm">
                 <%= i + 1 %>
               </span>
-              <div class="flex-1 pt-0.5 rounded-xl border border-pink-100/80 bg-white px-3 py-2.5 shadow-sm">
-                <p class="font-semibold text-gray-900 leading-snug"><%= comp.title %></p>
-                <p class="text-xs text-pink-600 font-medium mt-1">ราคาชิ้นนี้ (หลังโปร) ฿ <%= number_with_delimiter(h[:price]) %></p>
+              <div class="flex-1 w-full max-w-full pt-0.5 rounded-xl border border-pink-100/80 bg-white px-3 py-2.5 shadow-sm">
+                <p class="font-semibold text-gray-900 text-sm leading-snug break-words [overflow-wrap:anywhere]"><%= comp.title %></p>
+                <p class="text-xs text-pink-600 font-medium mt-1 break-words">ราคาชิ้นนี้ (หลังโปร) ฿ <%= number_with_delimiter(h[:price]) %></p>
                 <% if item.usage_instructions.present? %>
-                  <p class="mt-2 text-xs text-gray-600 leading-relaxed border-t border-gray-100 pt-2">
-                    <span class="font-medium text-gray-700">วิธีใช้ในชุด:</span>
-                    <%= item.usage_instructions %>
-                  </p>
+                  <div class="mt-2 border-t border-gray-100 pt-2">
+                    <p class="text-[11px] font-medium text-gray-700 mb-1">วิธีใช้ในชุด</p>
+                    <div class="text-xs text-gray-600 leading-relaxed break-words [overflow-wrap:anywhere] max-h-36 overflow-y-auto overscroll-y-contain [touch-action:pan-y] pr-0.5 rounded-md bg-gray-50/80 px-2 py-1.5 -mx-0.5">
+                      <%= item.usage_instructions %>
+                    </div>
+                  </div>
                 <% end %>
               </div>
             </li>
