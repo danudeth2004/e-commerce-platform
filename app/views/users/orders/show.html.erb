@@ -96,7 +96,7 @@
               <% @price = p[:price].to_i * item.quantity %>
               <% @original_price = p[:original].to_i * item.quantity %>
               <% @discount_percent = p[:discount_percent] %>
-              <% @total_price += @original_price %>
+              <% @total_price += (item.product.amount_cents + item.product.promotion_cents) * item.quantity / 100 %>
 
               <li class="flex items-center gap-3">
                 <div class="size-14 shrink-0 overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200/60">
@@ -123,7 +123,7 @@
                 <div class="shrink-0 text-sm font-semibold tabular-nums text-slate-900 text-right">
                   <span><%= number_with_delimiter(@price) %> ฿</span>
                   <% if @original_price.present? && @original_price > @price %>
-                    <% @store_discount_price += @price.to_i %>
+                    <% @store_discount_price += (item.product.amount_cents - item.product.promotion_cents) * item.quantity / 100 %>
                     <span class="block text-gray-400 line-through text-xs"><%= number_with_delimiter(@original_price) %> ฿</span>
                   <% end %>
                 </div>
