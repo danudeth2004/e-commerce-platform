@@ -174,15 +174,15 @@
                 <span class="text-lg leading-none text-[#FF1493]/50" data-bundle-role="empty">○</span>
               </button>
               <div class="min-w-0 flex-1">
-                <div class="flex gap-2">
+                <div class="flex gap-2 items-start">
                   <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100">
                     <% if card[:image_url].present? %>
                       <%= image_tag card[:image_url], class: "h-full w-full object-cover", alt: "" %>
                     <% end %>
                   </div>
-                  <div class="min-w-0">
-                    <p class="font-semibold text-gray-900 truncate"><%= p.title %></p>
-                    <p class="text-sm text-gray-700">฿ <%= number_with_delimiter(card[:price]) %></p>
+                  <div class="flex-1">
+                    <p class="text-sm font-semibold leading-snug text-gray-900 break-words"><%= p.title %></p>
+                    <p class="mt-0.5 text-sm text-gray-700">฿ <%= number_with_delimiter(card[:price]) %></p>
                   </div>
                 </div>
               </div>
@@ -207,16 +207,16 @@
             data-bundle-product-pick-target="usage"
             data-product-id="<%= p.id %>"
           >
-            <div class="flex gap-3 mb-3">
+            <div class="flex gap-3 mb-3 items-start">
               <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FF1493] text-xs font-bold text-white" data-bundle-role="usage-index"></div>
               <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-gray-100">
                 <% if card[:image_url].present? %>
                   <%= image_tag card[:image_url], class: "h-full w-full object-cover", alt: "" %>
                 <% end %>
               </div>
-              <div class="min-w-0 flex-1">
-                <p class="font-semibold text-gray-900 text-sm truncate"><%= p.title %></p>
-                <p class="text-xs text-gray-600">฿ <%= number_with_delimiter(card[:price]) %></p>
+              <div class="flex-1">
+                <p class="text-sm font-semibold leading-snug text-gray-900 break-words"><%= p.title %></p>
+                <p class="mt-0.5 text-xs text-gray-600">฿ <%= number_with_delimiter(card[:price]) %></p>
               </div>
             </div>
             <%= label_tag "usage_area_#{p.id}", class: "text-sm font-semibold text-gray-900" do %>
