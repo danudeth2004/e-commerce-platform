@@ -8,6 +8,8 @@ class ProductBundleItem < ApplicationRecord
   validate :component_must_be_standard
   validate :same_store
 
+  default_scope -> { order(created_at: :desc) }
+
   private
 
   def component_must_be_standard

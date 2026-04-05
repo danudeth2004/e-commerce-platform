@@ -76,5 +76,21 @@
     </div>
     <div class="text-sm font-bold text-gray-800 line-clamp-2"><%= product[:name] %></div>
     <div class="text-xs text-gray-400 leading-relaxed mt-0.5 line-clamp-2"><%= product[:desc] %></div>
+    <% if product[:skin_concern_labels].present? %>
+      <div class="mt-2 overflow-x-auto no-scrollbar">
+        <div class="flex gap-2">
+          <% product[:skin_concern_labels].each do |label| %>
+            <span class="inline-flex items-center whitespace-nowrap rounded-full bg-pink-100 px-3 py-1 text-xs font-medium text-pink-900">
+              <%= label %>
+            </span>
+          <% end %>
+          <% if product[:skin_concern_labels_count].to_i > 0 %>
+            <span class="inline-flex items-center whitespace-nowrap rounded-full bg-pink-100 px-3 py-1 text-xs font-medium text-pink-900">
+              +<%= product[:skin_concern_labels_count] %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </div>
 <% end %>

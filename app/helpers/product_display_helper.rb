@@ -80,7 +80,9 @@ module ProductDisplayHelper
       bundle: true,
       bundle_thumb_urls: thumb_urls,
       bundle_overflow_count: overflow,
-      bundle_item_count: count
+      bundle_item_count: count,
+      skin_concern_labels: product.skin_concern_labels[0..1],
+      skin_concern_labels_count: product.skin_concern_labels.size - 2
     }
   end
 
