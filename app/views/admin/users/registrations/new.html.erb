@@ -28,6 +28,7 @@
 
         <%= f.password_field :password,
           placeholder: "รหัสผ่าน",
+          minlength: 6,
           autocomplete: "new-password",
           required: true,
           class: "w-full rounded-lg border-gray-300 border border-gray-500 px-2 py-2" %>

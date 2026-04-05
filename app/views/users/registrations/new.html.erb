@@ -98,6 +98,7 @@
           <% end %>
           <%= f.password_field :password,
           required: true,
+          minlength: 6,
           autocomplete: "new-password",
           placeholder: "กรอกรหัสผ่าน",
           class: input_class %>
