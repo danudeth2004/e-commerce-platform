@@ -190,6 +190,18 @@ module Seller
         return
       end
 
+      had_images = @product.images.attachments.exists?
+      purge_product_attached_images_by_signed_ids(@product, p[:remove_image_signed_ids])
+      attach_new_images_if_any(@product)
+      @product.images.reload
+
+      if !@product.images.attached? && had_images
+        flash.now[:alert] = "กรุณามีรูปเซตอย่างน้อย 1 รูป (อัปโหลดเพิ่มหรือใช้รูปเดิม)"
+        assign_bundle_edit_form_state!
+        render :edit, status: :unprocessable_entity
+        return
+      end
+
       @product.assign_attributes(
         title: p[:title],
         description: p[:description],
@@ -205,17 +217,6 @@ module Seller
         promotion_cents: 0,
         promotion_currency: "THB"
       )
-
-      had_images = @product.images.attachments.exists?
-      purge_product_attached_images_by_signed_ids(@product, p[:remove_image_signed_ids])
-      attach_new_images_if_any(@product)
-
-      if !@product.reload.images.attached? && had_images
-        flash.now[:alert] = "กรุณามีรูปเซตอย่างน้อย 1 รูป (อัปโหลดเพิ่มหรือใช้รูปเดิม)"
-        assign_bundle_edit_form_state!
-        render :edit, status: :unprocessable_entity
-        return
-      end
 
       Product.transaction do
         @product.save!
