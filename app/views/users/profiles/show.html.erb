@@ -102,7 +102,7 @@
                 <p class="mt-0.5 text-xs text-Primary-color">ส่วนลด</p>
               </div>
               <div class="flex flex-1 flex-col justify-center px-4 py-3">
-                <p class="text-sm font-medium text-gray-800"><%= coupon[:product_title] %></p>
+                <p class="text-sm font-medium text-gray-800"><%= coupon.product_title_for_display %></p>
                 <p class="mt-1 text-xs text-gray-500">
                   <% if coupon[:min_order].to_i > 0 %>
                     ขั้นต่ำ <%= number_with_delimiter(coupon[:min_order]) %> ฿
@@ -139,7 +139,7 @@
                     <p class="mt-0.5 text-xs text-Primary-color">ส่วนลด</p>
                   </div>
                   <div class="flex flex-1 flex-col justify-center px-4 py-3">
-                    <p class="text-sm font-medium text-gray-800"><%= coupon[:product_title] %></p>
+                    <p class="text-sm font-medium text-gray-800"><%= coupon.product_title_for_display %></p>
                     <p class="mt-1 text-xs text-gray-500">
                       <% if coupon[:min_order].to_i > 0 %>
                         ขั้นต่ำ <%= number_with_delimiter(coupon[:min_order]) %> ฿
