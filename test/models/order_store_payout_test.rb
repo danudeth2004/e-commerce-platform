@@ -48,6 +48,13 @@ class OrderStorePayoutTest < ActiveSupport::TestCase
     since = 7.days.ago.beginning_of_day
     by_day = OrderStorePayout.seller_amounts_by_day_for_store(store_id: store.id, since: since)
     assert_equal 500, by_day.values.sum
+
+    by_day_capped = OrderStorePayout.seller_amounts_by_day_for_store(
+      store_id: store.id,
+      since: since,
+      end_at: paid_at - 1.day
+    )
+    assert_equal 0, by_day_capped.values.sum
   end
 
   test "seller_amounts_by_day_for_paid_orders sums all stores" do
