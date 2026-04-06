@@ -90,4 +90,4 @@ test:
 production:
   primary: &primary_production
     url: <%= ENV["DATABASE_URL"] %>
-    pool: 2
+    pool: 3
