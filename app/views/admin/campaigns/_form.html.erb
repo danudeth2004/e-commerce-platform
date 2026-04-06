@@ -8,9 +8,9 @@
 </div>
 
 <%= form_with model: [:admin, campaign], class: "space-y-4 max-w-2xl", html: { multipart: true } do |f| %>
-  <% if campaign.errors.any? %>
+  <% if campaign.errors[:base].any? %>
     <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-      <% campaign.errors.full_messages.each do |msg| %>
+      <% campaign.errors[:base].each do |msg| %>
         <div><%= msg %></div>
       <% end %>
     </div>
@@ -18,34 +18,41 @@
 
   <div>
     <%= f.label :name, "ชื่อแคมเปญ", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= f.text_field :name, class: "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" %>
+    <%= f.text_field :name,
+                     class: admin_field_input_classes(campaign, :name),
+                     aria: { invalid: admin_field_error?(campaign, :name) } %>
+    <%= admin_field_error(campaign, :name) %>
   </div>
 
   <div>
-    <%= f.label :slug, "Slug (ว่างได้ — จะสร้างจากชื่อ)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= f.text_field :slug, class: "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono" %>
+    <%= f.label :slug, "Slug", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.text_field :slug, class: admin_field_input_classes(campaign, :slug, "font-mono") %>
+    <%= admin_field_error(campaign, :slug) %>
   </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
       <%= f.label :starts_at, "เริ่ม", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.datetime_field :starts_at, class: "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" %>
+      <%= f.datetime_field :starts_at, class: admin_field_input_classes(campaign, :starts_at) %>
+      <%= admin_field_error(campaign, :starts_at) %>
     </div>
     <div>
       <%= f.label :ends_at, "สิ้นสุด", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.datetime_field :ends_at, class: "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" %>
+      <%= f.datetime_field :ends_at, class: admin_field_input_classes(campaign, :ends_at) %>
+      <%= admin_field_error(campaign, :ends_at) %>
     </div>
   </div>
 
   <div>
     <%= f.label :discount_percent, "ส่วนลดจากราคาหลังโปรร้าน (%)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= f.number_field :discount_percent, min: 0, max: 100, class: "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" %>
+    <%= f.number_field :discount_percent, min: 0, max: 100, class: admin_field_input_classes(campaign, :discount_percent) %>
+    <%= admin_field_error(campaign, :discount_percent) %>
     <p class="text-xs text-gray-500 mt-1">ใช้กับสินค้าที่เลือกด้านล่าง ในช่วงเวลาที่กำหนด (เช่น 11.11 = ลด 11% จากราคาที่คำนวณแล้ว)</p>
   </div>
 
   <div>
     <%= label_tag "campaign_banners_upload", "รูปแบนเนอร์หน้าแรก", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <p class="text-xs text-gray-500 mb-2">แสดงเป็นสไลด์บนหน้าแรก (หลายรูปหมุนอัตโนมัติ) ถ้าไม่มีแบนเนอร์ ระบบจะแสดงบล็อก &ldquo;ลดราคาพิเศษ&rdquo; ไว้บนสุดแทน</p>
+    <p class="text-xs text-gray-500 mb-2">แสดงเป็นสไลด์บนหน้าแรก (หลายรูปหมุนอัตโนมัติ) — <strong>ต้องเลือกอย่างน้อยหนึ่งรูป</strong>เมื่อสร้างแคมเปญใหม่</p>
     <% if campaign.persisted? && campaign.banners.attached? %>
       <div class="flex flex-wrap gap-2 mb-3">
         <% campaign.banners.each do |banner| %>
@@ -60,7 +67,9 @@
                        id: "campaign_banners_upload",
                        multiple: true,
                        accept: "image/jpeg,image/png,image/webp,image/gif",
-                       class: "block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" %>
+                       class: admin_file_field_classes(campaign, :banner_files),
+                       aria: { invalid: admin_field_error?(campaign, :banner_files) } %>
+    <%= admin_field_error(campaign, :banner_files) %>
     <p class="text-xs text-gray-500 mt-1">เลือกได้หลายไฟล์พร้อมกัน (กด Ctrl / Cmd หรือ Shift คลุมหลายรายการ) — บันทึกแล้วจะเพิ่มต่อจากรูปเดิม</p>
   </div>
 
@@ -74,7 +83,8 @@
           :id,
           :title_with_store,
           {},
-          { multiple: true, size: 12, class: "w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-sans" } %>
+          { multiple: true, size: 12, class: admin_collection_select_classes(campaign, :product_ids) } %>
+    <%= admin_field_error(campaign, :product_ids) %>
   </div>
 
   <div class="flex gap-2 pt-2">

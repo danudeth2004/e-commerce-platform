@@ -9,20 +9,25 @@ class CampaignTest < ActiveSupport::TestCase
       slug: "summer-#{SecureRandom.hex(4)}",
       starts_at: 1.day.ago,
       ends_at: 1.day.from_now,
-      discount_percent: 15
+      discount_percent: 15,
+      product_ids: [ create_standard_product!(store: create_store!).id ]
     )
     assert c.valid?
   end
 
-  test "slug generated from name when blank" do
-    c = Campaign.create!(
+  test "slug must be present" do
+    store = create_store!
+    product = create_standard_product!(store: store)
+    c = Campaign.new(
       name: "Winter Sale",
       slug: "",
       starts_at: 1.day.ago,
       ends_at: 1.day.from_now,
-      discount_percent: 5
+      discount_percent: 5,
+      product_ids: [ product.id ]
     )
-    assert_equal "winter-sale", c.slug
+    assert_not c.valid?
+    assert_includes c.errors[:slug], "กรุณากรอก Slug"
   end
 
   test "ends_at must be after starts_at" do
@@ -31,10 +36,11 @@ class CampaignTest < ActiveSupport::TestCase
       slug: "x-#{SecureRandom.hex(4)}",
       starts_at: 2.days.from_now,
       ends_at: 1.day.from_now,
-      discount_percent: 10
+      discount_percent: 10,
+      product_ids: [ create_standard_product!(store: create_store!).id ]
     )
     assert_not c.valid?
-    assert c.errors[:ends_at].any?
+    assert_includes c.errors[:ends_at], "วันเริ่มต้นต้องน้อยกว่าวันสิ้นสุด"
   end
 
   test "cannot attach bundle products" do
@@ -60,13 +66,44 @@ class CampaignTest < ActiveSupport::TestCase
   end
 
   test "active_at scope" do
+    store = create_store!
+    product = create_standard_product!(store: store)
     Campaign.create!(
       name: "A",
       slug: "a-#{SecureRandom.hex(4)}",
       starts_at: 1.day.ago,
       ends_at: 1.day.from_now,
-      discount_percent: 5
+      discount_percent: 5,
+      product_ids: [ product.id ]
     )
     assert Campaign.active_at.exists?
+  end
+
+  test "requires at least one product" do
+    c = Campaign.new(
+      name: "P",
+      slug: "p-#{SecureRandom.hex(4)}",
+      starts_at: 1.day.ago,
+      ends_at: 1.day.from_now,
+      discount_percent: 5,
+      product_ids: []
+    )
+    assert_not c.valid?
+    assert_includes c.errors[:product_ids], "กรุณาเลือกสินค้าในแคมเปญ"
+  end
+
+  test "discount_percent required" do
+    store = create_store!
+    product = create_standard_product!(store: store)
+    c = Campaign.new(
+      name: "D",
+      slug: "d-#{SecureRandom.hex(4)}",
+      starts_at: 1.day.ago,
+      ends_at: 1.day.from_now,
+      discount_percent: nil,
+      product_ids: [ product.id ]
+    )
+    assert_not c.valid?
+    assert_includes c.errors[:discount_percent], "กรุณากรอกส่วนลด"
   end
 end

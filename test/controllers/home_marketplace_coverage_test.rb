@@ -19,12 +19,14 @@ class HomeMarketplaceCoverageTest < ActionDispatch::IntegrationTest
     store = create_store!
     store.update!(status: :active)
     png = Rails.root.join("test/fixtures/files/1x1.png")
+    product = create_standard_product!(store: store, sku: "SKU-BNR-#{SecureRandom.hex(4)}")
     campaign = Campaign.create!(
       name: "Banner #{SecureRandom.hex(2)}",
       slug: "b-#{SecureRandom.hex(4)}",
       starts_at: 1.day.ago,
       ends_at: 2.days.from_now,
-      discount_percent: 5
+      discount_percent: 5,
+      product_ids: [ product.id ]
     )
     campaign.banners.attach(io: File.open(png), filename: "b.png")
 

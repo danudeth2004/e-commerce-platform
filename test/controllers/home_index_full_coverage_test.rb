@@ -68,9 +68,9 @@ class HomeIndexFullCoverageTest < ActionDispatch::IntegrationTest
       slug: "camp-#{SecureRandom.hex(4)}",
       starts_at: 1.day.ago,
       ends_at: 2.days.from_now,
-      discount_percent: 15
+      discount_percent: 15,
+      product_ids: [ p_sale.id ]
     )
-    camp.products << p_sale
 
     user = create_user!
     order = Order.create!(user: user, status: :paid)

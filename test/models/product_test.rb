@@ -59,9 +59,9 @@ class ProductTest < ActiveSupport::TestCase
       slug: "sale-#{SecureRandom.hex(4)}",
       starts_at: 1.day.ago,
       ends_at: 1.day.from_now,
-      discount_percent: 10
+      discount_percent: 10,
+      product_ids: [ product.id ]
     )
-    campaign.products << product
 
     price = product.final_price_cents
     assert_equal 900, price

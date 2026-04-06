@@ -116,7 +116,8 @@ class GapFillCoverageTest < ActionDispatch::IntegrationTest
       slug: "c-#{SecureRandom.hex(4)}",
       starts_at: 1.day.ago,
       ends_at: 1.day.from_now,
-      discount_percent: 5
+      discount_percent: 5,
+      product_ids: [ product.id ]
     )
 
     patch admin_campaign_path(campaign), params: {

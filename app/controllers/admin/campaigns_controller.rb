@@ -14,6 +14,8 @@ module Admin
 
     def create
       @campaign = Campaign.new(campaign_params)
+      @campaign.from_admin_form = true
+      @campaign.banner_files_for_validation = params.dig(:campaign, :banners)
       if @campaign.save
         attach_campaign_banners(@campaign)
         redirect_to admin_campaigns_path, notice: "สร้างแคมเปญแล้ว"

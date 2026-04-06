@@ -32,4 +32,36 @@ class AdminHelperTest < ActionView::TestCase
     assert_includes admin_nav_item_classes(true), "bg-blue-600"
     assert_includes admin_nav_item_classes(false), "text-slate-300"
   end
+
+  test "admin_file_field_classes without error" do
+    c = Campaign.new
+    classes = admin_file_field_classes(c, :banner_files)
+    assert_includes classes, "border-gray-300"
+    assert_not_includes classes, "border-red-500"
+  end
+
+  test "admin_file_field_classes with error" do
+    c = Campaign.new
+    c.errors.add(:banner_files, "กรุณาเลือกรูปแบนเนอร์")
+    classes = admin_file_field_classes(c, :banner_files)
+    assert_includes classes, "border-red-500"
+    assert_includes classes, "bg-red-50/30"
+    assert_includes classes, "p-2"
+  end
+
+  test "admin_collection_select_classes without error" do
+    c = Campaign.new
+    classes = admin_collection_select_classes(c, :product_ids)
+    assert_includes classes, "border-gray-300"
+    assert_not_includes classes, "border-red-500"
+  end
+
+  test "admin_collection_select_classes with error" do
+    c = Campaign.new
+    c.errors.add(:product_ids, "กรุณาเลือกสินค้าในแคมเปญ")
+    classes = admin_collection_select_classes(c, :product_ids)
+    assert_includes classes, "border-red-500"
+    assert_includes classes, "bg-red-50/40"
+    assert_includes classes, "focus:ring-red-500"
+  end
 end

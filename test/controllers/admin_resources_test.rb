@@ -9,13 +9,17 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test "campaign create and update validation failures" do
+    store = create_store!
+    product = create_standard_product!(store: store, sku: "SKU-VAL-#{SecureRandom.hex(4)}")
     post admin_campaigns_path, params: {
       campaign: {
         name: "",
         slug: "x",
         starts_at: 1.day.ago,
         ends_at: 1.day.from_now,
-        discount_percent: 5
+        discount_percent: 5,
+        product_ids: [ "", product.id.to_s, "" ],
+        banners: [ fixture_file_upload("1x1.png", "image/png") ]
       }
     }
     assert_response :unprocessable_entity
@@ -25,7 +29,8 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
       slug: "val-#{SecureRandom.hex(4)}",
       starts_at: 1.day.ago,
       ends_at: 1.day.from_now,
-      discount_percent: 5
+      discount_percent: 5,
+      product_ids: [ product.id ]
     )
     patch admin_campaign_path(campaign), params: {
       campaign: {
@@ -33,13 +38,19 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
         slug: campaign.slug,
         starts_at: campaign.ends_at,
         ends_at: campaign.starts_at,
-        discount_percent: 5
+        discount_percent: 5,
+        product_ids: [ "", product.id.to_s, "" ]
       }
     }
     assert_response :unprocessable_entity
   end
 
   test "campaigns index new create edit update destroy" do
+    store = create_store!
+    store.update!(status: :active)
+    product = create_standard_product!(store: store, sku: "SKU-CAMP-CRUD-#{SecureRandom.hex(4)}")
+    banner = fixture_file_upload("1x1.png", "image/png")
+
     get admin_campaigns_path
     assert_response :success
 
@@ -50,10 +61,12 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
       post admin_campaigns_path, params: {
         campaign: {
           name: "C #{SecureRandom.hex(2)}",
-          slug: "",
+          slug: "c-#{SecureRandom.hex(4)}",
           starts_at: 1.day.ago,
           ends_at: 1.day.from_now,
-          discount_percent: 5
+          discount_percent: 5,
+          product_ids: [ "", product.id.to_s, "" ],
+          banners: [ banner ]
         }
       }
     end
@@ -69,7 +82,8 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
         slug: campaign.slug,
         starts_at: campaign.starts_at,
         ends_at: campaign.ends_at,
-        discount_percent: 10
+        discount_percent: 10,
+        product_ids: [ "", product.id.to_s, "" ]
       }
     }
     assert_redirected_to admin_campaigns_path
@@ -199,6 +213,9 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test "campaign create attaches banners when files present" do
+    store = create_store!
+    store.update!(status: :active)
+    product = create_standard_product!(store: store, sku: "SKU-WB-#{SecureRandom.hex(4)}")
     assert_difference -> { Campaign.count }, 1 do
       post admin_campaigns_path, params: {
         campaign: {
@@ -207,6 +224,7 @@ class AdminResourcesTest < ActionDispatch::IntegrationTest
           starts_at: 1.day.ago,
           ends_at: 1.day.from_now,
           discount_percent: 5,
+          product_ids: [ "", product.id.to_s, "" ],
           banners: [ fixture_file_upload("1x1.png", "image/png") ]
         }
       }
