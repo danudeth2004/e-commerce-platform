@@ -25,7 +25,7 @@
 # Any libraries that use a connection pool or another resource pool should
 # be configured to provide at least as many connections as the number of
 # threads. This includes Active Record's `pool` parameter in `database.yml`.
-threads 1, 2
+threads 1, 1
 preload_app!
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
