@@ -24,6 +24,9 @@
 
 <body class="bg-gray-100 text-gray-800 font-sans antialiased">
     <main class="min-h-screen flex items-center justify-center">
+        <% if flash.any? %>
+            <%= render "layouts/flash_messages" %>
+        <% end %>
         <div class="w-[80dvh] px-10">
             <%= yield %>
         </div>
