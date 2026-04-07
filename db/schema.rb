@@ -203,32 +203,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_120000) do
     t.index ["component_product_id"], name: "index_product_bundle_items_on_component_product_id"
   end
 
-  create_table "product_set_items", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "position", default: 0, null: false
-    t.bigint "product_id", null: false
-    t.bigint "product_set_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_product_set_items_on_product_id"
-    t.index ["product_set_id", "position"], name: "index_product_set_items_on_set_and_position"
-    t.index ["product_set_id", "product_id"], name: "index_product_set_items_unique_product_per_set", unique: true
-    t.index ["product_set_id"], name: "index_product_set_items_on_product_set_id"
-  end
-
-  create_table "product_sets", force: :cascade do |t|
-    t.text "body"
-    t.datetime "created_at", null: false
-    t.integer "position", default: 0, null: false
-    t.boolean "published", default: true, null: false
-    t.bigint "seller_store_id", null: false
-    t.string "skin_concern_key"
-    t.string "subtitle"
-    t.string "title", null: false
-    t.datetime "updated_at", null: false
-    t.index ["seller_store_id", "position"], name: "index_product_sets_on_store_and_position"
-    t.index ["seller_store_id"], name: "index_product_sets_on_seller_store_id"
-  end
-
   create_table "products", force: :cascade do |t|
     t.integer "amount_cents", default: 0, null: false
     t.string "amount_currency", default: "THB", null: false
@@ -344,9 +318,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_120000) do
   add_foreign_key "orders", "users"
   add_foreign_key "product_bundle_items", "products", column: "bundle_product_id"
   add_foreign_key "product_bundle_items", "products", column: "component_product_id"
-  add_foreign_key "product_set_items", "product_sets"
-  add_foreign_key "product_set_items", "products"
-  add_foreign_key "product_sets", "seller_stores"
   add_foreign_key "products", "seller_stores"
   add_foreign_key "seller_stores", "seller_users"
   add_foreign_key "shipping_addresses", "users"

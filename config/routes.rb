@@ -74,6 +74,18 @@ Rails.application.routes.draw do
     post  :pay
     patch :cancel
   end
+
+  resource :cart, only: [ :show ] do
+    post :add_item
+    delete :remove_item
+    patch :increase_item
+    patch :decrease_item
+  end
+  get "products", to: "products#index", as: :products
+  get "stores/:id", to: "stores#show", as: :store
+  get "products/:id", to: "home#show", as: :product
+
+  get "home/flash_sale", to: "home#flash_sale", as: :home_flash_sale
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -86,17 +98,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "home#index"
-  resource :cart, only: [ :show ] do
-    post :add_item
-    delete :remove_item
-    patch :increase_item
-    patch :decrease_item
-  end
-  get "products", to: "products#index", as: :products
-  get "stores/:id", to: "stores#show", as: :store
-  get "products/:id", to: "home#show", as: :product
-
-  get "home/flash_sale", to: "home#flash_sale", as: :home_flash_sale
 
   if Rails.env.test?
     get "application_suspend_enforcement", to: "application_suspend_enforcement#index"
