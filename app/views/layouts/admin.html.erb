@@ -2,12 +2,13 @@
 <html lang="th">
 
 <head>
-    <title><%= content_for(:title) || "Admin: E Commerce Platform" %></title>
+    <title><%= content_for(:title) || "Admin: RUNA" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%= render "layouts/favicon" %>
     <%= render "layouts/google_fonts" %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
