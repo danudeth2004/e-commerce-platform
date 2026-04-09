@@ -1,4 +1,4 @@
-<div class="bg-white shadow rounded-lg p-6">
+<div class="w-full bg-white shadow rounded-lg p-6">
   <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
     <div>
       <h1 class="text-2xl font-bold text-gray-900">ร้านค้า (Seller)</h1>
@@ -13,14 +13,13 @@
     <% end %>
   </div>
 
-  <table class="min-w-full divide-y divide-gray-200 border">
+  <table class="w-full divide-y divide-gray-200 border">
     <thead class="bg-gray-50">
       <tr>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">ID</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">ชื่อร้าน</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">เจ้าของร้าน</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">อีเมล</th>
-        <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">รหัสการโอน</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">สร้างเมื่อ</th>
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-700">สถานะ</th>
       </tr>
@@ -33,7 +32,6 @@
           <td class="px-4 py-2 text-sm text-gray-800"><%= store.name %></td>
           <td class="px-4 py-2 text-sm text-gray-800"><%= store.owner.first_name %> <%= store.owner.last_name %></td>
           <td class="px-4 py-2 text-sm text-gray-800"><%= store.owner.email %></td>
-          <td class="px-4 py-2 text-sm text-gray-800"><%= store.omise_recipient_id.presence || "—" %></td>
           <td class="px-4 py-2 text-sm text-gray-800"><%= store.created_at.strftime("%d/%m/%Y %H:%M") %></td>
           <td class="px-4 py-2 text-sm text-gray-800" onClick="event.stopPropagation();">
             <%= form_with url: set_status_admin_store_path(store), method: :patch, class: "inline" do %>
