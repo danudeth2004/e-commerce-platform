@@ -91,6 +91,23 @@ class GapFillCoverageTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "buyer registration update redirects to root" do
+    user = create_user!
+    sign_in user
+    patch user_registration_path, params: {
+      user: {
+        email: user.email,
+        password: "newpassword123",
+        password_confirmation: "newpassword123",
+        current_password: "password123",
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone_number: user.phone_number
+      }
+    }
+    assert_redirected_to users_profile_path
+  end
+
   test "admin registration update redirects to admin root" do
     admin = create_admin_user!
     sign_in admin, scope: :admin_user

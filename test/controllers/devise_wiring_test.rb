@@ -13,6 +13,23 @@ class DeviseWiringTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "buyer registration create redirects to root" do
+    email = "new-buyer-#{SecureRandom.hex(4)}@example.com"
+    assert_difference -> { User.count }, 1 do
+      post user_registration_path, params: {
+        user: {
+          email: email,
+          password: "password123",
+          password_confirmation: "password123",
+          first_name: "First",
+          last_name: "Last",
+          phone_number: "0812345678"
+        }
+      }
+    end
+    assert_redirected_to users_profile_path
+  end
+
   test "admin session new" do
     get new_admin_user_session_path
     assert_response :success
