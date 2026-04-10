@@ -1,0 +1,70 @@
+<section class="px-4 py-6">
+
+  <!-- 🔍 Search + Cart -->
+  <div class="flex items-center gap-3 mb-5">
+    
+    <% header_icon_btn = "inline-flex items-center justify-center size-11 shrink-0 rounded-2xl bg-gradient-to-r from-[#FF1493] via-[#FF69B4] to-[#F6DBD8] text-white shadow-sm transition hover:opacity-95 active:scale-[0.98]" %>
+
+    <%= form_with url: products_campaign_path,
+          method: :get,
+          local: true,
+          data: {
+            controller: "search",
+            search_campaign_path_value: products_campaign_path,
+            search_campaign_id_value: @campaign.id,
+            search_is_campaign_value: true
+          },
+          html: { class: "flex-1" } do %>
+
+      <%= hidden_field_tag :id, @campaign.id %>
+
+      <div class="relative flex items-center">
+        <span class="pointer-events-none absolute left-3.5 text-gray-400">
+          <%= inline_svg_tag "icons/search-icon.svg", class: "w-[18px] h-[18px]" %>
+        </span>
+
+        <%= search_field_tag :q, params[:q],
+              placeholder: "ค้นหาสินค้าในแคมเปญ...",
+              class: "w-full rounded-full border border-gray-200 bg-white py-2.5 pl-10 pr-4 text-sm shadow-sm focus:border-pink-300 focus:outline-none focus:ring-2 focus:ring-pink-200/60",
+              data: { action: "input->search#submit" } %>
+      </div>
+
+    <% end %>
+
+    <!-- 🛒 Cart -->
+    <%= link_to(user_signed_in? ? cart_path : new_user_session_path,
+          class: "#{header_icon_btn} relative") do %>
+
+      <%= inline_svg_tag "icons/shopping-cart-icon.svg", class: "w-[22px] h-[22px] text-white" %>
+
+      <% if user_signed_in? %>
+        <% count = current_cart_item_count %>
+        <% if count.positive? %>
+          <span class="absolute -top-1 -right-1 min-w-[1.125rem] rounded-full bg-red-500 px-1 py-0.5 text-[10px] font-semibold text-white">
+            <%= count %>
+          </span>
+        <% end %>
+      <% end %>
+
+    <% end %>
+  </div>
+
+  <!-- 🟣 Campaign Info -->
+  <h1 class="text-2xl font-bold mb-2">
+    <%= @campaign.name %>
+  </h1>
+
+  <div class="text-sm text-red-500 mb-4">
+    ลด <%= @campaign.discount_percent %>%
+  </div>
+
+  <!-- 🔹 Products -->
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+    <% @products.each do |product| %>
+      <%= render "shared/product_card",
+            product: product_to_card_hash(product),
+            full_width: true %>
+    <% end %>
+  </div>
+
+</section>

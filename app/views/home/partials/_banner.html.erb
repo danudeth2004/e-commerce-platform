@@ -3,10 +3,11 @@
   <div
     id="bannerCard"
     class="rounded-3xl overflow-hidden min-h-[140px] flex items-center justify-center bg-gray-100 cursor-pointer transition-all duration-500">
-    <%= image_tag first[:image_url],
-                  id: "bannerImage",
-                  alt: "",
-                  class: "w-full h-auto object-cover object-center" %>
+    <%= link_to first[:url], class: "block w-full" do %>
+      <%= image_tag first[:image_url],
+            id: "bannerImage",
+            class: "w-full h-auto min-h-[600px] max-h-[600px] object-cover mx-auto" %>
+    <% end %>
   </div>
   <% if banners.size > 1 %>
     <div class="flex justify-center gap-1.5 mt-3" data-banner-target="dots">

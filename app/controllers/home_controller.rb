@@ -9,6 +9,7 @@ class HomeController < BaseController
     @bestseller_tabs    = bestseller_tabs
     @essential_products = essential_products
     @marketplace_has_products = base_products.exists?
+    @active_campaigns = Campaign.active.includes(products: [:store]).order(starts_at: :desc)
 
     unless @marketplace_has_products
       @hide_app_header = true
@@ -71,6 +72,7 @@ class HomeController < BaseController
   # เรียงแคมเปญที่เริ่มล่าสุดก่อน แล้วต่อด้วยรูปในแต่ละแคมเปญ
   def marketplace_banner_payload
     time = Time.current
+
     Campaign
       .where("ends_at >= ?", time)
       .with_attached_banners
@@ -78,7 +80,12 @@ class HomeController < BaseController
       .flat_map do |campaign|
         next [] unless campaign.banners.attached?
 
-        campaign.banners.map { |attachment| { image_url: helpers.url_for(attachment) } }
+        campaign.banners.map do |attachment|
+          {
+            image_url: helpers.url_for(attachment),
+            url: Rails.application.routes.url_helpers.products_campaign_path(id: campaign.id)
+          }
+        end
       end
   end
 

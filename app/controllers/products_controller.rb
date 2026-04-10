@@ -36,4 +36,29 @@ class ProductsController < BaseController
     @bundle_products = @products.where(kind: :bundle)
     @standard_products = @products.where(kind: :standard)
   end
+
+  def campaign
+    @campaign = Campaign.find(params[:id])
+
+    @products = @campaign.products
+      .joins(:store)
+      .includes(:store, images_attachments: :blob)
+
+    q = params[:q].to_s.strip
+    @search_query = q.presence
+
+    if q.present?
+      like = "%#{Product.sanitize_sql_like(q)}%"
+      @products = @products.where(
+        <<~SQL.squish,
+          products.title ILIKE :like
+          OR COALESCE(products.description, '') ILIKE :like
+          OR products.sku ILIKE :like
+          OR COALESCE(products.effect, '') ILIKE :like
+          OR seller_stores.name ILIKE :like
+        SQL
+        like: like
+      )
+    end
+  end
 end

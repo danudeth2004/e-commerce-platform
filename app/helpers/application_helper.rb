@@ -66,6 +66,7 @@ module ApplicationHelper
       c == "home" && a == "index"
     when :products
       (c == "products" && a == "index") ||
+        (c == "products" && a == "campaign") ||
         (c == "home" && a == "show") ||
         (c == "stores" && a == "show")
     when :profile

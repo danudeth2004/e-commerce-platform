@@ -82,6 +82,7 @@ Rails.application.routes.draw do
     patch :decrease_item
   end
   get "products", to: "products#index", as: :products
+  get "products/campaign", to: "products#campaign", as: :products_campaign
   get "stores/:id", to: "stores#show", as: :store
   get "products/:id", to: "home#show", as: :product
 

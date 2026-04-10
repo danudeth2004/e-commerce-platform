@@ -74,16 +74,59 @@
   </div>
 
   <div>
-    <%= f.label :product_ids, "สินค้าในแคมเปญ (กด Ctrl/Cmd เลือกหลายรายการ)", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%# ส่งค่าว่างได้เมื่อไม่เลือกสินค้า (เคลียร์รายการ) %>
+    <%= f.label :product_ids, "สินค้าในแคมเปญ", class: "block text-sm font-medium text-gray-700 mb-2" %>
+
+    <% product_opts = Product
+      .includes(:store)
+      .joins(:store)
+      .merge(Seller::Store.active)
+      .with_attached_images
+      .where(kind: :standard)
+      .reorder(Arel.sql("seller_stores.created_at DESC")) %>
+
+    <% grouped_products = product_opts.group_by(&:store) %>
+
+    <div data-controller="store-select" class="space-y-4 max-h-80 overflow-y-auto border rounded p-3">
+
+      <% grouped_products.each do |store, products| %>
+        <div data-store-select-target="storeGroup" class="border rounded-lg p-3">
+
+          <div class="flex items-center justify-between mb-2 border-b pb-1">
+            <div class="font-semibold text-gray-900">
+              <%= store.name %>
+            </div>
+
+            <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+              <input type="checkbox"
+                    data-store-select-target="selectAll"
+                    data-action="store-select#toggleAll"
+                    class="w-4 h-4">
+              เลือกทั้งหมด
+            </label>
+          </div>
+
+          <div class="space-y-1 ml-2">
+            <% products.each do |product| %>
+              <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                <%= check_box_tag "campaign[product_ids][]",
+                      product.id,
+                      campaign.product_ids.include?(product.id),
+                      data: {
+                        store_select_target: "productCheckbox",
+                        action: "change->store-select#updateSelectAll"
+                      },
+                      class: "w-4 h-4 rounded border-gray-300" %>
+
+                <%= product.title %>
+              </label>
+            <% end %>
+          </div>
+
+        </div>
+      <% end %>
+    </div>
+
     <%= hidden_field_tag "campaign[product_ids][]", "" %>
-    <% product_opts = Product.unscoped.joins(:store).where(kind: :standard).order("seller_stores.name ASC, products.title ASC") %>
-    <%= f.collection_select :product_ids,
-          product_opts,
-          :id,
-          :title_with_store,
-          {},
-          { multiple: true, size: 12, class: admin_collection_select_classes(campaign, :product_ids) } %>
     <%= admin_field_error(campaign, :product_ids) %>
   </div>
 

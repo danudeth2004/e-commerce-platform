@@ -30,6 +30,10 @@ class Campaign < ApplicationRecord
     where("starts_at <= ? AND ends_at >= ?", time, time)
   }
 
+  scope :active, -> {
+    where("starts_at <= ? AND ends_at >= ?", Time.current, Time.current)
+  }
+
   def apply_discount_to_cents(cents)
     return cents if discount_percent.nil? || discount_percent.to_i <= 0
 
