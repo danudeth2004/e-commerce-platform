@@ -6,7 +6,7 @@
     <%= link_to first[:url], class: "block w-full" do %>
       <%= image_tag first[:image_url],
             id: "bannerImage",
-            class: "w-full h-auto min-h-[600px] max-h-[600px] object-cover mx-auto" %>
+            class: "w-full aspect-[16/9] object-cover object-center md:h-[600px] md:aspect-auto" %>
     <% end %>
   </div>
   <% if banners.size > 1 %>
