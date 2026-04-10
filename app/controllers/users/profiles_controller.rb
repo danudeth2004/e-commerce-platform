@@ -6,10 +6,7 @@ module Users
 
     def show
       @user = current_user
-      @pending_payment_items_count = OrderItem
-        .joins(:order)
-        .merge(current_user.orders.pending)
-        .sum(:quantity)
+      @pending_payment_orders_count = current_user.orders.pending.count
       @coupons = current_user.coupons.active.includes(:products).order(created_at: :desc)
     end
   end

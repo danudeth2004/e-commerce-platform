@@ -1,0 +1,51 @@
+<section class="mt-8">
+  <div class="mb-3 flex items-center justify-between">
+    <h2 class="text-base font-semibold text-slate-900">คำสั่งซื้อของฉัน</h2>
+    <%= link_to users_orders_path(status: :paid), class: "text-sm font-semibold text-rose-600 hover:text-rose-700 transition" do %>
+      ดูประวัติการซื้อ
+      <span aria-hidden="true" class="ml-0.5">›</span>
+    <% end %>
+  </div>
+  <div class="grid grid-cols-3 gap-2.5">
+    <% cart_n = current_cart_item_count %>
+    <%= link_to cart_path,
+                class: "relative flex flex-col items-center rounded-2xl border border-rose-100/80 bg-white/90 py-4 shadow-md shadow-rose-100/25 ring-1 ring-rose-50/50 transition hover:border-rose-200 hover:shadow-lg hover:shadow-rose-100/40 active:scale-[0.98]",
+                aria: { label: cart_n.positive? ? "รถเข็นของฉัน รวม #{cart_n} ชิ้น" : "รถเข็นของฉัน" } do %>
+      <span class="relative mb-2 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-100 to-pink-50 text-rose-600 shadow-inner ring-1 ring-rose-50/80">
+        <span class="iconify" data-icon="lucide:shopping-cart" data-width="22" aria-hidden="true"></span>
+        <% if cart_n.positive? %>
+          <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold leading-none text-white shadow-md tabular-nums ring-2 ring-white">
+            <%= cart_n > 99 ? "99+" : number_with_delimiter(cart_n) %>
+          </span>
+        <% end %>
+      </span>
+      <span class="text-center text-[11px] font-semibold leading-tight text-slate-800">รถเข็นของฉัน</span>
+      <% if cart_n.positive? %>
+        <span class="mt-1 text-center text-[10px] font-medium tabular-nums text-rose-600">รวม <%= number_with_delimiter(cart_n) %> ชิ้น</span>
+      <% end %>
+    <% end %>
+    <% pending_n = pending_payment_orders_count.to_i %>
+    <%= link_to users_orders_path(status: :pending),
+                class: "relative flex flex-col items-center rounded-2xl border border-rose-100/80 bg-white/90 py-4 shadow-md shadow-rose-100/25 ring-1 ring-rose-50/50 transition hover:border-amber-200/80 hover:shadow-lg hover:shadow-amber-100/30 active:scale-[0.98]",
+                aria: { label: pending_n.positive? ? "รอชำระเงิน #{pending_n} คำสั่งซื้อ" : "รอชำระเงิน" } do %>
+      <span class="relative mb-2 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-50 to-amber-100/80 text-amber-600 shadow-inner ring-1 ring-amber-100/80">
+        <span class="iconify" data-icon="lucide:wallet" data-width="22" aria-hidden="true"></span>
+        <% if pending_n.positive? %>
+          <span class="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold leading-none text-white shadow-md tabular-nums ring-2 ring-white">
+            <%= pending_n > 99 ? "99+" : number_with_delimiter(pending_n) %>
+          </span>
+        <% end %>
+      </span>
+      <span class="text-center text-[11px] font-semibold leading-tight text-slate-800">รอชำระเงิน</span>
+      <% if pending_n.positive? %>
+        <span class="mt-1 text-center text-[10px] font-medium tabular-nums text-amber-600"><%= number_with_delimiter(pending_n) %> คำสั่งซื้อ</span>
+      <% end %>
+    <% end %>
+    <%= link_to users_orders_path(status: :paid), class: "flex flex-col items-center rounded-2xl border border-rose-100/80 bg-white/90 py-4 shadow-md shadow-rose-100/25 ring-1 ring-rose-50/50 transition hover:border-rose-200 hover:shadow-lg hover:shadow-rose-100/40 active:scale-[0.98]" do %>
+      <span class="mb-2 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50/80 text-emerald-600 shadow-inner ring-1 ring-emerald-100/60">
+        <span class="iconify" data-icon="lucide:package" data-width="22"></span>
+      </span>
+      <span class="text-center text-[11px] font-semibold leading-tight text-slate-800">รอรับสินค้า</span>
+    <% end %>
+  </div>
+</section>

@@ -1,0 +1,22 @@
+<header class="relative sticky top-0 z-30 flex items-center justify-center border-b border-rose-100/80 bg-white/85 px-4 py-3 shadow-sm shadow-rose-100/30 backdrop-blur-md">
+  <h1 class="text-base font-semibold tracking-tight text-slate-900">โปรไฟล์ของฉัน</h1>
+  <div class="absolute right-4 top-1/2 -translate-y-1/2">
+    <input type="checkbox" id="profile-menu-toggle" class="peer hidden">
+    <label for="profile-menu-toggle" class="inline-flex size-10 cursor-pointer items-center justify-center rounded-full text-slate-600 hover:bg-rose-50/90 transition">
+      <span class="sr-only">เปิดเมนู</span>
+      <span class="iconify" data-icon="lucide:more-horizontal" data-width="22" aria-hidden="true"></span>
+    </label>
+    <button type="button"
+            class="fixed inset-0 z-40 hidden cursor-default border-0 bg-transparent p-0 peer-checked:block"
+            aria-label="ปิดเมนู"
+            onclick="document.getElementById('profile-menu-toggle').checked = false"></button>
+    <div class="absolute right-0 z-50 mt-2 w-52 origin-top-right scale-95 rounded-2xl border border-rose-100/90 bg-white/95 py-1.5 opacity-0 shadow-xl shadow-rose-200/40 ring-1 ring-black/5 transition peer-checked:scale-100 peer-checked:opacity-100 backdrop-blur-sm">
+      <%= link_to edit_user_registration_path, class: "block px-4 py-2.5 text-sm font-medium text-slate-800 hover:bg-rose-50/80 transition" do %>
+        แก้ไขบัญชีของฉัน
+      <% end %>
+      <%= button_to destroy_user_session_path, method: :delete, class: "w-full text-left" do %>
+        <span class="block px-4 py-2.5 text-sm font-medium text-rose-600 hover:bg-rose-50 transition">ออกจากระบบ</span>
+      <% end %>
+    </div>
+  </div>
+</header>
