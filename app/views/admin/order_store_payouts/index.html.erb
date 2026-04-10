@@ -2,15 +2,6 @@
   <div class="flex items-center justify-between mb-4">
     <h1 class="text-2xl font-bold text-gray-900">การโอนเงินให้ร้าน</h1>
   </div>
-
-  <%
-=begin%>
- <p class="text-sm text-gray-600 mb-6">
-    รายการล่าสุด 200 รายการ (เรียงตามเวลาอัปเดต) — ดูรายละเอียดหรือสั่งโอนเมื่อสถานะเป็นรอดำเนินการ
-  </p> 
-<%
-=end%>
-
   <div class="flex items-center justify-end mb-4">
     <%= form_with url: admin_order_store_payouts_path, method: :get, local: true do |f| %>
       <%= f.select :status,
@@ -23,7 +14,6 @@
       %>
     <% end %>
   </div>
-
   <% if @payouts.any? %>
     <div class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200 border">

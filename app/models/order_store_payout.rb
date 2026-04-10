@@ -11,7 +11,7 @@ class OrderStorePayout < ApplicationRecord
     failed: "failed"
   }
 
-  default_scope { order(updated_at: :desc) }
+  default_scope { order(id: :desc) }
 
   # ยอดที่ต้องโอนร้านรวมต่อวัน (อิงวันที่ชำระเงินของออเดอร์)
   def self.seller_amounts_by_day_for_paid_orders(since:)
