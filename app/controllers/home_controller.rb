@@ -1,5 +1,4 @@
 class HomeController < BaseController
-  skip_before_action :destroy_seller_user_session!, only: %i[show]
   def index
     @banners            = marketplace_banner_payload
     @home_has_banners   = @banners.any?

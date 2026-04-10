@@ -104,8 +104,7 @@ Rails.application.routes.draw do
     get "application_suspend_enforcement", to: "application_suspend_enforcement#index"
   end
 
-  # Do not send /.well-known/* to "/": Chrome DevTools requests that URL and following GET / would run
-  # HomeController#index, which calls sign_out(:seller_user) (see BaseController).
+  # Exclude /.well-known/* from the catch-all (Chrome DevTools requests that path).
   match "*path", to: redirect("/"), via: :all, constraints: ->(req) {
     !req.path.start_with?("/rails/active_storage") &&
       !req.path.start_with?("/.well-known")
